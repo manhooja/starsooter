@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3a;--red:#ff4455;--blue:#4488ff;--glow:#aa88ff;--text:#e8e8f0;--muted:#555570;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;background-image:radial-gradient(ellipse at 20% 50%,rgba(255,68,85,0.07) 0%,transparent 55%),radial-gradient(ellipse at 80% 30%,rgba(68,136,255,0.07) 0%,transparent 55%);}
+header{text-align:center;margin-bottom:52px;}
+header h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:800;letter-spacing:-2px;background:linear-gradient(135deg,var(--red),var(--glow),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+header p{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--muted);margin-top:8px;letter-spacing:3px;text-transform:uppercase;}
+
+.section-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;align-self:flex-start;max-width:820px;width:100%;padding-left:2px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;max-width:820px;width:100%;margin-bottom:36px;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 24px;cursor:pointer;transition:all 0.25s;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;text-decoration:none;color:inherit;}
+.card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s;border-radius:20px;}
+.card.red::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,68,85,0.14),transparent 70%);}
+.card.blue::before{background:radial-gradient(ellipse at 50% 0%,rgba(68,136,255,0.14),transparent 70%);}
+.card.purple::before{background:radial-gradient(ellipse at 50% 0%,rgba(170,136,255,0.14),transparent 70%);}
+.card:hover{transform:translateY(-5px);}
+.card:hover::before{opacity:1;}
+.card.red:hover{border-color:var(--red);box-shadow:0 8px 40px rgba(255,68,85,0.12);}
+.card.blue:hover{border-color:var(--blue);box-shadow:0 8px 40px rgba(68,136,255,0.12);}
+.card.purple:hover{border-color:var(--glow);box-shadow:0 8px 40px rgba(170,136,255,0.12);}
+
+.card-icon{font-size:2.6rem;}
+.card-title{font-size:1.35rem;font-weight:800;letter-spacing:-0.5px;}
+.card-desc{font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--muted);line-height:1.65;}
+.card-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;align-self:flex-start;margin-top:auto;}
+.card.red .card-tag{background:rgba(255,68,85,0.1);color:var(--red);border:1px solid rgba(255,68,85,0.22);}
+.card.blue .card-tag{background:rgba(68,136,255,0.1);color:var(--blue);border:1px solid rgba(68,136,255,0.22);}
+.card.purple .card-tag{background:rgba(170,136,255,0.1);color:var(--glow);border:1px solid rgba(170,136,255,0.22);}
+
+footer{font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:1px;margin-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>ULTIMATE GAMES</h1>
+  <p>choose your game · start playing</p>
+</header>
+
+<div class="section-label">— Multiplayer</div>
+<div class="grid">
+  <a class="card red" href="tictactoe.html">
+    <div class="card-icon">⚔️</div>
+    <div class="card-title">Ultimate Tic-Tac-Toe</div>
+    <div class="card-desc">9 boards inside 1 big board. Win a small board to claim it. Get 3 in a row to win the whole game.</div>
+    <div class="card-tag">2 Players / vs AI</div>
+  </a>
+  <a class="card purple" href="connectfour.html">
+    <div class="card-icon">🔴</div>
+    <div class="card-title">Connect Four</div>
+    <div class="card-desc">Drop discs into the grid. Connect 4 in a row — horizontal, vertical, or diagonal — before your opponent.</div>
+    <div class="card-tag">2 Players / vs AI</div>
+  </a>
+</div>
+
+<div class="section-label">— Single Player</div>
+<div class="grid" style="max-width:380px;align-self:flex-start;margin-left:calc(50% - 410px);margin-left:clamp(0px,calc(50vw - 410px),9999px);">
+  <a class="card blue" href="snake.html">
+    <div class="card-icon">🐍</div>
+    <div class="card-title">Snake</div>
+    <div class="card-desc">Eat food, grow longer, don't hit the walls or yourself. How long can you survive?</div>
+    <div class="card-tag">Single Player</div>
+  </a>
+</div>
+
+<footer>© 2026 Ultimate Games</footer>
+</body>
+</html>
