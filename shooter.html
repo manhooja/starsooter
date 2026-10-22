@@ -104,6 +104,10 @@
           <div><span class="stat-label">SCORE</span><span class="stat-value" id="score">0000</span></div>
           <div><span class="stat-label">LIVES</span><span class="stat-value" id="lives">1</span></div>
         </div>
+        <div class="rare-powerup" id="rare-powerup" role="status" aria-live="off" hidden>
+          <span>RAINBOW BOOST</span>
+          <strong id="rare-powerup-time">5.0s</strong>
+        </div>
       </div>
       <div class="game-canvas-wrap">
         <canvas id="game-canvas" width="500" height="800" aria-label="Move the ship at the bottom, shoot asteroids falling from above"></canvas>
@@ -136,6 +140,8 @@
       const menuButton = document.querySelector("#menu-button");
       const scoreElement = document.querySelector("#score");
       const livesElement = document.querySelector("#lives");
+      const rarePowerupElement = document.querySelector("#rare-powerup");
+      const rarePowerupTimeElement = document.querySelector("#rare-powerup-time");
       const dustElement = document.querySelector("#dust");
       const profileBestElement = document.querySelector("#profile-best");
       const homeBestElement = document.querySelector("#home-best");
@@ -172,6 +178,8 @@
       let bullets;
       let asteroids;
       let particles;
+      let scorePopups;
+      let rarePowerupTimer = 0;
       let score = 0;
       let lives = 1;
       let spawnTimer = 0;
@@ -366,6 +374,9 @@
         bullets = [];
         asteroids = [];
         particles = [];
+        scorePopups = [];
+        rarePowerupTimer = 0;
+        rarePowerupElement.hidden = true;
         score = 0;
         lives = player.lives;
         spawnTimer = 0.5;
@@ -445,6 +456,33 @@
         });
       }
 
+      function addScorePopup(object) {
+        const color = object.rare
+          ? "rainbow"
+          : object.kind === "planet"
+            ? "#69D6FF"
+            : object.kind === "galaxy"
+              ? "#FF9AEB"
+              : object.kind === "universe"
+                ? "#FFF2A6"
+                : "#FFFFFF";
+        scorePopups.push({
+          x: object.x,
+          y: object.y,
+          text: String(object.points),
+          color,
+          life: 0.9,
+          maxLife: 0.9
+        });
+      }
+
+      function activateRarePowerup() {
+        rarePowerupTimer = 5;
+        player.invulnerable = Math.max(player.invulnerable, rarePowerupTimer);
+        rarePowerupElement.hidden = false;
+        rarePowerupTimeElement.textContent = `${rarePowerupTimer.toFixed(1)}s`;
+      }
+
       function burst(x, y, color, count) {
         for (let i = 0; i < count; i++) {
           const angle = Math.random() * Math.PI * 2;
@@ -465,7 +503,8 @@
         let x = 0;
         if (keys.has("ArrowLeft") || keys.has("KeyA")) x--;
         if (keys.has("ArrowRight") || keys.has("KeyD")) x++;
-        player.x = Math.max(player.radius + 8, Math.min(width - player.radius - 8, player.x + x * player.speed * delta));
+        const speedBoost = rarePowerupTimer > 0 ? 1.5 : 1;
+        player.x = Math.max(player.radius + 8, Math.min(width - player.radius - 8, player.x + x * player.speed * speedBoost * delta));
       }
 
       function update(delta) {
@@ -477,12 +516,19 @@
           }
         }
 
+        rarePowerupTimer = Math.max(0, rarePowerupTimer - delta);
+        if (rarePowerupTimer > 0) {
+          rarePowerupTimeElement.textContent = `${rarePowerupTimer.toFixed(1)}s`;
+        } else {
+          rarePowerupElement.hidden = true;
+        }
         movePlayer(delta);
         player.invulnerable = Math.max(0, player.invulnerable - delta);
         shotTimer -= delta;
         if (shotTimer <= 0) {
           bullets.push({ x: player.x, y: player.y - 20, speed: 510 });
-          shotTimer = Math.max(0.055, 0.2 * 0.82 ** progress.upgrades.blaster);
+          const fireRateBoost = rarePowerupTimer > 0 ? 0.5 : 1;
+          shotTimer = Math.max(0.055, 0.2 * 0.82 ** progress.upgrades.blaster * fireRateBoost);
         }
 
         spawnTimer -= delta;
@@ -518,6 +564,8 @@
                 asteroid.gone = true;
                 score += asteroid.points;
                 scoreElement.textContent = String(score).padStart(4, "0");
+                addScorePopup(asteroid);
+                if (asteroid.rare) activateRarePowerup();
                 burst(asteroid.x, asteroid.y, asteroid.rare ? "#FF477E" : "#FFB000", asteroid.rare ? 26 : 15);
               } else {
                 burst(asteroid.x, asteroid.y, "#DCE7FF", 5);
@@ -549,6 +597,11 @@
           particle.life -= delta;
         }
         particles = particles.filter(particle => particle.life > 0);
+        for (const popup of scorePopups) {
+          popup.y -= 34 * delta;
+          popup.life -= delta;
+        }
+        scorePopups = scorePopups.filter(popup => popup.life > 0);
       }
 
       function drawShip() {
@@ -712,6 +765,29 @@
           ctx.globalAlpha = Math.max(0, particle.life / particle.maxLife);
           ctx.fillStyle = particle.color;
           ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+        }
+        for (const popup of scorePopups) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, popup.life / popup.maxLife);
+          ctx.font = "800 19px Segoe UI, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.shadowBlur = 10;
+          if (popup.color === "rainbow") {
+            const gradient = ctx.createLinearGradient(popup.x - 22, popup.y, popup.x + 22, popup.y);
+            gradient.addColorStop(0, "#FF477E");
+            gradient.addColorStop(0.25, "#FFB000");
+            gradient.addColorStop(0.5, "#39FF14");
+            gradient.addColorStop(0.75, "#38BDF8");
+            gradient.addColorStop(1, "#A855F7");
+            ctx.fillStyle = gradient;
+            ctx.shadowColor = "#FF477E";
+          } else {
+            ctx.fillStyle = popup.color;
+            ctx.shadowColor = popup.color;
+          }
+          ctx.fillText(popup.text, popup.x, popup.y);
+          ctx.restore();
         }
         ctx.globalAlpha = 1;
         drawShip();

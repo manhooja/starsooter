@@ -33,6 +33,8 @@ The straightforward controls and short-session survival loop suit casual players
 - The ship fires automatically, with the Blaster upgrade reducing the delay between shots.
 - Asteroids fall from the top, with varied sizes, speeds, and silhouettes. Larger rocks have more hit points and take multiple shots to break.
 - Standard rocks award 10, 20, or 30 points according to size. Rare rainbow rocks appear occasionally, fall 1.5 times faster than standard rocks, take three hits, and award 75 points.
+- Destroying a rare rainbow rock grants a five-second Rainbow Boost: movement speed increases by 50%, firing interval is halved, and the ship is invulnerable. Destroying another rare rock during the boost refreshes its timer.
+- Destroyed objects briefly display their awarded score above the destruction point: standard asteroids use plain white numbers, rare rainbow rocks use rainbow coloring, and planets, galaxies, and universe cores each use their own color theme.
 - Asteroid collisions remove one life and grant a brief period of invulnerability. A run begins with one life; the Extra Life upgrade adds one life per purchased level.
 - The player starts with one life, plus one starting life per Extra Life upgrade level (up to two levels). Losing the last life ends the run.
 - Asteroids that leave the screen without being hit do not award points or cost a life.
@@ -47,7 +49,7 @@ The straightforward controls and short-session survival loop suit casual players
 - Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
 - Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.
 
-There are no implemented levels, bosses, or temporary power-ups.
+There are no implemented levels or bosses. The Rainbow Boost is the only temporary power-up.
 
 ## Progression
 

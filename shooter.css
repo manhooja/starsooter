@@ -200,12 +200,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .leaderboard-note { margin: 0; border-top: 1px solid #2e3440; padding: 12px 18px; color: #a4adbd; font-size: 0.7rem; }
 
 .game-page { width: min(100%, 520px); margin: 0 auto; }
-.game-bar { justify-content: space-between; margin-bottom: 10px; }
+.game-bar { justify-content: space-between; gap: 6px; margin-bottom: 10px; }
 .back-button, .text-button { min-height: 44px; border: 1px solid #343b49; border-radius: 7px; padding: 8px 13px; background: #1b2029; color: #d2d8e2; cursor: pointer; font-size: 0.69rem; font-weight: 700; }
 .back-button:hover, .text-button:hover { background: #272e3a; }
 .stats { gap: 22px; text-align: right; }
 .stat-label { display: block; color: #9ca6b6; font-size: 0.57rem; font-weight: 700; letter-spacing: 0.1em; }
 .stat-value { color: #FFFFFF; font-size: 1.05rem; font-variant-numeric: tabular-nums; font-weight: 800; }
+.rare-powerup { display: flex; align-items: center; gap: 8px; border: 1px solid #D946EF88; border-radius: 8px; padding: 7px 9px; background: linear-gradient(110deg, #F472B622, #A855F722); color: #F0ABFC; font-size: 0.57rem; font-weight: 800; letter-spacing: 0.04em; }
+.rare-powerup strong { color: #FFFFFF; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .game-canvas-wrap { position: relative; display: grid; justify-items: center; overflow: hidden; border: 1px solid #303744; border-radius: 10px; background: #080B1A; }
 canvas { display: block; width: min(100%, 500px, 42vh); width: min(100%, 500px, 42svh); height: auto; aspect-ratio: 5 / 8; object-fit: contain; touch-action: none; }
 .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 22px; background: #0c111ae8; text-align: center; }
@@ -256,6 +258,8 @@ canvas { display: block; width: min(100%, 500px, 42vh); width: min(100%, 500px, 
 }
 
 @media (max-width: 430px) {
+  .game-bar { flex-wrap: wrap; }
+  .rare-powerup { margin-left: auto; }
   .brand-tag { font-size: 0.52rem; }
   .wallet { gap: 5px; padding: 0 8px; font-size: 0.87rem; }
   .wallet-label { font-size: 0.52rem; }

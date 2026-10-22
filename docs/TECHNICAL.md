@@ -35,13 +35,13 @@ The canvas has a 500 × 800 internal coordinate space. CSS scales the portrait p
 
 ### Major systems
 
-- **Game state:** Tracks the player, score, lives, active projectiles, asteroids, particles, and timers.
+- **Game state:** Tracks the player, score, lives, active projectiles, asteroids, particles, transient score popups, and timers, including the rare-rock power-up duration.
 - **Input:** Tracks keyboard movement codes in a set. Pointer events on touch controls add and remove movement inputs. Window blur clears held keys; firing is automatic.
 - **Update loop:** `requestAnimationFrame` drives simulation updates. Delta time is capped at 0.04 seconds per frame.
 - **Pause and menu:** The in-mission Menu button or Escape pauses the simulation. Continue resumes it; Quit to Hangar abandons the current run without its completion reward.
 - **Spawning and difficulty:** Asteroids spawn above the playfield and travel down toward the ship near the bottom. Their speed and spawn interval depend in part on score. Score unlocks falling planets (500), galaxies (1,500), and universe cores (3,000), which spawn at increasing intervals.
-- **Collision and scoring:** Circle-distance checks handle projectile/object and player/object collisions. Asteroid hit points scale by size; defeating a rock awards 10–30 points, or 75 points for a rare rock. Cosmic objects take multiple hits, award a type-based bonus, and damage the player on collision.
-- **Rendering:** Canvas drawing renders the starfield, falling planets, galaxies and universe cores, ship, projectiles, asteroids, and short-lived impact particles.
+- **Collision and scoring:** Circle-distance checks handle projectile/object and player/object collisions. Asteroid hit points scale by size; defeating a rock awards 10–30 points, or 75 points for a rare rock. Destroying a rare rock also grants a five-second boost that multiplies movement speed by 1.5, halves the firing interval, and extends invulnerability; collecting another rare rock refreshes its timer. Cosmic objects take multiple hits, award a type-based bonus, and damage the player on collision.
+- **Rendering:** Canvas drawing renders the starfield, falling planets, galaxies and universe cores, ship, projectiles, asteroids, short-lived impact particles, and fading score popups. Popups display the awarded points in plain white for standard asteroids, rainbow coloring for rare rocks, and type-specific colors for cosmic objects.
 - **Interface and lifecycle:** DOM elements show score and lives, start and restart runs, and display game-over messaging.
 - **Hangar and progression:** The home screen focuses on mission launch. A separate Profile page shows saved pilot stats and upgrade levels; the upgrade store, ship-skin shop, and personal-best view are rendered from the saved player profile.
 - **Persistence:** Browser `localStorage` stores Star Dust, upgrade levels, owned/equipped skins, and the local personal best under `astroZapProgress`. There is no server or account synchronization. Storage read/write errors are reported in the browser console.
