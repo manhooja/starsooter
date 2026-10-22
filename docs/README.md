@@ -4,7 +4,7 @@ Astro-Zap! is a playful, browser-based 2D space shooter. Pilot your ship, zap in
 
 ## Play
 
-Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, build step, or external dependency is required by the current project.
+Open [`shooter.html`](../shooter.html) in a modern web browser. No installation, build step, or external dependency is required by the current project.
 
 - Browse the hangar, ship upgrades, paint jobs, and your personal high score.
 - Earn **1 Star Dust for every 10 points** at the end of a completed run, then spend it on upgrades or ship skins.
@@ -16,15 +16,15 @@ Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, 
 
 ## Project
 
-The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The game canvas uses a wide 800 × 500 internal resolution (8:5 aspect ratio) and scales to fit laptops and mobile screens. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
+The game uses a small set of standalone files: [`shooter.html`](../shooter.html) contains the interface and JavaScript game logic, while [`shooter.css`](../shooter.css) contains the page styles. The game canvas uses a wide 800 × 500 internal resolution (8:5 aspect ratio) and scales to fit laptops and mobile screens. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
 
 ## Documentation
 
-- [Game design](./docs/GAME_DESIGN.md)
-- [Technical overview](./docs/TECHNICAL.md)
-- [Roadmap](./docs/ROADMAP.md)
-- [Controls](./docs/CONTROLS.md)
-- [Release checklist](./docs/RELEASE_CHECKLIST.md)
+- [Game design](./GAME_DESIGN.md)
+- [Technical overview](./TECHNICAL.md)
+- [Roadmap](./ROADMAP.md)
+- [Controls](./CONTROLS.md)
+- [Release checklist](./RELEASE_CHECKLIST.md)
 
 ## Project status
 
