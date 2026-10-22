@@ -16,7 +16,7 @@ Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, 
 
 ## Project
 
-The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The portrait game canvas uses a 500 × 800 internal resolution and scales to fit its responsive layout. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
+The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The game canvas uses a wide 800 × 500 internal resolution (8:5 aspect ratio) and scales to fit laptops and mobile screens. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
 
 ## Documentation
 

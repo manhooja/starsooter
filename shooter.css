@@ -169,29 +169,30 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .leaderboard-row > strong small { color: #a4adbd; font-size: 0.55rem; }
 .leaderboard-note { margin: 0; border-top: 1px solid #2e3440; padding: 12px 18px; color: #a4adbd; font-size: 0.7rem; }
 
-.game-page { width: min(100%, 520px); margin: 0 auto; }
+.game-page { width: min(100%, 960px); margin: 0 auto; }
 .game-bar { justify-content: space-between; margin-bottom: 10px; }
-.back-button, .text-button { border: 1px solid #343b49; border-radius: 7px; padding: 8px 11px; background: #1b2029; color: #d2d8e2; cursor: pointer; font-size: 0.69rem; font-weight: 700; }
+.back-button, .text-button { min-height: 44px; border: 1px solid #343b49; border-radius: 7px; padding: 8px 13px; background: #1b2029; color: #d2d8e2; cursor: pointer; font-size: 0.69rem; font-weight: 700; }
 .back-button:hover, .text-button:hover { background: #272e3a; }
 .stats { gap: 22px; text-align: right; }
 .stat-label { display: block; color: #9ca6b6; font-size: 0.57rem; font-weight: 700; letter-spacing: 0.1em; }
 .stat-value { color: #FFFFFF; font-size: 1.05rem; font-variant-numeric: tabular-nums; font-weight: 800; }
 .game-canvas-wrap { position: relative; display: grid; justify-items: center; overflow: hidden; border: 1px solid #303744; border-radius: 10px; background: #080B1A; }
-canvas { display: block; width: auto; height: min(68vh, 680px); max-width: 100%; aspect-ratio: 5 / 8; object-fit: contain; touch-action: none; }
+canvas { display: block; width: min(100%, 900px, 96vh); width: min(100%, 900px, 96svh); height: auto; aspect-ratio: 8 / 5; object-fit: contain; touch-action: none; }
 .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 22px; background: #0c111ae8; text-align: center; }
 .overlay h2 { margin: 0; font-size: clamp(1.6rem, 7vw, 2.4rem); letter-spacing: 0.025em; }
 .overlay p { max-width: 330px; margin: 0 0 3px; color: #bac3d0; font-size: 0.85rem; line-height: 1.55; }
-.text-button { border-color: transparent; background: transparent; }
+.overlay .text-button { min-height: 44px; border-color: transparent; background: transparent; }
 .instructions { margin: 10px 0; color: #a6afbf; font-size: 0.67rem; text-align: center; }
 .instructions span { margin: 0 6px; color: #657086; }
 .instructions strong { color: #e0e5ee; }
-.touch-controls { display: none; grid-template-columns: 1fr 1fr 1fr; gap: 9px; max-width: 360px; margin: 12px auto; user-select: none; }
-.touch-controls button { min-height: 48px; border: 1px solid #3c4658; border-radius: 8px; background: #202735; color: white; font-size: 1.15rem; cursor: pointer; touch-action: none; }
-.touch-controls .fire { background: #303c55; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; }
+.touch-controls { display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: min(100%, 390px); margin: 12px auto; user-select: none; -webkit-user-select: none; }
+.touch-controls button { min-height: 60px; border: 1px solid #3c4658; border-radius: 10px; background: #202735; color: white; font-size: 1.3rem; cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.touch-controls button.pressed, .touch-controls button:active { border-color: var(--cyan); background: #00E5FF2b; }
+.touch-controls .fire { background: #303c55; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; }
 @media (pointer: coarse) { .touch-controls { display: grid; } }
 
 @media (max-width: 700px) {
-  body { padding: 17px 12px 28px; }
+  body { padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
   .home-layout { align-items: stretch; flex-direction: column; }
   .hero-panel { min-height: 370px; padding: 23px 20px 15px; }
   .hero-copy { max-width: 72%; }
@@ -206,7 +207,23 @@ canvas { display: block; width: auto; height: min(68vh, 680px); max-width: 100%;
   .upgrade-grid { grid-template-columns: 1fr; }
   .upgrade-card { min-height: 0; }
   .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  canvas { height: min(64vh, 600px); }
+  .game.playing .topbar { display: none; }
+  canvas { width: min(100%, 900px, 96vh); width: min(100%, 900px, 96svh); }
+  .instructions { margin: 8px 0; }
+  .touch-controls { display: grid; gap: 10px; }
+  .touch-controls button { min-height: 64px; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  body { padding: max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
+  .game.playing .topbar, .game.playing .main-nav { display: none; }
+  .game-page { display: grid; width: 100%; max-width: 960px; grid-template-columns: minmax(0, 1fr) minmax(140px, 0.38fr); align-items: center; gap: 4px 14px; }
+  .game-bar { grid-column: 1 / -1; margin-bottom: 2px; }
+  .game-canvas-wrap { grid-column: 1; grid-row: 2; }
+  canvas { width: auto; height: min(calc(100svh - 76px), 420px); max-width: 100%; }
+  .instructions { display: none; }
+  .touch-controls { display: grid; grid-column: 2; grid-row: 2; width: 100%; max-width: 250px; gap: 8px; margin: 0 auto; }
+  .touch-controls button { min-height: clamp(48px, 16svh, 72px); }
 }
 
 @media (max-width: 430px) {

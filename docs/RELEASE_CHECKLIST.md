@@ -7,12 +7,15 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Define supported browsers, browser versions, screen sizes, and input devices.
 - [ ] TODO: Verify the page opens and the game starts in every supported browser.
 - [ ] TODO: Verify horizontal A/D and arrow-key movement, movement bounds, and held-key behavior.
-- [ ] TODO: Verify held Space fires repeatedly and projectile collisions award exactly 10 points.
+- [ ] TODO: Verify held Space fires repeatedly, larger asteroids need multiple hits, and defeated rocks award points based on size and rarity.
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.
 - [ ] TODO: Verify replay resets score, lives, asteroids, projectiles, and player position.
 - [ ] TODO: Verify the home screen navigation, upgrades, skin purchases/equipping, personal-best display, and game-over reward flow.
-- [ ] TODO: Verify the portrait playfield, bottom ship position, top-down asteroid movement, pause, continue, and quit behavior.
+- [ ] TODO: Verify the 8:5 playfield on desktop and mobile, bottom ship position, top-down asteroid movement, pause, continue, and quit behavior.
+- [ ] TODO: Verify rare asteroids spawn occasionally, are visually distinct, and award 75 points.
+- [ ] TODO: Verify upgrade prices rise by level and Engine/Blaster bonuses stack multiplicatively.
 - [ ] TODO: Test touch controls on physical touch devices, including press, release, and interrupted gestures.
+- [ ] TODO: Test the responsive 8:5 game layout on portrait phones, short landscape screens, and desktops, including simultaneous steering/fire touch input and browser safe-area/viewport behavior.
 - [ ] TODO: Check keyboard-only access, focus visibility, contrast, and screen-reader experience.
 - [ ] TODO: Add a repeatable test plan or automated tests; no test suite was found.
 

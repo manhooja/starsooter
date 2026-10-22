@@ -12,7 +12,7 @@
     <header class="topbar">
       <a class="brand" href="#" data-view-link="home" aria-label="Astro-Zap home">
         <span class="brand-mark" aria-hidden="true">✦</span>
-        <span><span class="brand-name">ASTRO-ZAP!</span><span class="brand-tag">SPACE ROCK BLASTER</span></span>
+        <span class="brand-name">ASTRO-ZAP!</span>
       </a>
       <div class="wallet" aria-label="Star dust balance">
         <span aria-hidden="true">✧</span>
@@ -31,13 +31,9 @@
     <section class="page home-page" data-page="home">
       <div class="home-layout">
         <div class="hero-panel">
-          <div class="hero-stars" aria-hidden="true"></div>
           <div class="hero-copy">
-            <p class="eyebrow"><span class="live-dot"></span> PILOT HANGAR · SECTOR 07</p>
-            <h1>READY FOR<br><span>TAKEOFF?</span></h1>
-            <p class="hero-description">The asteroid belt is getting rowdy. Climb into your ship, dodge the rocks, and make the galaxy proud!</p>
+            <h1>READY TO<br><span>LAUNCH?</span></h1>
             <button class="primary-button" id="start-button" type="button">LAUNCH MISSION <span aria-hidden="true">→</span></button>
-            <p class="reward-hint">Blast asteroids to earn Star Dust for your ship.</p>
           </div>
           <div class="hero-art" aria-hidden="true">
             <div class="orbit orbit-one"></div>
@@ -53,7 +49,6 @@
             <span class="art-star star-a">✦</span><span class="art-star star-b">·</span><span class="art-star star-c">✧</span>
             <div class="hero-art-caption"><span class="caption-line"></span><span id="equipped-skin-label">NOVA CLASS · MK I</span></div>
           </div>
-          <div class="hero-bottom"><span>✦ &nbsp; KEEP YOUR EYES ON THE STARS</span><span>NO ASTEROID LEFT BEHIND</span></div>
         </div>
 
         <aside class="pilot-column">
@@ -63,11 +58,6 @@
             <div class="record-row"><span class="record-icon dust-icon">✧</span><span><span class="record-label">STAR DUST</span><strong id="home-dust">0</strong></span><span class="record-unit">READY</span></div>
             <div class="record-row"><span class="record-icon">◈</span><span><span class="record-label">SHIP UPGRADES</span><strong id="home-upgrades">0 / 8</strong></span><span class="record-unit">LVL</span></div>
           </article>
-          <article class="daily-card">
-            <span class="daily-icon">☄</span>
-            <div><p class="eyebrow">FLIGHT TIP</p><p>Keep moving! A wiggly pilot is a tricky target.</p></div>
-          </article>
-          <button class="quick-shop" type="button" data-view-link="shop"><span class="quick-shop-icon">✦</span><span><strong>VISIT THE SHIP SHOP</strong><small>Find your next favorite look</small></span><span class="quick-arrow">→</span></button>
         </aside>
       </div>
     </section>
@@ -100,7 +90,7 @@
         </div>
       </div>
       <div class="game-canvas-wrap">
-        <canvas id="game-canvas" width="500" height="800" aria-label="Move the ship at the bottom, shoot asteroids falling from above"></canvas>
+        <canvas id="game-canvas" width="800" height="500" aria-label="Move the ship at the bottom, shoot asteroids falling from above"></canvas>
         <div class="overlay" id="overlay" hidden>
           <h2 id="overlay-title">PAUSED</h2>
           <p id="overlay-message"></p>
@@ -143,9 +133,9 @@
       const height = canvas.height;
       const saveKey = "astroZapProgress";
       const upgradeInfo = {
-        hull: { name: "Cometproof Hull", description: "Add an extra life to every mission.", icon: "♡", prices: [45, 90], labels: ["+1 starting life", "+1 starting life"] },
-        engine: { name: "Zoom Engine", description: "Zip around the asteroid belt faster.", icon: "➤", prices: [35, 70, 120], labels: ["+35 move speed", "+35 move speed", "+35 move speed"] },
-        blaster: { name: "Rapid Blaster", description: "Fire a little faster with each level.", icon: "✹", prices: [40, 80, 130], labels: ["Faster shots", "Faster shots", "Faster shots"] }
+        hull: { name: "Cometproof Hull", description: "Start each mission with another life.", icon: "♡", prices: [45, 135] },
+        engine: { name: "Zoom Engine", description: "Movement speed multiplies with every level.", icon: "➤", prices: [35, 100, 280] },
+        blaster: { name: "Rapid Blaster", description: "Fire rate multiplies with every level.", icon: "✹", prices: [40, 115, 320] }
       };
       const skins = [
         { id: "nova", name: "Nova", subtitle: "THE CLASSIC", color: "#00E5FF", price: 0 },
@@ -210,6 +200,7 @@
       function showView(nextView) {
         if (playing && nextView !== "game") return;
         view = nextView;
+        document.querySelector(".game").classList.toggle("playing", nextView === "game");
         document.querySelectorAll("[data-page]").forEach(page => {
           page.hidden = page.dataset.page !== nextView;
         });
@@ -246,9 +237,14 @@
           const level = progress.upgrades[id];
           const maxed = level >= info.prices.length;
           const price = info.prices[level];
+          const bonus = id === "hull"
+            ? "+1 starting life"
+            : id === "engine"
+              ? `${Math.round((1.16 ** (level + 1) / 1.16 ** level - 1) * 100)}% faster movement`
+              : `${Math.round((1 / 0.82 - 1) * 100)}% faster fire rate`;
           const card = document.createElement("article");
           card.className = "upgrade-card";
-          card.innerHTML = `<div class="upgrade-card-top"><span class="upgrade-icon">${info.icon}</span><span class="level-chip">LEVEL ${level} / ${info.prices.length}</span></div><h2>${info.name}</h2><p>${info.description}</p><div class="level-track">${info.prices.map((_, index) => `<span class="${index < level ? "filled" : ""}"></span>`).join("")}</div><div class="upgrade-card-bottom"><span class="upgrade-bonus">${maxed ? "MAX LEVEL!" : info.labels[level]}</span><button class="buy-button" type="button" data-upgrade="${id}" ${maxed || progress.dust < price ? "disabled" : ""}>${maxed ? "MAXED" : `✧ ${price} · UPGRADE`}</button></div>`;
+          card.innerHTML = `<div class="upgrade-card-top"><span class="upgrade-icon">${info.icon}</span><span class="level-chip">LEVEL ${level} / ${info.prices.length}</span></div><h2>${info.name}</h2><p>${info.description}</p><div class="level-track">${info.prices.map((_, index) => `<span class="${index < level ? "filled" : ""}"></span>`).join("")}</div><div class="upgrade-card-bottom"><span class="upgrade-bonus">${maxed ? "MAX LEVEL!" : bonus}</span><button class="buy-button" type="button" data-upgrade="${id}" ${maxed || progress.dust < price ? "disabled" : ""}>${maxed ? "MAXED" : `✧ ${price} · UPGRADE`}</button></div>`;
           upgradeList.append(card);
         }
       }
@@ -295,7 +291,7 @@
           x: width / 2,
           y: height - 70,
           radius: 16,
-          speed: 260 + progress.upgrades.engine * 35,
+          speed: 260 * 1.16 ** progress.upgrades.engine,
           invulnerable: 0,
           lives: 3 + progress.upgrades.hull
         };
@@ -340,12 +336,19 @@
       }
 
       function addAsteroid() {
-        const radius = 15 + Math.random() * 23;
+        const rare = Math.random() < 0.06;
+        const radius = rare ? 22 + Math.random() * 13 : 15 + Math.random() * 28;
         asteroids.push({
           x: radius + Math.random() * (width - radius * 2),
           y: -radius,
           radius,
-          speed: 90 + Math.random() * 65 + Math.min(score * 0.12, 100),
+          speed: rare
+            ? (110 + Math.random() * 45 + Math.min(score * 0.12, 100)) * 1.5
+            : 90 + Math.random() * 65 + Math.min(score * 0.12, 100),
+          hp: rare ? 3 : radius < 25 ? 1 : radius < 35 ? 2 : 3,
+          maxHp: rare ? 3 : radius < 25 ? 1 : radius < 35 ? 2 : 3,
+          points: rare ? 75 : radius < 25 ? 10 : radius < 35 ? 20 : 30,
+          rare,
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 2.3,
           shape: Array.from({ length: 9 }, () => 0.76 + Math.random() * 0.38)
@@ -389,7 +392,7 @@
         shotTimer -= delta;
         if (keys.has("Space") && shotTimer <= 0) {
           bullets.push({ x: player.x, y: player.y - 20, speed: 510 });
-          shotTimer = Math.max(0.08, 0.2 - progress.upgrades.blaster * 0.04);
+          shotTimer = Math.max(0.055, 0.2 * 0.82 ** progress.upgrades.blaster);
         }
 
         spawnTimer -= delta;
@@ -412,11 +415,16 @@
             const dx = asteroid.x - bullet.x;
             const dy = asteroid.y - bullet.y;
             if (!asteroid.gone && !bullet.gone && dx * dx + dy * dy < asteroid.radius * asteroid.radius) {
-              asteroid.gone = true;
               bullet.gone = true;
-              score += 10;
-              scoreElement.textContent = String(score).padStart(4, "0");
-              burst(asteroid.x, asteroid.y, "#FFB000", 15);
+              asteroid.hp--;
+              if (asteroid.hp <= 0) {
+                asteroid.gone = true;
+                score += asteroid.points;
+                scoreElement.textContent = String(score).padStart(4, "0");
+                burst(asteroid.x, asteroid.y, asteroid.rare ? "#FF477E" : "#FFB000", asteroid.rare ? 26 : 15);
+              } else {
+                burst(asteroid.x, asteroid.y, "#DCE7FF", 5);
+              }
             }
           }
 
@@ -472,13 +480,15 @@
       }
 
       function drawAsteroid(asteroid) {
+        const rainbowHue = (performance.now() / 8 + asteroid.rotation * 50) % 360;
+        const rockColor = asteroid.rare ? `hsl(${rainbowHue} 95% 62%)` : "#A855F7";
         ctx.save();
         ctx.translate(asteroid.x, asteroid.y);
         ctx.rotate(asteroid.rotation);
         ctx.shadowBlur = 12;
-        ctx.shadowColor = "#A855F7";
-        ctx.fillStyle = "#A855F7";
-        ctx.strokeStyle = "#D8B4FE";
+        ctx.shadowColor = rockColor;
+        ctx.fillStyle = rockColor;
+        ctx.strokeStyle = asteroid.rare ? `hsl(${(rainbowHue + 65) % 360} 100% 82%)` : "#D8B4FE";
         ctx.lineWidth = 2;
         ctx.beginPath();
         asteroid.shape.forEach((scale, index) => {
@@ -491,6 +501,21 @@
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+        if (asteroid.rare) {
+          ctx.strokeStyle = `hsl(${(rainbowHue + 180) % 360} 100% 68%)`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, asteroid.radius + 5, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        if (asteroid.maxHp > 1) {
+          const barWidth = asteroid.radius * 1.2;
+          const barY = asteroid.radius + 8;
+          ctx.fillStyle = "#202638";
+          ctx.fillRect(-barWidth / 2, barY, barWidth, 3);
+          ctx.fillStyle = asteroid.rare ? "#FFB000" : "#00E5FF";
+          ctx.fillRect(-barWidth / 2, barY, barWidth * asteroid.hp / asteroid.maxHp, 3);
+        }
         ctx.restore();
       }
 
@@ -605,9 +630,13 @@
         button.addEventListener("pointerdown", event => {
           event.preventDefault();
           keys.add(key);
-          button.setPointerCapture(event.pointerId);
+          if (button.setPointerCapture) button.setPointerCapture(event.pointerId);
+          button.classList.add("pressed");
         });
-        const release = () => keys.delete(key);
+        const release = () => {
+          keys.delete(key);
+          button.classList.remove("pressed");
+        };
         button.addEventListener("pointerup", release);
         button.addEventListener("pointercancel", release);
         button.addEventListener("lostpointercapture", release);

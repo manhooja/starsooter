@@ -4,7 +4,7 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 
 ## Completed in the current prototype
 
-- Single-page Astro-Zap! game with a 500 × 800 portrait Canvas playfield.
+- Single-page Astro-Zap! game with an 800 × 500 wide Canvas playfield (8:5) for desktop and mobile.
 - Hangar home screen with navigation to upgrades, ship shop, and personal high scores.
 - Mission launch, replay, and return-to-hangar flow.
 - Horizontal keyboard movement with playfield bounds.
@@ -14,11 +14,13 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 - Score-driven asteroid speed and spawn pressure.
 - Starfield and particle effects rendered without separate asset files.
 - Responsive layout and on-screen touch controls.
-- Star Dust rewards (1 per destroyed asteroid) and purchasable Hull, Engine, and Blaster upgrades with gameplay effects.
+- End-of-run Star Dust rewards (1 per 10 points) and purchasable Hull, Engine, and Blaster upgrades with gameplay effects.
 - Four cosmetic ship colors, including the default Nova skin; purchase, ownership, and equipment controls.
 - Personal-best score and hangar progress saved locally in the browser.
 - Vertical-shooter gameplay with the ship at the bottom and asteroids falling from above.
 - In-mission pause menu with Continue and Quit to Hangar actions.
+- Multi-hit larger asteroids and rare, high-value rocks.
+- Sharply increasing upgrade costs with multiplicative Engine and Blaster bonuses.
 
 ## Current development priorities
 

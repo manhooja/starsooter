@@ -12,7 +12,7 @@
 
 ## Concept
 
-The player pilots a small ship near the bottom of a portrait starfield while asteroids fall from above. Shoot asteroids to earn points and avoid collisions to preserve lives. A run ends when all lives are lost.
+The player pilots a small ship near the bottom of a wide 8:5 starfield while asteroids fall from above. Shoot asteroids to earn points and avoid collisions to preserve lives. A run ends when all lives are lost.
 
 ## Target audience
 
@@ -29,16 +29,18 @@ The straightforward controls and short-session survival loop suit casual players
 
 ## Implemented mechanics
 
-- The ship moves horizontally along the bottom of the portrait playfield.
+- The ship moves horizontally along the bottom of the wide playfield.
 - Holding the fire input fires repeatedly, with a fixed delay between shots.
-- Asteroids fall from the top, with varied sizes, speeds, and silhouettes.
-- Destroying an asteroid awards 10 points.
+- Asteroids fall from the top, with varied sizes, speeds, and silhouettes. Larger rocks have more hit points and take multiple shots to break.
+- Standard rocks award 10, 20, or 30 points according to size. Rare rainbow rocks appear occasionally, fall 1.5 times faster than standard rocks, take three hits, and award 75 points.
 - Asteroid collisions remove one life and grant a brief period of invulnerability.
 - The player starts with three lives, plus one starting life per Cometproof Hull level (up to two levels). Losing the last life ends the run.
 - Asteroids that leave the screen without being hit do not award points or cost a life.
 - Asteroid speed and spawn pressure increase with score, up to code-defined limits.
 - The game-over screen displays the score, awards one Star Dust per 10 points, and offers another run or a return to the hangar.
-- Cometproof Hull adds one starting life per level (two levels maximum); Zoom Engine adds 35 movement speed per level (three levels maximum); Rapid Blaster reduces the shot interval by 0.04 seconds per level (three levels maximum).
+- Cometproof Hull adds one starting life per level (two levels maximum); Zoom Engine multiplies movement speed by 1.16 per level (three levels maximum); Rapid Blaster multiplies fire rate by about 1.22 per level (three levels maximum).
+- Upgrade prices rise sharply with each level: Hull costs 45 then 135 Dust; Engine 35, 100, then 280; Blaster 40, 115, then 320.
+- Rare rocks have a 6% chance to spawn and their extra points also increase the run's end-of-run Star Dust reward.
 - The home screen, upgrade shop, ship shop, upgrade levels, Star Dust balance, equipped skin, and personal-best score are implemented.
 - The in-mission Menu button and Escape key pause the run. Continue resumes the run; Quit to Hangar abandons it without a completion reward.
 - Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
