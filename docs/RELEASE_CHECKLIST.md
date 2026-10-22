@@ -11,6 +11,7 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.
 - [ ] TODO: Verify replay resets score, lives, asteroids, projectiles, and player position.
 - [ ] TODO: Verify the home screen navigation, upgrades, skin purchases/equipping, personal-best display, and game-over reward flow.
+- [ ] TODO: Verify Profile is separate from Home, displays current records and all upgrade levels, and links to the upgrade shop.
 - [ ] TODO: Verify the 5:8 portrait playfield on desktop and mobile, bottom ship position, top-down asteroid movement, pause, continue, and quit behavior.
 - [ ] TODO: Verify rare asteroids spawn occasionally, are visually distinct, and award 75 points.
 - [ ] TODO: Verify upgrade prices rise by level and Engine/Blaster bonuses stack multiplicatively.

@@ -43,7 +43,7 @@ The canvas has a 500 × 800 internal coordinate space. CSS scales the portrait p
 - **Collision and scoring:** Circle-distance checks handle projectile/object and player/object collisions. Asteroid hit points scale by size; defeating a rock awards 10–30 points, or 75 points for a rare rock. Cosmic objects take multiple hits, award a type-based bonus, and damage the player on collision.
 - **Rendering:** Canvas drawing renders the starfield, falling planets, galaxies and universe cores, ship, projectiles, asteroids, and short-lived impact particles.
 - **Interface and lifecycle:** DOM elements show score and lives, start and restart runs, and display game-over messaging.
-- **Hangar and progression:** The home screen, upgrade store, ship-skin shop, and personal-best view are rendered from the saved player profile.
+- **Hangar and progression:** The home screen focuses on mission launch. A separate Profile page shows saved pilot stats and upgrade levels; the upgrade store, ship-skin shop, and personal-best view are rendered from the saved player profile.
 - **Persistence:** Browser `localStorage` stores Star Dust, upgrade levels, owned/equipped skins, and the local personal best under `astroZapProgress`. There is no server or account synchronization. Storage read/write errors are reported in the browser console.
 
 ## Run locally

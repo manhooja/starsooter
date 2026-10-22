@@ -35,7 +35,7 @@ body {
 button { font: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offset: 3px; }
 .game { width: min(100%, 960px); margin: 0 auto; }
-.game.home-screen { width: min(100%, 520px); }
+.game.home-screen, .game.profile-screen { width: min(100%, 520px); }
 
 .topbar, .brand, .wallet, .main-nav, .nav-button, .home-layout, .section-heading,
 .record-row, .daily-card, .quick-shop, .page-heading, .upgrade-card-top,
@@ -61,6 +61,22 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 .home-layout { align-items: stretch; flex-direction: column; gap: 16px; }
+.home-upgrade-panel { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: linear-gradient(145deg, #141d31, #101725); }
+.home-upgrade-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.home-upgrade-heading h2 { margin: 4px 0 0; font-size: 0.95rem; }
+.home-upgrade-heading .text-button { min-height: 40px; white-space: nowrap; }
+.home-upgrade-levels { display: grid; gap: 7px; margin-top: 12px; }
+.home-upgrade-level { display: flex; min-width: 0; align-items: center; gap: 9px; border-top: 1px solid #ffffff10; padding-top: 8px; }
+.home-upgrade-icon { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border-radius: 7px; background: #00E5FF17; color: var(--cyan); }
+.home-upgrade-name { flex: 1; color: #cbd3df; font-size: 0.75rem; }
+.home-upgrade-level strong { color: var(--cyan); font-size: 0.72rem; }
+.home-best-card { display: flex; width: 100%; min-height: 58px; align-items: center; gap: 9px; margin-top: 12px; border: 1px solid #FFB00044; border-radius: 10px; padding: 10px 13px; background: #FFB0000b; color: inherit; text-align: left; cursor: pointer; }
+.home-best-card:hover { border-color: #FFB00099; background: #FFB00012; }
+.home-best-icon { color: var(--gold); font-size: 1rem; }
+.home-best-label { color: #aeb7c6; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.07em; }
+.home-best-card strong { color: var(--gold); font-size: 0.95rem; }
+.home-best-unit { color: var(--muted); font-size: 0.58rem; }
+.home-best-link { margin-left: auto; color: var(--gold); font-size: 0.58rem; font-weight: 800; white-space: nowrap; }
 .hero-panel, .pilot-card, .daily-card, .quick-shop, .upgrade-card, .leaderboard-card, .skin-card {
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -109,6 +125,19 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .record-label { color: #929caf; font-size: 0.54rem; letter-spacing: 0.08em; }
 .record-row strong { font-size: 0.95rem; }
 .record-unit { margin-left: auto; color: #8f99ac; font-size: 0.52rem; }
+.profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.profile-stat { display: flex; min-width: 0; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 14px 12px; background: linear-gradient(145deg, #141d31, #101725); }
+.profile-stat > span:nth-child(2) { display: grid; gap: 4px; min-width: 0; }
+.profile-stat strong { overflow: hidden; font-size: 1rem; text-overflow: ellipsis; }
+.profile-upgrades-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 22px 0 10px; }
+.profile-upgrades-heading h2 { margin: 4px 0 0; font-size: 1rem; }
+.profile-upgrades-heading .text-button { white-space: nowrap; }
+.profile-upgrades { display: grid; gap: 9px; }
+.profile-upgrade-card { display: flex; align-items: center; gap: 11px; border: 1px solid var(--line); border-radius: 10px; padding: 11px; background: var(--panel); }
+.profile-upgrade-details { display: grid; flex: 1; gap: 4px; min-width: 0; }
+.profile-upgrade-details strong { font-size: 0.82rem; }
+.profile-upgrade-details small { color: var(--muted); font-size: 0.68rem; }
+.profile-upgrade-level { flex: 0 0 auto; border: 1px solid #3a414e; border-radius: 20px; padding: 5px 8px; color: var(--cyan); font-size: 0.62rem; font-weight: 800; }
 .daily-card { gap: 12px; padding: 13px; background: #151a2b; }
 .daily-icon { color: var(--pink); font-size: 1.35rem; }
 .daily-card p:last-child { margin: 4px 0 0; color: #b9c1cf; font-size: 0.74rem; line-height: 1.45; }

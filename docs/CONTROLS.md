@@ -3,7 +3,7 @@
 ## Start and replay
 
 1. Open `shooter.html` in a modern browser.
-2. Use the **Upgrades**, **Ship Shop**, and **High Scores** tabs as desired.
+2. Use the **Upgrades**, **Ship Shop**, and **Profile** tabs as desired. Open **High Scores** using the personal-best card on Home.
 3. Select **Launch Mission** on the home screen.
 4. After losing all lives, choose **Fly Again** or return to the hangar.
 

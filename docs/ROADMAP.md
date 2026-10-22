@@ -5,7 +5,7 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 ## Completed in the current prototype
 
 - Single-page Astro-Zap! game with a 500 × 800 portrait Canvas playfield (5:8) for desktop and mobile.
-- Hangar home screen with navigation to upgrades, ship shop, and personal high scores.
+- Vertical hangar home screen focused on launching missions, with a compact upgrade summary and navigation to separate Profile, upgrades, ship shop, and personal high scores pages.
 - Mission launch, replay, and return-to-hangar flow.
 - Horizontal keyboard movement with playfield bounds.
 - Repeating fire input and moving projectiles.

@@ -42,7 +42,7 @@ The straightforward controls and short-session survival loop suit casual players
 - Extra Life adds one starting life per level (two levels maximum); Zoom Engine multiplies movement speed by 1.16 per level (three levels maximum); Rapid Blaster multiplies fire rate by about 1.22 per level (three levels maximum).
 - Upgrade prices rise sharply with each level: Extra Life costs 45 then 135 Dust; Engine 35, 100, then 280; Blaster 40, 115, then 320.
 - Rare rocks have a 2% chance to spawn and their extra points also increase the run's end-of-run Star Dust reward.
-- The home screen, upgrade shop, ship shop, upgrade levels, Star Dust balance, equipped skin, and personal-best score are implemented.
+- The home screen focuses on launching a mission and includes the personal best, a compact upgrade-level summary, and shortcuts to High Scores and the upgrade shop. The separate Profile page shows pilot stats and detailed upgrade levels; the ship shop, Star Dust balance, equipped skin, and personal-best score are implemented.
 - The in-mission Menu button and Escape key pause the run. Continue resumes the run; Quit to Hangar abandons it without a completion reward.
 - Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
 - Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.

@@ -25,7 +25,7 @@
       <button class="nav-button active" type="button" data-view="home">⌂ <span>HOME</span></button>
       <button class="nav-button" type="button" data-view="upgrades">⬆ <span>UPGRADES</span></button>
       <button class="nav-button" type="button" data-view="shop">✦ <span>SHIP SHOP</span></button>
-      <button class="nav-button" type="button" data-view="scores">★ <span>HIGH SCORES</span></button>
+      <button class="nav-button" type="button" data-view="profile">◉ <span>PROFILE</span></button>
     </nav>
 
     <section class="page home-page" data-page="home">
@@ -51,15 +51,31 @@
           </div>
         </div>
 
-        <aside class="pilot-column">
-          <article class="pilot-card">
-            <div class="section-heading"><div><p class="eyebrow">YOUR FLIGHT LOG</p><h2>PILOT STATS</h2></div><span class="heading-icon">✦</span></div>
-            <div class="record-row"><span class="record-icon">★</span><span><span class="record-label">PERSONAL BEST</span><strong id="home-best">0</strong></span><span class="record-unit">PTS</span></div>
-            <div class="record-row"><span class="record-icon dust-icon">✧</span><span><span class="record-label">STAR DUST</span><strong id="home-dust">0</strong></span><span class="record-unit">READY</span></div>
-            <div class="record-row"><span class="record-icon">◈</span><span><span class="record-label">SHIP UPGRADES</span><strong id="home-upgrades">0 / 8</strong></span><span class="record-unit">LVL</span></div>
-          </article>
-        </aside>
       </div>
+      <button class="home-best-card" type="button" data-view="scores" aria-label="View high scores">
+        <span class="home-best-icon" aria-hidden="true">★</span>
+        <span class="home-best-label">PERSONAL BEST</span>
+        <strong id="home-best">0</strong>
+        <span class="home-best-unit">PTS</span>
+        <span class="home-best-link">HIGH SCORES →</span>
+      </button>
+      <section class="home-upgrade-panel" aria-labelledby="home-upgrades-title">
+        <div class="home-upgrade-heading">
+          <div><p class="eyebrow">YOUR SHIP</p><h2 id="home-upgrades-title">UPGRADE LEVELS</h2></div>
+          <button class="text-button" type="button" data-view="upgrades">UPGRADES →</button>
+        </div>
+        <div class="home-upgrade-levels" id="home-upgrade-levels"></div>
+      </section>
+    </section>
+
+    <section class="page menu-page profile-page" data-page="profile" hidden>
+      <div class="page-heading"><div><p class="eyebrow">YOUR FLIGHT LOG</p><h1>PILOT PROFILE</h1><p>Your records and ship progress.</p></div><span class="page-badge">✧ <span class="dust-balance">0</span> DUST</span></div>
+      <div class="profile-stats">
+        <article class="profile-stat"><span class="record-icon">★</span><span><span class="record-label">PERSONAL BEST</span><strong id="profile-best">0</strong></span><span class="record-unit">PTS</span></article>
+        <article class="profile-stat"><span class="record-icon dust-icon">✧</span><span><span class="record-label">STAR DUST</span><strong id="profile-dust">0</strong></span><span class="record-unit">DUST</span></article>
+      </div>
+      <div class="profile-upgrades-heading"><div><p class="eyebrow">YOUR SHIP</p><h2>UPGRADE LEVELS</h2></div><button class="text-button" type="button" data-view="upgrades">UPGRADE SHIP →</button></div>
+      <div class="profile-upgrades" id="profile-upgrades"></div>
     </section>
 
     <section class="page menu-page" data-page="upgrades" hidden>
@@ -121,9 +137,11 @@
       const scoreElement = document.querySelector("#score");
       const livesElement = document.querySelector("#lives");
       const dustElement = document.querySelector("#dust");
+      const profileBestElement = document.querySelector("#profile-best");
       const homeBestElement = document.querySelector("#home-best");
-      const homeDustElement = document.querySelector("#home-dust");
-      const homeUpgradesElement = document.querySelector("#home-upgrades");
+      const profileDustElement = document.querySelector("#profile-dust");
+      const profileUpgradeList = document.querySelector("#profile-upgrades");
+      const homeUpgradeList = document.querySelector("#home-upgrade-levels");
       const bestScoreElement = document.querySelector("#leaderboard-best");
       const upgradeList = document.querySelector("#upgrade-list");
       const skinList = document.querySelector("#skin-list");
@@ -202,6 +220,7 @@
         view = nextView;
         document.querySelector(".game").classList.toggle("playing", nextView === "game");
         document.querySelector(".game").classList.toggle("home-screen", nextView === "home");
+        document.querySelector(".game").classList.toggle("profile-screen", nextView === "profile");
         document.querySelectorAll("[data-page]").forEach(page => {
           page.hidden = page.dataset.page !== nextView;
         });
@@ -219,17 +238,65 @@
 
       function renderProgress() {
         dustElement.textContent = progress.dust;
-        homeDustElement.textContent = progress.dust;
         homeBestElement.textContent = progress.best.toLocaleString();
+        profileDustElement.textContent = progress.dust.toLocaleString();
+        profileBestElement.textContent = progress.best.toLocaleString();
         bestScoreElement.textContent = `${progress.best.toLocaleString()} PTS`;
         document.querySelectorAll(".dust-balance").forEach(element => element.textContent = progress.dust);
-        const upgradeLevels = Object.values(progress.upgrades).reduce((sum, level) => sum + level, 0);
-        homeUpgradesElement.textContent = `${upgradeLevels} / 8`;
         const skin = equippedSkin();
         document.querySelector("#equipped-skin-label").textContent = `${skin.name.toUpperCase()} CLASS · MK I`;
         document.querySelector("#hero-ship").style.setProperty("--ship-color", skin.color);
+        renderHomeUpgradeLevels();
+        renderProfileUpgrades();
         renderUpgrades();
         renderSkins();
+      }
+
+      function renderHomeUpgradeLevels() {
+        homeUpgradeList.replaceChildren();
+        for (const [id, info] of Object.entries(upgradeInfo)) {
+          const level = progress.upgrades[id];
+          const item = document.createElement("div");
+          item.className = "home-upgrade-level";
+          const icon = document.createElement("span");
+          icon.className = "home-upgrade-icon";
+          icon.textContent = info.icon;
+          const name = document.createElement("span");
+          name.className = "home-upgrade-name";
+          name.textContent = info.name;
+          const value = document.createElement("strong");
+          value.textContent = `${level}/${info.prices.length}`;
+          item.append(icon, name, value);
+          homeUpgradeList.append(item);
+        }
+      }
+
+      function renderProfileUpgrades() {
+        profileUpgradeList.replaceChildren();
+        for (const [id, info] of Object.entries(upgradeInfo)) {
+          const level = progress.upgrades[id];
+          const card = document.createElement("article");
+          card.className = "profile-upgrade-card";
+          const icon = document.createElement("span");
+          icon.className = "upgrade-icon";
+          icon.textContent = info.icon;
+          const details = document.createElement("div");
+          details.className = "profile-upgrade-details";
+          const name = document.createElement("strong");
+          name.textContent = info.name;
+          const description = document.createElement("small");
+          description.textContent = id === "hull"
+            ? `Starts each run with ${1 + level} ${1 + level === 1 ? "life" : "lives"}`
+            : id === "engine"
+              ? `${Math.round((1.16 ** level - 1) * 100)}% movement speed bonus`
+              : `${Math.round((1 / 0.82 ** level - 1) * 100)}% faster firing`;
+          details.append(name, description);
+          const levelText = document.createElement("span");
+          levelText.className = "profile-upgrade-level";
+          levelText.textContent = `LVL ${level}/${info.prices.length}`;
+          card.append(icon, details, levelText);
+          profileUpgradeList.append(card);
+        }
       }
 
       function renderUpgrades() {
