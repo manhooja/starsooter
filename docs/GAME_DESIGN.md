@@ -8,7 +8,7 @@
 | Genre | 2D arcade space shooter / survival |
 | Platform | Browser; specific supported browser versions are TODO |
 | Players | One player |
-| Session format | Single survival run; no levels or saved progression |
+| Session format | Single survival run with persistent local hangar progression |
 
 ## Concept
 
@@ -20,11 +20,12 @@ The straightforward controls and short-session survival loop suit casual players
 
 ## Core gameplay loop
 
-1. Start a run from the title overlay.
-2. Move around the playfield and fire at asteroids approaching from the right.
-3. Earn points when shots destroy asteroids; avoid asteroid collisions.
-4. Continue as asteroid pressure increases, until all three lives are lost.
-5. Review the run score and start another run.
+1. Visit the hangar to check the personal best, upgrade the ship, or shop for a paint job.
+2. Launch a run from the home screen.
+3. Move around the playfield and fire at asteroids approaching from the right.
+4. Earn points and Star Dust when shots destroy asteroids; avoid collisions.
+5. Continue as asteroid pressure increases, until all lives are lost.
+6. Collect the run's Star Dust reward, check the personal best, and spend rewards in the hangar.
 
 ## Implemented mechanics
 
@@ -34,16 +35,20 @@ The straightforward controls and short-session survival loop suit casual players
 - Asteroids enter from the right, move left, and have varied sizes, speeds, and silhouettes.
 - Destroying an asteroid awards 10 points.
 - Asteroid collisions remove one life and grant a brief period of invulnerability.
-- The player starts with three lives. Losing the last life ends the run.
+- The player starts with three lives, plus one starting life per Cometproof Hull level (up to two levels). Losing the last life ends the run.
 - Asteroids that leave the screen without being hit do not award points or cost a life.
 - Asteroid speed and spawn pressure increase with score, up to code-defined limits.
-- The game-over overlay displays the score and offers a new run.
+- The game-over screen displays the score, awards one Star Dust per 10 points, and offers another run or a return to the hangar.
+- Cometproof Hull adds one starting life per level (two levels maximum); Zoom Engine adds 35 movement speed per level (three levels maximum); Rapid Blaster reduces the shot interval by 0.04 seconds per level (three levels maximum).
+- The home screen, upgrade shop, ship shop, upgrade levels, Star Dust balance, equipped skin, and personal-best score are implemented.
+- Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
+- Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.
 
-There are no implemented levels, bosses, power-ups, weapon upgrades, persistent high scores, or save system.
+There are no implemented levels, bosses, or temporary power-ups.
 
 ## Progression
 
-Progression is limited to increasing in-run difficulty as the score rises. The game has no campaign, level structure, unlocks, or meta-progression. A persistent leaderboard or additional modes would be future work, not existing features.
+In-run difficulty increases with score. Between runs, players earn Star Dust to buy permanent upgrades and cosmetic skins, and can improve a personal-best score saved on the device. There is no campaign, level structure, online leaderboard, or cross-device progression.
 
 ## Story and setting
 
@@ -55,11 +60,11 @@ The game uses a dark navy starfield, a glowing cyan geometric ship, muted outlin
 
 ## Planned features
 
-No future feature commitments are recorded in the source. The following are **proposals only**, not implemented or approved scope:
+The following are **proposals only**, not implemented or approved scope:
 
-- Add a persistent high-score table.
 - Add sound effects and an optional mute control.
-- Add an opening/tutorial screen and clearer in-run pause or restart options.
+- Add pause/resume controls.
+- Add more ship skins and upgrade types.
 - Test and tune the difficulty curve and input accessibility.
 
 The project owner should confirm priorities before treating these proposals as planned work.

@@ -5,7 +5,8 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 ## Completed in the current prototype
 
 - Single-page Astro-Zap! game with an 800 × 500 Canvas playfield.
-- Start screen and a replay action after game over.
+- Hangar home screen with navigation to upgrades, ship shop, and personal high scores.
+- Mission launch, replay, and return-to-hangar flow.
 - Four-direction keyboard movement with playfield bounds.
 - Repeating fire input and moving projectiles.
 - Procedurally shaped incoming asteroids, hit detection, score, and lives.
@@ -13,6 +14,9 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 - Score-driven asteroid speed and spawn pressure.
 - Starfield and particle effects rendered without separate asset files.
 - Responsive layout and on-screen touch controls.
+- Star Dust rewards (1 per destroyed asteroid) and purchasable Hull, Engine, and Blaster upgrades with gameplay effects.
+- Four cosmetic ship colors, including the default Nova skin; purchase, ownership, and equipment controls.
+- Personal-best score and hangar progress saved locally in the browser.
 
 ## Current development priorities
 
@@ -20,17 +24,17 @@ TODO: The repository does not record an agreed priority list, owner, or target m
 
 1. Define supported browsers, devices, and accessibility expectations.
 2. Test keyboard, touch, collision, scoring, game-over, and replay behavior across target devices.
-3. Decide whether to add persistent scores, audio, pause controls, or new game modes.
-4. Select a license and release/distribution approach.
+3. Test progression persistence, the upgrade economy, and responsive menu layouts.
+4. Decide whether to add audio, pause controls, or new game modes.
+5. Select a license and release/distribution approach.
 
 These are recommendations, not commitments or completed work.
 
 ## Proposed future features (uncommitted)
 
-- Persistent best score or a local leaderboard.
 - Optional audio effects and a mute setting.
 - Pause/resume controls.
-- Additional enemy or asteroid variants and optional game modes.
+- More upgrade types, skins, enemy or asteroid variants, and optional game modes.
 - A short tutorial or expanded story.
 
 ## Milestones

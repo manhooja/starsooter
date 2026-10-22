@@ -10,6 +10,7 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Verify held Space fires repeatedly and projectile collisions award exactly 10 points.
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.
 - [ ] TODO: Verify replay resets score, lives, asteroids, projectiles, and player position.
+- [ ] TODO: Verify the home screen navigation, upgrades, skin purchases/equipping, personal-best display, and game-over reward flow.
 - [ ] TODO: Test touch controls on physical touch devices, including press, release, and interrupted gestures.
 - [ ] TODO: Check keyboard-only access, focus visibility, contrast, and screen-reader experience.
 - [ ] TODO: Add a repeatable test plan or automated tests; no test suite was found.
@@ -29,8 +30,9 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 
 ## Save and load
 
-- [ ] The current game does not save or load progress; score and lives reset for each run.
-- [ ] TODO: Decide whether persistence is needed. If so, specify what is saved, storage method, and failure behavior.
+- [ ] Hangar currency, upgrade levels, owned/equipped skins, and personal best use browser `localStorage`; current-run score and lives reset each run.
+- [ ] TODO: Test persistence, invalid or unavailable storage, clearing site data, and behavior in private browsing across supported browsers.
+- [ ] TODO: Confirm that device-local progress (without accounts or online leaderboards) meets release requirements.
 
 ## Packaging and platform requirements
 

@@ -14,7 +14,7 @@ The game expects a browser with JavaScript, Canvas 2D, `requestAnimationFrame`, 
 
 ```text
 .
-├── shooter.html   # Markup, interface, and game logic
+├── shooter.html   # Menus, interface, and game logic
 ├── shooter.css    # Responsive game and page styles
 ├── README.md
 └── docs/
@@ -42,13 +42,15 @@ The canvas has an 800 × 500 internal coordinate space. CSS makes the canvas res
 - **Collision and scoring:** Circle-distance checks handle projectile/asteroid and player/asteroid collisions. Destroyed asteroids award 10 points.
 - **Rendering:** Canvas drawing renders the starfield, ship, projectiles, asteroids, and short-lived impact particles.
 - **Interface and lifecycle:** DOM elements show score and lives, start and restart runs, and display game-over messaging.
+- **Hangar and progression:** The home screen, upgrade store, ship-skin shop, and personal-best view are rendered from the saved player profile.
+- **Persistence:** Browser `localStorage` stores Star Dust, upgrade levels, owned/equipped skins, and the local personal best under `astroZapProgress`. There is no server or account synchronization. Storage read/write errors are reported in the browser console.
 
 ## Run locally
 
 1. Check out or download the project files.
 2. Keep `shooter.html` and `shooter.css` in the same directory.
 3. Open `shooter.html` directly in a modern browser.
-4. Select **Start Game** and use the controls in [CONTROLS.md](./CONTROLS.md).
+4. Choose upgrades or a ship skin in the hangar, then launch a mission and use the controls in [CONTROLS.md](./CONTROLS.md).
 
 No install, compile, bundling, or server command is defined by the current project. If a browser or deployment platform requires serving the page over HTTP, configure that separately; no server configuration is included here.
 
@@ -58,7 +60,8 @@ There is no build script, test suite, or CI configuration in the inspected workt
 
 ## Known technical boundaries
 
-- Score and lives are in-memory values and reset when a new run starts; they are not saved.
+- Current-run score and lives are in-memory values and reset when a new run starts. Hangar currency, upgrades, skins, and personal best are saved locally in the browser.
+- Clearing browser site data or using a different browser/device does not preserve the local profile.
 - There is no audio system or external asset loading.
 - There is no configuration file; game constants are in `shooter.html`.
 - Accessibility and cross-browser behavior have not been formally specified or verified. TODO: define and test support targets.

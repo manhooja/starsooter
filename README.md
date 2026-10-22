@@ -6,14 +6,16 @@ Astro-Zap! is a playful, browser-based 2D space shooter. Pilot your ship, zap in
 
 Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, build step, or external dependency is required by the current project.
 
+- Browse the hangar, ship upgrades, paint jobs, and your personal high score.
+- Earn **1 Star Dust per asteroid destroyed** and spend it on upgrades or ship skins.
 - Move with **WASD** or the **arrow keys**.
 - Shoot with **Space**.
 - On touch devices, use the on-screen direction and fire buttons.
-- Start a run with **Start Game**. After game over, choose **Play Again**.
+- Launch a mission from the home screen. After game over, fly again or return to the hangar.
 
 ## Project
 
-The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The canvas uses an 800 × 500 internal resolution and scales to fit its responsive layout. Keep both files together when opening or sharing the game.
+The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The canvas uses an 800 × 500 internal resolution and scales to fit its responsive layout. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
 
 ## Documentation
 
@@ -25,7 +27,7 @@ The game uses a small set of standalone files: `shooter.html` contains the inter
 
 ## Project status
 
-This is a lightweight arcade prototype. The current implementation has one survival mode, and a run's score and lives are kept in memory only. See the [roadmap](./docs/ROADMAP.md) for confirmed implementation details and clearly labeled proposals.
+This is a lightweight arcade game with one survival mode, a hangar, purchasable gameplay upgrades, cosmetic ship skins, and a device-local personal best. Run score and lives reset on each mission; hangar progress is saved in this browser. High scores are not shared online.
 
 ## License
 

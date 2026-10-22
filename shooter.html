@@ -9,34 +9,114 @@
 </head>
 <body>
   <main class="game">
-    <header>
-      <div>
-        <p class="eyebrow">A tiny arcade game</p>
-        <h1>ASTRO-ZAP!</h1>
-      </div>
-      <div class="stats" aria-label="Game stats">
-        <div><span class="stat-label">SCORE</span><span class="stat-value" id="score">0000</span></div>
-        <div><span class="stat-label">LIVES</span><span class="stat-value" id="lives">3</span></div>
+    <header class="topbar">
+      <a class="brand" href="#" data-view-link="home" aria-label="Astro-Zap home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span><span class="brand-name">ASTRO-ZAP!</span><span class="brand-tag">SPACE ROCK BLASTER</span></span>
+      </a>
+      <div class="wallet" aria-label="Star dust balance">
+        <span aria-hidden="true">✧</span>
+        <span id="dust">0</span>
+        <span class="wallet-label">STAR DUST</span>
       </div>
     </header>
 
-    <section class="screen" aria-label="Astro-Zap! game">
-      <canvas id="game-canvas" width="800" height="500" aria-label="Dodge asteroids and shoot them down"></canvas>
-      <div class="overlay" id="overlay">
-        <h2 id="overlay-title">READY, PILOT?</h2>
-        <p id="overlay-message">Asteroids are closing in. Move your ship, blast the rocks, and see how long you can survive.</p>
-        <button id="start-button" type="button">START GAME</button>
+    <nav class="main-nav" aria-label="Main menu">
+      <button class="nav-button active" type="button" data-view="home">⌂ <span>HOME</span></button>
+      <button class="nav-button" type="button" data-view="upgrades">⬆ <span>UPGRADES</span></button>
+      <button class="nav-button" type="button" data-view="shop">✦ <span>SHIP SHOP</span></button>
+      <button class="nav-button" type="button" data-view="scores">★ <span>HIGH SCORES</span></button>
+    </nav>
+
+    <section class="page home-page" data-page="home">
+      <div class="home-layout">
+        <div class="hero-panel">
+          <div class="hero-stars" aria-hidden="true"></div>
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="live-dot"></span> PILOT HANGAR · SECTOR 07</p>
+            <h1>READY FOR<br><span>TAKEOFF?</span></h1>
+            <p class="hero-description">The asteroid belt is getting rowdy. Climb into your ship, dodge the rocks, and make the galaxy proud!</p>
+            <button class="primary-button" id="start-button" type="button">LAUNCH MISSION <span aria-hidden="true">→</span></button>
+            <p class="reward-hint">Blast asteroids to earn Star Dust for your ship.</p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="planet"></div>
+            <div class="ship-preview" id="hero-ship">
+              <span class="ship-flame"></span>
+              <svg viewBox="0 0 100 72" role="presentation">
+                <path class="ship-wing" d="M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z"></path>
+                <path class="ship-glass" d="m49 32 24 4-24 4-10-4z"></path>
+              </svg>
+            </div>
+            <span class="art-star star-a">✦</span><span class="art-star star-b">·</span><span class="art-star star-c">✧</span>
+            <div class="hero-art-caption"><span class="caption-line"></span><span id="equipped-skin-label">NOVA CLASS · MK I</span></div>
+          </div>
+          <div class="hero-bottom"><span>✦ &nbsp; KEEP YOUR EYES ON THE STARS</span><span>NO ASTEROID LEFT BEHIND</span></div>
+        </div>
+
+        <aside class="pilot-column">
+          <article class="pilot-card">
+            <div class="section-heading"><div><p class="eyebrow">YOUR FLIGHT LOG</p><h2>PILOT STATS</h2></div><span class="heading-icon">✦</span></div>
+            <div class="record-row"><span class="record-icon">★</span><span><span class="record-label">PERSONAL BEST</span><strong id="home-best">0</strong></span><span class="record-unit">PTS</span></div>
+            <div class="record-row"><span class="record-icon dust-icon">✧</span><span><span class="record-label">STAR DUST</span><strong id="home-dust">0</strong></span><span class="record-unit">READY</span></div>
+            <div class="record-row"><span class="record-icon">◈</span><span><span class="record-label">SHIP UPGRADES</span><strong id="home-upgrades">0 / 8</strong></span><span class="record-unit">LVL</span></div>
+          </article>
+          <article class="daily-card">
+            <span class="daily-icon">☄</span>
+            <div><p class="eyebrow">FLIGHT TIP</p><p>Keep moving! A wiggly pilot is a tricky target.</p></div>
+          </article>
+          <button class="quick-shop" type="button" data-view-link="shop"><span class="quick-shop-icon">✦</span><span><strong>VISIT THE SHIP SHOP</strong><small>Find your next favorite look</small></span><span class="quick-arrow">→</span></button>
+        </aside>
       </div>
     </section>
 
-    <p class="instructions">Move: <strong>WASD</strong> or <strong>← ↑ ↓ →</strong> &nbsp;·&nbsp; Shoot: <strong>SPACE</strong></p>
-    <div class="touch-controls" aria-label="Touch controls">
-      <button type="button" data-key="ArrowLeft" aria-label="Move left">←</button>
-      <button type="button" data-key="ArrowUp" aria-label="Move up">↑</button>
-      <button class="fire" type="button" data-key="Space" aria-label="Shoot">FIRE</button>
-      <button type="button" data-key="ArrowDown" aria-label="Move down">↓</button>
-      <button type="button" data-key="ArrowRight" aria-label="Move right">→</button>
-    </div>
+    <section class="page menu-page" data-page="upgrades" hidden>
+      <div class="page-heading"><div><p class="eyebrow">TUNE UP YOUR RIDE</p><h1>SHIP UPGRADES</h1><p>Small tweaks, big space-pilot energy.</p></div><span class="page-badge">✧ <span class="dust-balance">0</span> DUST</span></div>
+      <div class="upgrade-grid" id="upgrade-list"></div>
+    </section>
+
+    <section class="page menu-page" data-page="shop" hidden>
+      <div class="page-heading"><div><p class="eyebrow">LOOK COOL OUT THERE</p><h1>THE SHIP SHOP</h1><p>Pick a paint job and make the cosmos your runway.</p></div><span class="page-badge">✧ <span class="dust-balance">0</span> DUST</span></div>
+      <div class="shop-grid" id="skin-list"></div>
+    </section>
+
+    <section class="page menu-page" data-page="scores" hidden>
+      <div class="page-heading"><div><p class="eyebrow">YOUR GREATEST FLIGHT</p><h1>HIGH SCORES</h1><p>Your personal records are saved on this device.</p></div><span class="score-trophy">🏆</span></div>
+      <div class="leaderboard-card">
+        <div class="leaderboard-header"><span>RANK</span><span>PILOT</span><span>BEST RUN</span></div>
+        <div class="leaderboard-row"><span class="rank-badge">01</span><span class="pilot-name"><span class="pilot-avatar">✦</span> YOU <small>LOCAL CHAMPION</small></span><strong id="leaderboard-best">0 <small>PTS</small></strong></div>
+        <p class="leaderboard-note">Your top score is saved in this browser. Online leaderboards are not available yet.</p>
+      </div>
+    </section>
+
+    <section class="game-page" id="game-page" hidden>
+      <div class="game-bar">
+        <button class="back-button" id="back-to-hangar" type="button">← HANGAR</button>
+        <div class="stats" aria-label="Current run stats">
+          <div><span class="stat-label">SCORE</span><span class="stat-value" id="score">0000</span></div>
+          <div><span class="stat-label">LIVES</span><span class="stat-value" id="lives">3</span></div>
+        </div>
+      </div>
+      <section class="screen" aria-label="Astro-Zap! game">
+        <canvas id="game-canvas" width="800" height="500" aria-label="Dodge asteroids and shoot them down"></canvas>
+        <div class="overlay" id="overlay" hidden>
+          <h2 id="overlay-title">MISSION COMPLETE</h2>
+          <p id="overlay-message"></p>
+          <button class="primary-button" id="replay-button" type="button">FLY AGAIN <span aria-hidden="true">→</span></button>
+          <button class="text-button" id="overlay-hangar" type="button">BACK TO HANGAR</button>
+        </div>
+      </section>
+      <p class="instructions">MOVE <strong>WASD</strong> / <strong>← ↑ ↓ →</strong><span>•</span> FIRE <strong>SPACE</strong></p>
+      <div class="touch-controls" aria-label="Touch controls">
+        <button type="button" data-key="ArrowLeft" aria-label="Move left">←</button>
+        <button type="button" data-key="ArrowUp" aria-label="Move up">↑</button>
+        <button class="fire" type="button" data-key="Space" aria-label="Shoot">FIRE</button>
+        <button type="button" data-key="ArrowDown" aria-label="Move down">↓</button>
+        <button type="button" data-key="ArrowRight" aria-label="Move right">→</button>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -44,13 +124,32 @@
       const canvas = document.querySelector("#game-canvas");
       const ctx = canvas.getContext("2d");
       const overlay = document.querySelector("#overlay");
-      const overlayTitle = document.querySelector("#overlay-title");
       const overlayMessage = document.querySelector("#overlay-message");
-      const startButton = document.querySelector("#start-button");
+      const replayButton = document.querySelector("#replay-button");
       const scoreElement = document.querySelector("#score");
       const livesElement = document.querySelector("#lives");
+      const dustElement = document.querySelector("#dust");
+      const homeBestElement = document.querySelector("#home-best");
+      const homeDustElement = document.querySelector("#home-dust");
+      const homeUpgradesElement = document.querySelector("#home-upgrades");
+      const bestScoreElement = document.querySelector("#leaderboard-best");
+      const upgradeList = document.querySelector("#upgrade-list");
+      const skinList = document.querySelector("#skin-list");
+      const gamePage = document.querySelector("#game-page");
       const width = canvas.width;
       const height = canvas.height;
+      const saveKey = "astroZapProgress";
+      const upgradeInfo = {
+        hull: { name: "Cometproof Hull", description: "Add an extra life to every mission.", icon: "♡", prices: [45, 90], labels: ["+1 starting life", "+1 starting life"] },
+        engine: { name: "Zoom Engine", description: "Zip around the asteroid belt faster.", icon: "➤", prices: [35, 70, 120], labels: ["+35 move speed", "+35 move speed", "+35 move speed"] },
+        blaster: { name: "Rapid Blaster", description: "Fire a little faster with each level.", icon: "✹", prices: [40, 80, 130], labels: ["Faster shots", "Faster shots", "Faster shots"] }
+      };
+      const skins = [
+        { id: "nova", name: "Nova", subtitle: "THE CLASSIC", color: "#70eaff", price: 0 },
+        { id: "sunbeam", name: "Sunbeam", subtitle: "GOLDEN GLOW", color: "#ffc766", price: 60 },
+        { id: "berry", name: "Berry Blast", subtitle: "BERRY BRIGHT", color: "#ff77ba", price: 90 },
+        { id: "mint", name: "Mint Chip", subtitle: "COOL & CRISP", color: "#73f0bd", price: 120 }
+      ];
       const keys = new Set();
       const stars = Array.from({ length: 90 }, () => ({
         x: Math.random() * width,
@@ -70,14 +169,137 @@
       let lastTime = 0;
       let playing = false;
       let animationFrame = 0;
+      let view = "home";
+      let progress = loadProgress();
+
+      function loadProgress() {
+        const defaults = { dust: 0, best: 0, upgrades: { hull: 0, engine: 0, blaster: 0 }, ownedSkins: ["nova"], equippedSkin: "nova" };
+        try {
+          const saved = JSON.parse(localStorage.getItem(saveKey) || "null");
+          if (!saved || typeof saved !== "object") return defaults;
+          const upgrades = {};
+          for (const [key, info] of Object.entries(upgradeInfo)) {
+            upgrades[key] = Number.isInteger(saved.upgrades?.[key]) ? Math.max(0, Math.min(info.prices.length, saved.upgrades[key])) : 0;
+          }
+          const ownedSkins = Array.isArray(saved.ownedSkins) ? skins.filter(skin => skin.id === "nova" || saved.ownedSkins.includes(skin.id)).map(skin => skin.id) : ["nova"];
+          return {
+            dust: Number.isFinite(saved.dust) ? Math.max(0, Math.floor(saved.dust)) : 0,
+            best: Number.isFinite(saved.best) ? Math.max(0, Math.floor(saved.best)) : 0,
+            upgrades,
+            ownedSkins,
+            equippedSkin: ownedSkins.includes(saved.equippedSkin) ? saved.equippedSkin : "nova"
+          };
+        } catch (error) {
+          console.warn("Could not load Astro-Zap progress; starting a fresh profile.", error);
+          return defaults;
+        }
+      }
+
+      function saveProgress() {
+        try {
+          localStorage.setItem(saveKey, JSON.stringify(progress));
+        } catch (error) {
+          console.error("Could not save Astro-Zap progress. Progress may not persist after closing this page.", error);
+        }
+      }
+
+      function showView(nextView) {
+        if (playing && nextView !== "game") return;
+        view = nextView;
+        document.querySelectorAll("[data-page]").forEach(page => {
+          page.hidden = page.dataset.page !== nextView;
+        });
+        gamePage.hidden = nextView !== "game";
+        document.querySelectorAll(".nav-button").forEach(button => {
+          button.classList.toggle("active", button.dataset.view === nextView);
+        });
+        document.querySelector(".main-nav").hidden = nextView === "game";
+        if (nextView !== "game") renderProgress();
+      }
+
+      function equippedSkin() {
+        return skins.find(skin => skin.id === progress.equippedSkin) || skins[0];
+      }
+
+      function renderProgress() {
+        dustElement.textContent = progress.dust;
+        homeDustElement.textContent = progress.dust;
+        homeBestElement.textContent = progress.best.toLocaleString();
+        bestScoreElement.textContent = `${progress.best.toLocaleString()} PTS`;
+        document.querySelectorAll(".dust-balance").forEach(element => element.textContent = progress.dust);
+        const upgradeLevels = Object.values(progress.upgrades).reduce((sum, level) => sum + level, 0);
+        homeUpgradesElement.textContent = `${upgradeLevels} / 8`;
+        const skin = equippedSkin();
+        document.querySelector("#equipped-skin-label").textContent = `${skin.name.toUpperCase()} CLASS · MK I`;
+        document.querySelector("#hero-ship").style.setProperty("--ship-color", skin.color);
+        renderUpgrades();
+        renderSkins();
+      }
+
+      function renderUpgrades() {
+        upgradeList.replaceChildren();
+        for (const [id, info] of Object.entries(upgradeInfo)) {
+          const level = progress.upgrades[id];
+          const maxed = level >= info.prices.length;
+          const price = info.prices[level];
+          const card = document.createElement("article");
+          card.className = "upgrade-card";
+          card.innerHTML = `<div class="upgrade-card-top"><span class="upgrade-icon">${info.icon}</span><span class="level-chip">LEVEL ${level} / ${info.prices.length}</span></div><h2>${info.name}</h2><p>${info.description}</p><div class="level-track">${info.prices.map((_, index) => `<span class="${index < level ? "filled" : ""}"></span>`).join("")}</div><div class="upgrade-card-bottom"><span class="upgrade-bonus">${maxed ? "MAX LEVEL!" : info.labels[level]}</span><button class="buy-button" type="button" data-upgrade="${id}" ${maxed || progress.dust < price ? "disabled" : ""}>${maxed ? "MAXED" : `✧ ${price} · UPGRADE`}</button></div>`;
+          upgradeList.append(card);
+        }
+      }
+
+      function renderSkins() {
+        skinList.replaceChildren();
+        for (const skin of skins) {
+          const owned = progress.ownedSkins.includes(skin.id);
+          const equipped = progress.equippedSkin === skin.id;
+          const card = document.createElement("article");
+          card.className = `skin-card${equipped ? " equipped" : ""}`;
+          card.innerHTML = `<div class="skin-preview" style="--skin-color:${skin.color}"><span class="preview-stars">✦　·　✧</span><svg viewBox="0 0 100 72" aria-hidden="true"><path d="M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z"></path><path class="preview-glass" d="m49 32 24 4-24 4-10-4z"></path></svg><span class="skin-rarity">${skin.subtitle}</span></div><div class="skin-card-footer"><span><strong>${skin.name}</strong><small>${skin.subtitle}</small></span><button class="skin-button" type="button" data-skin="${skin.id}" ${equipped || (!owned && progress.dust < skin.price) ? "disabled" : ""}>${equipped ? "EQUIPPED" : owned ? "EQUIP" : `✧ ${skin.price}`}</button></div>`;
+          skinList.append(card);
+        }
+      }
+
+      function buyUpgrade(id) {
+        const info = upgradeInfo[id];
+        if (!info) return;
+        const level = progress.upgrades[id];
+        const price = info.prices[level];
+        if (price === undefined || progress.dust < price) return;
+        progress.dust -= price;
+        progress.upgrades[id]++;
+        saveProgress();
+        renderProgress();
+      }
+
+      function selectSkin(id) {
+        const skin = skins.find(item => item.id === id);
+        if (!skin) return;
+        if (!progress.ownedSkins.includes(id)) {
+          if (progress.dust < skin.price) return;
+          progress.dust -= skin.price;
+          progress.ownedSkins.push(id);
+        }
+        progress.equippedSkin = id;
+        saveProgress();
+        renderProgress();
+      }
 
       function resetGame() {
-        player = { x: 105, y: height / 2, radius: 16, speed: 260, invulnerable: 0 };
+        player = {
+          x: 105,
+          y: height / 2,
+          radius: 16,
+          speed: 260 + progress.upgrades.engine * 35,
+          invulnerable: 0,
+          lives: 3 + progress.upgrades.hull
+        };
         bullets = [];
         asteroids = [];
         particles = [];
         score = 0;
-        lives = 3;
+        lives = player.lives;
         spawnTimer = 0.5;
         shotTimer = 0;
         scoreElement.textContent = "0000";
@@ -89,6 +311,7 @@
         resetGame();
         keys.clear();
         playing = true;
+        showView("game");
         overlay.hidden = true;
         lastTime = performance.now();
         animationFrame = requestAnimationFrame(loop);
@@ -96,9 +319,14 @@
 
       function endGame() {
         playing = false;
-        overlayTitle.textContent = "GAME OVER";
-        overlayMessage.textContent = `You scored ${score} points. Want another run?`;
-        startButton.textContent = "PLAY AGAIN";
+        const earnedDust = Math.floor(score / 10);
+        progress.dust += earnedDust;
+        const newRecord = score > progress.best;
+        progress.best = Math.max(progress.best, score);
+        saveProgress();
+        renderProgress();
+        document.querySelector("#overlay-title").textContent = newRecord ? "NEW PERSONAL BEST!" : "MISSION COMPLETE!";
+        overlayMessage.textContent = `You scored ${score} points and collected ${earnedDust} Star Dust.`;
         overlay.hidden = false;
       }
 
@@ -160,7 +388,7 @@
         shotTimer -= delta;
         if (keys.has("Space") && shotTimer <= 0) {
           bullets.push({ x: player.x + 17, y: player.y, speed: 510 });
-          shotTimer = 0.2;
+          shotTimer = Math.max(0.08, 0.2 - progress.upgrades.blaster * 0.04);
         }
 
         spawnTimer -= delta;
@@ -219,11 +447,12 @@
 
       function drawShip() {
         if (player.invulnerable > 0 && Math.floor(player.invulnerable * 12) % 2 === 0) return;
+        const color = equippedSkin().color;
         ctx.save();
         ctx.translate(player.x, player.y);
         ctx.shadowBlur = 18;
-        ctx.shadowColor = "#61e8ff";
-        ctx.fillStyle = "#c9f8ff";
+        ctx.shadowColor = color;
+        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.moveTo(21, 0);
         ctx.lineTo(-13, -13);
@@ -231,7 +460,7 @@
         ctx.lineTo(-13, 13);
         ctx.closePath();
         ctx.fill();
-        ctx.fillStyle = "#57dfff";
+        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.moveTo(-10, -5);
         ctx.lineTo(-22 - Math.random() * 8, 0);
@@ -311,7 +540,33 @@
       });
       window.addEventListener("keyup", event => keys.delete(event.code));
       window.addEventListener("blur", () => keys.clear());
-      startButton.addEventListener("click", startGame);
+      document.querySelectorAll("[data-view]").forEach(button => {
+        button.addEventListener("click", () => showView(button.dataset.view));
+      });
+      document.querySelectorAll("[data-view-link]").forEach(button => {
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          showView(button.dataset.viewLink);
+        });
+      });
+      document.querySelector("#start-button").addEventListener("click", startGame);
+      replayButton.addEventListener("click", startGame);
+      document.querySelector("#overlay-hangar").addEventListener("click", () => showView("home"));
+      document.querySelector("#back-to-hangar").addEventListener("click", () => {
+        playing = false;
+        cancelAnimationFrame(animationFrame);
+        keys.clear();
+        overlay.hidden = true;
+        showView("home");
+      });
+      upgradeList.addEventListener("click", event => {
+        const button = event.target.closest("[data-upgrade]");
+        if (button) buyUpgrade(button.dataset.upgrade);
+      });
+      skinList.addEventListener("click", event => {
+        const button = event.target.closest("[data-skin]");
+        if (button) selectSkin(button.dataset.skin);
+      });
       document.querySelectorAll(".touch-controls button").forEach(button => {
         const key = button.dataset.key;
         button.addEventListener("pointerdown", event => {
@@ -327,6 +582,7 @@
 
       resetGame();
       draw();
+      renderProgress();
     })();
   </script>
 </body>
