@@ -1,6 +1,6 @@
 # Astro-Zap! — Space Rock Blaster
 
-Astro-Zap! is a playful, browser-based 2D space shooter. Pilot your ship, zap incoming asteroids, and see how long you can survive with three lives. Easy to pick up and fun for the whole family!
+Astro-Zap! is a playful, browser-based 2D space shooter. Pilot your ship, zap incoming asteroids, and see how long you can survive. Start with one life and earn upgrades for more. Easy to pick up and fun for the whole family!
 
 ## Play
 
@@ -9,14 +9,14 @@ Open [`shooter.html`](../shooter.html) in a modern web browser. No installation,
 - Browse the hangar, ship upgrades, paint jobs, and your personal high score.
 - Earn **1 Star Dust for every 10 points** at the end of a completed run, then spend it on upgrades or ship skins.
 - Move left/right with **A/D** or the **left/right arrow keys**.
-- Shoot with **Space**.
+- The ship fires automatically throughout each mission.
 - On touch devices, use the on-screen direction and fire buttons.
 - Launch a mission from the home screen. After game over, fly again or return to the hangar.
 - During a mission, use **Menu** or **Esc** to pause and choose **Continue** or **Quit to Hangar**.
 
 ## Project
 
-The game uses a small set of standalone files: [`shooter.html`](../shooter.html) contains the interface and JavaScript game logic, while [`shooter.css`](../shooter.css) contains the page styles. The game canvas uses a wide 800 × 500 internal resolution (8:5 aspect ratio) and scales to fit laptops and mobile screens. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
+The game uses a small set of standalone files: [`shooter.html`](../shooter.html) contains the interface and JavaScript game logic, while [`shooter.css`](../shooter.css) contains the page styles. The portrait game canvas uses a 500 × 800 internal resolution (5:8 aspect ratio) and scales to fit laptops and mobile screens. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
 
 ## Documentation
 

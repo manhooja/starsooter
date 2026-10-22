@@ -31,17 +31,17 @@ The documentation files describe the inspected shooter. No separate scene files,
 
 The HTML file contains the interface and game logic and links to the separate stylesheet. A JavaScript immediately invoked function expression (IIFE) scopes game state and functions without modules or a bundler.
 
-The canvas has an 800 × 500 internal coordinate space. CSS scales it to the available viewport while preserving an 8:5 aspect ratio on desktop and mobile. On short landscape screens, the game hides nonessential page chrome and places touch controls beside the playfield. The ship is positioned near the bottom, moves horizontally, and fires upward at asteroids that descend from above.
+The canvas has a 500 × 800 internal coordinate space. CSS scales the portrait playfield to the available viewport while preserving a 5:8 aspect ratio on desktop and mobile. On short landscape screens, the game hides nonessential page chrome and places touch controls beside the playfield. The ship is positioned near the bottom, moves horizontally, and fires upward at asteroids that descend from above.
 
 ### Major systems
 
 - **Game state:** Tracks the player, score, lives, active projectiles, asteroids, particles, and timers.
-- **Input:** Tracks keyboard codes in a set. Pointer events on touch controls add and remove the same movement/fire inputs. Window blur clears held keys.
+- **Input:** Tracks keyboard movement codes in a set. Pointer events on touch controls add and remove movement inputs. Window blur clears held keys; firing is automatic.
 - **Update loop:** `requestAnimationFrame` drives simulation updates. Delta time is capped at 0.04 seconds per frame.
 - **Pause and menu:** The in-mission Menu button or Escape pauses the simulation. Continue resumes it; Quit to Hangar abandons the current run without its completion reward.
-- **Spawning and difficulty:** Asteroids spawn above the playfield and travel down toward the ship near the bottom. Their speed and spawn interval depend in part on score.
-- **Collision and scoring:** Circle-distance checks handle projectile/asteroid and player/asteroid collisions. Asteroid hit points scale by size; defeating a rock awards 10–30 points, or 75 points for a rare rock.
-- **Rendering:** Canvas drawing renders the starfield, ship, projectiles, asteroids, and short-lived impact particles.
+- **Spawning and difficulty:** Asteroids spawn above the playfield and travel down toward the ship near the bottom. Their speed and spawn interval depend in part on score. Score unlocks falling planets (500), galaxies (1,500), and universe cores (3,000), which spawn at increasing intervals.
+- **Collision and scoring:** Circle-distance checks handle projectile/object and player/object collisions. Asteroid hit points scale by size; defeating a rock awards 10–30 points, or 75 points for a rare rock. Cosmic objects take multiple hits, award a type-based bonus, and damage the player on collision.
+- **Rendering:** Canvas drawing renders the starfield, falling planets, galaxies and universe cores, ship, projectiles, asteroids, and short-lived impact particles.
 - **Interface and lifecycle:** DOM elements show score and lives, start and restart runs, and display game-over messaging.
 - **Hangar and progression:** The home screen, upgrade store, ship-skin shop, and personal-best view are rendered from the saved player profile.
 - **Persistence:** Browser `localStorage` stores Star Dust, upgrade levels, owned/equipped skins, and the local personal best under `astroZapProgress`. There is no server or account synchronization. Storage read/write errors are reported in the browser console.

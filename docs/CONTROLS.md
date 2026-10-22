@@ -13,19 +13,19 @@
 | --- | --- |
 | Move left | **A** or **←** |
 | Move right | **D** or **→** |
-| Shoot | Hold **Space** |
+| Shoot | Automatic during missions |
 | Open menu / pause | **Menu** button or **Esc** |
 
-The ship stays near the bottom of the wide 8:5 playfield and moves horizontally; it cannot move up or down. Asteroids fall from the top.
+The ship stays near the bottom of the portrait 5:8 playfield and moves horizontally; it cannot move up or down. Asteroids fall from the top.
 
 When the menu is open, choose **Continue** to resume the same run or **Quit to Hangar** to leave it. Quitting a run does not award its Star Dust.
 
 ## Touch
 
-On phones and other touch devices, use the large on-screen **←** and **→** buttons to steer and press or hold **Fire** to shoot. The controls work together, so you can steer and fire at the same time. Release a button to stop that action. During a mission, press **Menu** to pause.
+On phones and other touch devices, use the large on-screen **←** and **→** buttons to steer. The ship fires automatically, so you can focus on dodging asteroids. During a mission, press **Menu** to pause.
 
 ## Objective
 
-Shoot incoming asteroids to earn **10–30 points**, depending on rock size. Larger rocks take multiple hits. Rare rainbow rocks fall faster, are tougher, and award **75 points**. At the end of a completed run, earn **1 Star Dust for every 10 points**. Avoid colliding with asteroids: each collision costs one life. A run starts with **3 lives**, plus any Hull upgrade bonus, and ends when all lives are lost. Asteroids become faster and arrive more frequently as your score increases.
+Shoot incoming asteroids to earn **10–30 points**, depending on rock size. Larger rocks take multiple hits. Rare rainbow rocks fall faster, are tougher, and award **75 points**. At the end of a completed run, earn **1 Star Dust for every 10 points**. Avoid colliding with asteroids: each collision costs one life. A run starts with **1 life**, plus one life for each Extra Life upgrade level, and ends when all lives are lost. Asteroids become faster and arrive more frequently as your score increases.
 
-Spend Star Dust on upgrades and cosmetic ship skins. Hull adds starting lives, while Engine and Blaster improve multiplicatively with each level. Upgrade prices increase sharply at higher levels. Your personal best and hangar purchases are saved in the current browser; scores are not submitted online.
+Spend Star Dust on upgrades and cosmetic ship skins. Extra Life adds a starting life per level, while Engine and Blaster improve multiplicatively with each level. Upgrade prices increase sharply at higher levels. Your personal best and hangar purchases are saved in the current browser; scores are not submitted online.
