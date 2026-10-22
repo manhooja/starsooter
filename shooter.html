@@ -471,8 +471,8 @@
           y: object.y,
           text: String(object.points),
           color,
-          life: 0.9,
-          maxLife: 0.9
+          life: 1.2,
+          maxLife: 1.2
         });
       }
 
@@ -769,9 +769,12 @@
         for (const popup of scorePopups) {
           ctx.save();
           ctx.globalAlpha = Math.max(0, popup.life / popup.maxLife);
-          ctx.font = "800 19px Segoe UI, sans-serif";
+          ctx.font = "800 28px Segoe UI, sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
+          ctx.lineJoin = "round";
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = "#080B1A";
           ctx.shadowBlur = 10;
           if (popup.color === "rainbow") {
             const gradient = ctx.createLinearGradient(popup.x - 22, popup.y, popup.x + 22, popup.y);
@@ -786,6 +789,7 @@
             ctx.fillStyle = popup.color;
             ctx.shadowColor = popup.color;
           }
+          ctx.strokeText(popup.text, popup.x, popup.y);
           ctx.fillText(popup.text, popup.x, popup.y);
           ctx.restore();
         }
