@@ -31,14 +31,15 @@ The documentation files describe the inspected shooter. No separate scene files,
 
 The HTML file contains the interface and game logic and links to the separate stylesheet. A JavaScript immediately invoked function expression (IIFE) scopes game state and functions without modules or a bundler.
 
-The canvas has an 800 × 500 internal coordinate space. CSS makes the canvas responsive while preserving an 8:5 aspect ratio.
+The canvas has a 500 × 800 internal coordinate space. CSS makes the portrait canvas responsive while preserving a 5:8 aspect ratio. The ship is positioned near the bottom, moves horizontally, and fires upward at asteroids that descend from above.
 
 ### Major systems
 
 - **Game state:** Tracks the player, score, lives, active projectiles, asteroids, particles, and timers.
 - **Input:** Tracks keyboard codes in a set. Pointer events on touch controls add and remove the same movement/fire inputs. Window blur clears held keys.
 - **Update loop:** `requestAnimationFrame` drives simulation updates. Delta time is capped at 0.04 seconds per frame.
-- **Spawning and difficulty:** Asteroids spawn just beyond the right edge and travel left. Their speed and spawn interval depend in part on score.
+- **Pause and menu:** The in-mission Menu button or Escape pauses the simulation. Continue resumes it; Quit to Hangar abandons the current run without its completion reward.
+- **Spawning and difficulty:** Asteroids spawn above the playfield and travel down toward the ship near the bottom. Their speed and spawn interval depend in part on score.
 - **Collision and scoring:** Circle-distance checks handle projectile/asteroid and player/asteroid collisions. Destroyed asteroids award 10 points.
 - **Rendering:** Canvas drawing renders the starfield, ship, projectiles, asteroids, and short-lived impact particles.
 - **Interface and lifecycle:** DOM elements show score and lives, start and restart runs, and display game-over messaging.

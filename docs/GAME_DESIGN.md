@@ -12,7 +12,7 @@
 
 ## Concept
 
-The player pilots a small ship through a starfield while asteroids arrive from the right side of the screen. Shoot asteroids to earn points and avoid collisions to preserve lives. A run ends when all lives are lost.
+The player pilots a small ship near the bottom of a portrait starfield while asteroids fall from above. Shoot asteroids to earn points and avoid collisions to preserve lives. A run ends when all lives are lost.
 
 ## Target audience
 
@@ -22,17 +22,16 @@ The straightforward controls and short-session survival loop suit casual players
 
 1. Visit the hangar to check the personal best, upgrade the ship, or shop for a paint job.
 2. Launch a run from the home screen.
-3. Move around the playfield and fire at asteroids approaching from the right.
+3. Move horizontally near the bottom of the playfield and fire upward at asteroids falling from above.
 4. Earn points and Star Dust when shots destroy asteroids; avoid collisions.
 5. Continue as asteroid pressure increases, until all lives are lost.
 6. Collect the run's Star Dust reward, check the personal best, and spend rewards in the hangar.
 
 ## Implemented mechanics
 
-- The ship moves in four directions and is constrained to the playfield.
-- Diagonal movement is normalized so it is not faster than straight movement.
+- The ship moves horizontally along the bottom of the portrait playfield.
 - Holding the fire input fires repeatedly, with a fixed delay between shots.
-- Asteroids enter from the right, move left, and have varied sizes, speeds, and silhouettes.
+- Asteroids fall from the top, with varied sizes, speeds, and silhouettes.
 - Destroying an asteroid awards 10 points.
 - Asteroid collisions remove one life and grant a brief period of invulnerability.
 - The player starts with three lives, plus one starting life per Cometproof Hull level (up to two levels). Losing the last life ends the run.
@@ -41,6 +40,7 @@ The straightforward controls and short-session survival loop suit casual players
 - The game-over screen displays the score, awards one Star Dust per 10 points, and offers another run or a return to the hangar.
 - Cometproof Hull adds one starting life per level (two levels maximum); Zoom Engine adds 35 movement speed per level (three levels maximum); Rapid Blaster reduces the shot interval by 0.04 seconds per level (three levels maximum).
 - The home screen, upgrade shop, ship shop, upgrade levels, Star Dust balance, equipped skin, and personal-best score are implemented.
+- The in-mission Menu button and Escape key pause the run. Continue resumes the run; Quit to Hangar abandons it without a completion reward.
 - Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
 - Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.
 
@@ -56,7 +56,9 @@ The presentation suggests a pilot defending against asteroids, but the implement
 
 ## Art direction
 
-The game uses a dark navy starfield, a glowing cyan geometric ship, muted outlined asteroid shapes, and bright projectile and impact effects. The visuals are drawn procedurally with the Canvas 2D API; the inspected project contains no separate art or audio assets. The style is minimal, high-contrast, and arcade-inspired.
+The game uses a deep-space navy background (`#080B1A`), soft-white stars (`#DCE7FF`), a bright cyan default ship (`#00E5FF`), cosmic-purple asteroids (`#A855F7`), electric-blue player shots (`#38BDF8`), and orange-yellow asteroid impact particles (`#FFB000`). Player collision particles use hot pink (`#FF477E`). Cosmetic ship skins can change the ship and its preview color. Game visuals are drawn procedurally with the Canvas 2D API; no separate art or audio assets were found.
+
+The UI uses white primary text against the dark background. Enemy bullets, boss enemies, and a health bar are not implemented; the game currently shows lives instead.
 
 ## Planned features
 

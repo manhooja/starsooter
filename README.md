@@ -7,15 +7,16 @@ Astro-Zap! is a playful, browser-based 2D space shooter. Pilot your ship, zap in
 Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, build step, or external dependency is required by the current project.
 
 - Browse the hangar, ship upgrades, paint jobs, and your personal high score.
-- Earn **1 Star Dust per asteroid destroyed** and spend it on upgrades or ship skins.
-- Move with **WASD** or the **arrow keys**.
+- Earn **1 Star Dust for every 10 points** at the end of a completed run, then spend it on upgrades or ship skins.
+- Move left/right with **A/D** or the **left/right arrow keys**.
 - Shoot with **Space**.
 - On touch devices, use the on-screen direction and fire buttons.
 - Launch a mission from the home screen. After game over, fly again or return to the hangar.
+- During a mission, use **Menu** or **Esc** to pause and choose **Continue** or **Quit to Hangar**.
 
 ## Project
 
-The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The canvas uses an 800 × 500 internal resolution and scales to fit its responsive layout. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
+The game uses a small set of standalone files: `shooter.html` contains the interface and JavaScript game logic, while `shooter.css` contains the page styles. The portrait game canvas uses a 500 × 800 internal resolution and scales to fit its responsive layout. Keep both files together when opening or sharing the game. Progress is saved in this browser using local storage.
 
 ## Documentation
 

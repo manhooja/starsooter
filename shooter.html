@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090d1c">
+  <meta name="theme-color" content="#080B1A">
   <title>Astro-Zap! - Space Rock Blaster</title>
   <link rel="stylesheet" href="shooter.css">
 </head>
@@ -93,27 +93,26 @@
 
     <section class="game-page" id="game-page" hidden>
       <div class="game-bar">
-        <button class="back-button" id="back-to-hangar" type="button">← HANGAR</button>
+        <button class="back-button" id="menu-button" type="button">☰ MENU</button>
         <div class="stats" aria-label="Current run stats">
           <div><span class="stat-label">SCORE</span><span class="stat-value" id="score">0000</span></div>
           <div><span class="stat-label">LIVES</span><span class="stat-value" id="lives">3</span></div>
         </div>
       </div>
-      <section class="screen" aria-label="Astro-Zap! game">
-        <canvas id="game-canvas" width="800" height="500" aria-label="Dodge asteroids and shoot them down"></canvas>
+      <div class="game-canvas-wrap">
+        <canvas id="game-canvas" width="500" height="800" aria-label="Move the ship at the bottom, shoot asteroids falling from above"></canvas>
         <div class="overlay" id="overlay" hidden>
-          <h2 id="overlay-title">MISSION COMPLETE</h2>
+          <h2 id="overlay-title">PAUSED</h2>
           <p id="overlay-message"></p>
-          <button class="primary-button" id="replay-button" type="button">FLY AGAIN <span aria-hidden="true">→</span></button>
-          <button class="text-button" id="overlay-hangar" type="button">BACK TO HANGAR</button>
+          <button class="primary-button" id="continue-button" type="button">CONTINUE</button>
+          <button class="primary-button" id="replay-button" type="button" hidden>FLY AGAIN</button>
+          <button class="text-button" id="quit-button" type="button">QUIT TO HANGAR</button>
         </div>
-      </section>
-      <p class="instructions">MOVE <strong>WASD</strong> / <strong>← ↑ ↓ →</strong><span>•</span> FIRE <strong>SPACE</strong></p>
+      </div>
+      <p class="instructions">MOVE <strong>← →</strong><span>•</span> FIRE <strong>SPACE</strong><span>•</span> MENU <strong>MENU</strong></p>
       <div class="touch-controls" aria-label="Touch controls">
         <button type="button" data-key="ArrowLeft" aria-label="Move left">←</button>
-        <button type="button" data-key="ArrowUp" aria-label="Move up">↑</button>
         <button class="fire" type="button" data-key="Space" aria-label="Shoot">FIRE</button>
-        <button type="button" data-key="ArrowDown" aria-label="Move down">↓</button>
         <button type="button" data-key="ArrowRight" aria-label="Move right">→</button>
       </div>
     </section>
@@ -124,8 +123,12 @@
       const canvas = document.querySelector("#game-canvas");
       const ctx = canvas.getContext("2d");
       const overlay = document.querySelector("#overlay");
+      const overlayTitle = document.querySelector("#overlay-title");
       const overlayMessage = document.querySelector("#overlay-message");
       const replayButton = document.querySelector("#replay-button");
+      const continueButton = document.querySelector("#continue-button");
+      const quitButton = document.querySelector("#quit-button");
+      const menuButton = document.querySelector("#menu-button");
       const scoreElement = document.querySelector("#score");
       const livesElement = document.querySelector("#lives");
       const dustElement = document.querySelector("#dust");
@@ -145,7 +148,7 @@
         blaster: { name: "Rapid Blaster", description: "Fire a little faster with each level.", icon: "✹", prices: [40, 80, 130], labels: ["Faster shots", "Faster shots", "Faster shots"] }
       };
       const skins = [
-        { id: "nova", name: "Nova", subtitle: "THE CLASSIC", color: "#70eaff", price: 0 },
+        { id: "nova", name: "Nova", subtitle: "THE CLASSIC", color: "#00E5FF", price: 0 },
         { id: "sunbeam", name: "Sunbeam", subtitle: "GOLDEN GLOW", color: "#ffc766", price: 60 },
         { id: "berry", name: "Berry Blast", subtitle: "BERRY BRIGHT", color: "#ff77ba", price: 90 },
         { id: "mint", name: "Mint Chip", subtitle: "COOL & CRISP", color: "#73f0bd", price: 120 }
@@ -168,6 +171,7 @@
       let shotTimer = 0;
       let lastTime = 0;
       let playing = false;
+      let paused = false;
       let animationFrame = 0;
       let view = "home";
       let progress = loadProgress();
@@ -288,8 +292,8 @@
 
       function resetGame() {
         player = {
-          x: 105,
-          y: height / 2,
+          x: width / 2,
+          y: height - 70,
           radius: 16,
           speed: 260 + progress.upgrades.engine * 35,
           invulnerable: 0,
@@ -311,6 +315,7 @@
         resetGame();
         keys.clear();
         playing = true;
+        paused = false;
         showView("game");
         overlay.hidden = true;
         lastTime = performance.now();
@@ -319,22 +324,26 @@
 
       function endGame() {
         playing = false;
+        paused = false;
         const earnedDust = Math.floor(score / 10);
         progress.dust += earnedDust;
         const newRecord = score > progress.best;
         progress.best = Math.max(progress.best, score);
         saveProgress();
         renderProgress();
-        document.querySelector("#overlay-title").textContent = newRecord ? "NEW PERSONAL BEST!" : "MISSION COMPLETE!";
+        overlayTitle.textContent = newRecord ? "NEW PERSONAL BEST!" : "MISSION COMPLETE!";
         overlayMessage.textContent = `You scored ${score} points and collected ${earnedDust} Star Dust.`;
+        continueButton.hidden = true;
+        replayButton.hidden = false;
+        quitButton.textContent = "QUIT";
         overlay.hidden = false;
       }
 
       function addAsteroid() {
         const radius = 15 + Math.random() * 23;
         asteroids.push({
-          x: width + radius,
-          y: 30 + Math.random() * (height - 60),
+          x: radius + Math.random() * (width - radius * 2),
+          y: -radius,
           radius,
           speed: 90 + Math.random() * 65 + Math.min(score * 0.12, 100),
           rotation: Math.random() * Math.PI * 2,
@@ -361,25 +370,17 @@
 
       function movePlayer(delta) {
         let x = 0;
-        let y = 0;
         if (keys.has("ArrowLeft") || keys.has("KeyA")) x--;
         if (keys.has("ArrowRight") || keys.has("KeyD")) x++;
-        if (keys.has("ArrowUp") || keys.has("KeyW")) y--;
-        if (keys.has("ArrowDown") || keys.has("KeyS")) y++;
-        if (x && y) {
-          x *= Math.SQRT1_2;
-          y *= Math.SQRT1_2;
-        }
         player.x = Math.max(player.radius + 8, Math.min(width - player.radius - 8, player.x + x * player.speed * delta));
-        player.y = Math.max(player.radius + 8, Math.min(height - player.radius - 8, player.y + y * player.speed * delta));
       }
 
       function update(delta) {
         for (const star of stars) {
-          star.x -= star.speed * delta;
-          if (star.x < 0) {
-            star.x = width;
-            star.y = Math.random() * height;
+          star.y += star.speed * delta;
+          if (star.y > height) {
+            star.y = 0;
+            star.x = Math.random() * width;
           }
         }
 
@@ -387,23 +388,23 @@
         player.invulnerable = Math.max(0, player.invulnerable - delta);
         shotTimer -= delta;
         if (keys.has("Space") && shotTimer <= 0) {
-          bullets.push({ x: player.x + 17, y: player.y, speed: 510 });
+          bullets.push({ x: player.x, y: player.y - 20, speed: 510 });
           shotTimer = Math.max(0.08, 0.2 - progress.upgrades.blaster * 0.04);
         }
 
         spawnTimer -= delta;
         if (spawnTimer <= 0) {
           addAsteroid();
-          spawnTimer = Math.max(0.38, 1.05 - score / 1800) + Math.random() * 0.55;
+          spawnTimer = Math.max(0.38, 1.05 - score / 1800) + Math.random() * 0.45;
         }
 
-        for (const bullet of bullets) bullet.x += bullet.speed * delta;
-        bullets = bullets.filter(bullet => bullet.x < width + 10);
+        for (const bullet of bullets) bullet.y -= bullet.speed * delta;
+        bullets = bullets.filter(bullet => bullet.y > -10);
 
         for (const asteroid of asteroids) {
-          asteroid.x -= asteroid.speed * delta;
+          asteroid.y += asteroid.speed * delta;
           asteroid.rotation += asteroid.spin * delta;
-          if (asteroid.x < -asteroid.radius) asteroid.gone = true;
+          if (asteroid.y > height + asteroid.radius) asteroid.gone = true;
         }
 
         for (const asteroid of asteroids) {
@@ -415,7 +416,7 @@
               bullet.gone = true;
               score += 10;
               scoreElement.textContent = String(score).padStart(4, "0");
-              burst(asteroid.x, asteroid.y, "#ffb36b", 15);
+              burst(asteroid.x, asteroid.y, "#FFB000", 15);
             }
           }
 
@@ -427,7 +428,7 @@
             lives--;
             livesElement.textContent = lives;
             player.invulnerable = 1.2;
-            burst(player.x, player.y, "#ff668b", 22);
+            burst(player.x, player.y, "#FF477E", 22);
             if (lives <= 0) {
               endGame();
               return;
@@ -454,17 +455,17 @@
         ctx.shadowColor = color;
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo(21, 0);
-        ctx.lineTo(-13, -13);
-        ctx.lineTo(-8, 0);
-        ctx.lineTo(-13, 13);
+        ctx.moveTo(0, -22);
+        ctx.lineTo(-15, 15);
+        ctx.lineTo(0, 9);
+        ctx.lineTo(15, 15);
         ctx.closePath();
         ctx.fill();
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo(-10, -5);
-        ctx.lineTo(-22 - Math.random() * 8, 0);
-        ctx.lineTo(-10, 5);
+        ctx.moveTo(-5, 14);
+        ctx.lineTo(0, 25 + Math.random() * 8);
+        ctx.lineTo(5, 14);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
@@ -475,9 +476,9 @@
         ctx.translate(asteroid.x, asteroid.y);
         ctx.rotate(asteroid.rotation);
         ctx.shadowBlur = 12;
-        ctx.shadowColor = "#ff9a6266";
-        ctx.fillStyle = "#58627d";
-        ctx.strokeStyle = "#a2aecb";
+        ctx.shadowColor = "#A855F7";
+        ctx.fillStyle = "#A855F7";
+        ctx.strokeStyle = "#D8B4FE";
         ctx.lineWidth = 2;
         ctx.beginPath();
         asteroid.shape.forEach((scale, index) => {
@@ -495,22 +496,22 @@
 
       function draw() {
         ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = "#080d20";
+        ctx.fillStyle = "#080B1A";
         ctx.fillRect(0, 0, width, height);
         for (const star of stars) {
           ctx.globalAlpha = 0.35 + star.size / 3;
-          ctx.fillStyle = "#c9d9ff";
+          ctx.fillStyle = "#DCE7FF";
           ctx.fillRect(star.x, star.y, star.size, star.size);
         }
         ctx.globalAlpha = 1;
 
         ctx.save();
         ctx.shadowBlur = 12;
-        ctx.shadowColor = "#70eaff";
-        ctx.fillStyle = "#70eaff";
+        ctx.shadowColor = "#38BDF8";
+        ctx.fillStyle = "#38BDF8";
         for (const bullet of bullets) {
           ctx.beginPath();
-          ctx.ellipse(bullet.x, bullet.y, 7, 2.5, 0, 0, Math.PI * 2);
+          ctx.ellipse(bullet.x, bullet.y, 2.5, 8, 0, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.restore();
@@ -526,12 +527,43 @@
       }
 
       function loop(now) {
-        if (!playing) return;
+        if (!playing || paused) return;
         const delta = Math.min((now - lastTime) / 1000, 0.04);
         lastTime = now;
         update(delta);
         draw();
         if (playing) animationFrame = requestAnimationFrame(loop);
+      }
+
+      function pauseGame() {
+        if (!playing || paused) return;
+        paused = true;
+        cancelAnimationFrame(animationFrame);
+        keys.clear();
+        overlayTitle.textContent = "PAUSED";
+        overlayMessage.textContent = "Take a breather, pilot.";
+        continueButton.hidden = false;
+        replayButton.hidden = true;
+        quitButton.textContent = "QUIT";
+        overlay.hidden = false;
+      }
+
+      function continueGame() {
+        if (!playing || !paused) return;
+        paused = false;
+        keys.clear();
+        overlay.hidden = true;
+        lastTime = performance.now();
+        animationFrame = requestAnimationFrame(loop);
+      }
+
+      function quitToHangar() {
+        playing = false;
+        paused = false;
+        cancelAnimationFrame(animationFrame);
+        keys.clear();
+        overlay.hidden = true;
+        showView("home");
       }
 
       window.addEventListener("keydown", event => {
@@ -551,13 +583,14 @@
       });
       document.querySelector("#start-button").addEventListener("click", startGame);
       replayButton.addEventListener("click", startGame);
-      document.querySelector("#overlay-hangar").addEventListener("click", () => showView("home"));
-      document.querySelector("#back-to-hangar").addEventListener("click", () => {
-        playing = false;
-        cancelAnimationFrame(animationFrame);
-        keys.clear();
-        overlay.hidden = true;
-        showView("home");
+      menuButton.addEventListener("click", pauseGame);
+      continueButton.addEventListener("click", continueGame);
+      quitButton.addEventListener("click", quitToHangar);
+      window.addEventListener("keydown", event => {
+        if (event.code === "Escape" && playing && !paused) {
+          event.preventDefault();
+          pauseGame();
+        }
       });
       upgradeList.addEventListener("click", event => {
         const button = event.target.closest("[data-upgrade]");

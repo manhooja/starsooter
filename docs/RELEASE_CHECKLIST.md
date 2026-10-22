@@ -6,11 +6,12 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 
 - [ ] TODO: Define supported browsers, browser versions, screen sizes, and input devices.
 - [ ] TODO: Verify the page opens and the game starts in every supported browser.
-- [ ] TODO: Verify WASD and arrow-key movement, diagonal movement, movement bounds, and held-key behavior.
+- [ ] TODO: Verify horizontal A/D and arrow-key movement, movement bounds, and held-key behavior.
 - [ ] TODO: Verify held Space fires repeatedly and projectile collisions award exactly 10 points.
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.
 - [ ] TODO: Verify replay resets score, lives, asteroids, projectiles, and player position.
 - [ ] TODO: Verify the home screen navigation, upgrades, skin purchases/equipping, personal-best display, and game-over reward flow.
+- [ ] TODO: Verify the portrait playfield, bottom ship position, top-down asteroid movement, pause, continue, and quit behavior.
 - [ ] TODO: Test touch controls on physical touch devices, including press, release, and interrupted gestures.
 - [ ] TODO: Check keyboard-only access, focus visibility, contrast, and screen-reader experience.
 - [ ] TODO: Add a repeatable test plan or automated tests; no test suite was found.
@@ -20,7 +21,7 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Record and triage known bugs; no project bug tracker or known-issues list was found.
 - [ ] TODO: Playtest and approve the difficulty curve, collision feel, and run length.
 - [ ] TODO: Confirm the game-over and replay experience.
-- [ ] TODO: Decide whether pause, settings, or persistent scores are required for the intended release.
+- [ ] TODO: Decide whether settings or additional score features are required for the intended release.
 
 ## Performance
 
