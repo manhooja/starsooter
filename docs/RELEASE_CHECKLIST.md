@@ -8,6 +8,7 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Verify the page opens and the game starts in every supported browser.
 - [ ] TODO: Verify horizontal A/D and arrow-key movement, movement bounds, and held-key behavior.
 - [ ] TODO: Verify automatic firing rate and Blaster upgrade behavior, larger asteroids needing multiple hits, and defeated rocks awarding points based on size and rarity.
+- [ ] TODO: Verify rocks develop visible cracks with damage, no asteroid health bars are shown, and destroyed rocks animate with a flash, shockwave, and debris.
 - [ ] TODO: Verify every ship's ability, unique charge requirement, activation by **F** and buttons, cooldown-through-kills behavior, and charge reset after use.
 - [ ] TODO: Verify asteroid size/HP stages, capped exponential spawn curve, 18-object limit, and named planet/star/galaxy/deep-space catalog progression.
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.

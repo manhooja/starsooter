@@ -33,6 +33,7 @@ The straightforward controls and short-session survival loop suit casual players
 - The ship banks smoothly into turns, its engine glow pulses while flying, collisions trigger a brief shake and damage flash, and temporary invulnerability appears as a colored shield instead of hiding the ship.
 - The ship fires automatically, with the Blaster upgrade reducing the delay between shots.
 - Asteroids fall from the top, with varied sizes, speeds, and silhouettes. Larger rocks have more hit points and take multiple shots to break.
+- Rocks show progressive fractures as they take damage instead of a floating health bar. Destroyed rocks burst into flying fragments with a brief expanding shockwave and flash.
 - Standard rocks award 10, 20, 30, or 45 points according to their current size tier. Rare rainbow rocks appear occasionally, fall 1.5 times faster than standard rocks, take multiple hits, and award 75 points.
 - Destroying a rare rainbow rock grants a five-second Rainbow Boost: movement speed increases by 50%, firing interval is halved, and the ship is invulnerable. Destroying another rare rock during the boost refreshes its timer.
 - Destroyed objects briefly display their awarded score above the destruction point: standard asteroids use plain white numbers, rare rainbow rocks use rainbow coloring, and named celestial objects use their catalog color.
@@ -65,7 +66,7 @@ The presentation suggests a pilot defending against asteroids, but the implement
 
 The game uses a deep-space navy background (`#080B1A`), soft-white stars (`#DCE7FF`), a bright cyan default ship (`#00E5FF`), cosmic-purple asteroids (`#A855F7`), electric-blue player shots (`#38BDF8`), and orange-yellow asteroid impact particles (`#FFB000`). Player collision particles use hot pink (`#FF477E`). Cosmetic ship skins can change the ship and its preview color. Game visuals are drawn procedurally with the Canvas 2D API; no separate art or audio assets were found.
 
-The UI uses white primary text against the dark background. Enemy bullets, boss enemies, and a health bar are not implemented; the game currently shows lives instead.
+The UI uses white primary text against the dark background. Enemy bullets and boss enemies are not implemented; the player health display uses lives.
 
 ## Planned features
 

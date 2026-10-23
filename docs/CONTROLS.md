@@ -35,4 +35,4 @@ Standard rocks award points based on their current size tier. Rare rainbow rocks
 
 Each collision costs one life. A run starts with **1 life**, plus one life for each Extra Life upgrade level, and ends when all lives are lost. At the end of a completed run, earn **1 Star Dust for every 10 points**. The Zoom Engine and Rapid Blaster upgrades improve ship speed and fire rate. Hangar purchases and personal bests are saved in the current browser; scores are not submitted online.
 
-Ships show movement speed, fire rate, shots per firing cycle, ability charge requirement, and ability description in the shop. The handling stat affects steering response but is not shown in the shop.
+Ships show movement speed, fire rate, and shots per firing cycle in the shop. Hover over a ship card or focus it with the keyboard to reveal its ability and asteroid-kill charge requirement. On touch devices, the ability details remain visible on each card. The handling stat affects steering response but is not shown in the shop.

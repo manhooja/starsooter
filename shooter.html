@@ -248,6 +248,7 @@
       let bullets;
       let asteroids;
       let particles;
+      let destructionEffects;
       let scorePopups;
       let rarePowerupTimer = 0;
       let abilityKills = 0;
@@ -420,10 +421,12 @@
           const equipped = progress.equippedSkin === skin.id;
           const card = document.createElement("article");
           card.className = `skin-card grade-${skin.grade.toLowerCase()}${equipped ? " equipped" : ""}`;
+          card.tabIndex = 0;
+          card.setAttribute("aria-describedby", `ship-ability-${skin.id}`);
           const stats = shipStats[skin.id];
           const speed = Math.round(260 * stats.speed * 1.16 ** progress.upgrades.engine);
           const fireRate = (5 * stats.fireRate / 0.82 ** progress.upgrades.blaster).toFixed(1);
-          card.innerHTML = `<div class="skin-preview" style="--skin-color:${skin.color}"><span class="preview-stars">✦　·　✧</span>${shipSvg(skin)}<span class="skin-rarity">${skin.grade}</span></div><div class="ship-stat-grid"><span><small>SPEED</small><strong>${speed}</strong></span><span><small>FIRE RATE</small><strong>${fireRate}/s</strong></span><span><small>SHOTS</small><strong>${stats.gunOffsets.length}</strong></span><span><small>CHARGE</small><strong>${stats.charge} ROCKS</strong></span></div><div class="ship-ability-info"><strong>${stats.abilityName}</strong><small>${stats.abilityDescription}</small></div><div class="skin-card-footer"><span><strong>${skin.name}</strong><small>${skin.subtitle}</small></span><button class="skin-button" type="button" data-skin="${skin.id}" ${equipped || (!owned && progress.dust < skin.price) ? "disabled" : ""}>${equipped ? "EQUIPPED" : owned ? "EQUIP" : `✧ ${skin.price}`}</button></div>`;
+          card.innerHTML = `<div class="skin-preview" style="--skin-color:${skin.color}"><span class="preview-stars">✦　·　✧</span>${shipSvg(skin)}<span class="skin-rarity">${skin.grade}</span></div><div class="ship-stat-grid"><span><small>SPEED</small><strong>${speed}</strong></span><span><small>FIRE RATE</small><strong>${fireRate}/s</strong></span><span><small>SHOTS</small><strong>${stats.gunOffsets.length}</strong></span><span><small>CHARGE</small><strong>${stats.charge} ROCKS</strong></span></div><div class="ship-ability-info" id="ship-ability-${skin.id}" role="tooltip"><strong>${stats.abilityName}</strong><small>${stats.abilityDescription}</small></div><div class="skin-card-footer"><span><strong>${skin.name}</strong><small>${skin.subtitle}</small></span><button class="skin-button" type="button" data-skin="${skin.id}" ${equipped || (!owned && progress.dust < skin.price) ? "disabled" : ""}>${equipped ? "EQUIPPED" : owned ? "EQUIP" : `✧ ${skin.price}`}</button></div>`;
           skinList.append(card);
         }
       }
@@ -479,6 +482,7 @@
         bullets = [];
         asteroids = [];
         particles = [];
+        destructionEffects = [];
         scorePopups = [];
         rarePowerupTimer = 0;
         rarePowerupElement.hidden = true;
@@ -547,6 +551,7 @@
           maxHp: hp,
           points: rare ? 75 : stage.points,
           rare,
+          cracks: createAsteroidCracks(),
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 2.3,
           shape: Array.from({ length: 9 }, () => 0.76 + Math.random() * 0.38)
@@ -576,6 +581,7 @@
           hp: Math.min(12, settings.hp + Math.floor(runTime / 180)),
           maxHp: Math.min(12, settings.hp + Math.floor(runTime / 180)),
           points: settings.points,
+          cracks: createAsteroidCracks(),
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 0.35
         });
@@ -620,6 +626,46 @@
         }
       }
 
+      function createAsteroidCracks() {
+        return Array.from({ length: 6 }, () => {
+          const angle = Math.random() * Math.PI * 2;
+          const endDistance = 0.55 + Math.random() * 0.34;
+          const bend = (Math.random() - 0.5) * 0.35;
+          return [
+            { x: Math.cos(angle) * -0.12, y: Math.sin(angle) * -0.12 },
+            { x: Math.cos(angle + bend) * endDistance * 0.42, y: Math.sin(angle + bend) * endDistance * 0.42 },
+            { x: Math.cos(angle - bend) * endDistance * 0.72, y: Math.sin(angle - bend) * endDistance * 0.72 },
+            { x: Math.cos(angle) * endDistance, y: Math.sin(angle) * endDistance }
+          ];
+        });
+      }
+
+      function addDestructionEffect(asteroid, color) {
+        const shardCount = Math.min(12, Math.max(7, Math.round(asteroid.radius / 3)));
+        destructionEffects.push({
+          x: asteroid.x,
+          y: asteroid.y,
+          radius: asteroid.radius,
+          color,
+          life: 0.58,
+          maxLife: 0.58,
+          rotation: Math.random() * Math.PI * 2,
+          shards: Array.from({ length: shardCount }, () => {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 45 + Math.random() * 170;
+            return {
+              x: 0,
+              y: 0,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              rotation: Math.random() * Math.PI * 2,
+              spin: (Math.random() - 0.5) * 12,
+              size: 3 + Math.random() * Math.max(3, asteroid.radius * 0.18)
+            };
+          })
+        });
+      }
+
       function registerAsteroidKill() {
         const ship = equippedSkin();
         abilityKills = Math.min(ship.charge, abilityKills + 1);
@@ -636,7 +682,9 @@
           addScorePopup(asteroid);
           if (asteroid.rare) activateRarePowerup();
           if (asteroid.kind !== "celestial") registerAsteroidKill();
-          burst(asteroid.x, asteroid.y, asteroid.rare ? "#FF477E" : color, asteroid.rare ? 26 : 15);
+          const explosionColor = asteroid.rare ? "#FF477E" : color;
+          addDestructionEffect(asteroid, explosionColor);
+          burst(asteroid.x, asteroid.y, explosionColor, asteroid.rare ? 26 : 15);
         } else {
           burst(asteroid.x, asteroid.y, color, 8);
         }
@@ -819,6 +867,8 @@
           const hitDistance = asteroid.radius + player.radius * 0.7;
           if (!asteroid.gone && player.invulnerable <= 0 && dx * dx + dy * dy < hitDistance * hitDistance) {
             asteroid.gone = true;
+            addDestructionEffect(asteroid, "#FF477E");
+            burst(asteroid.x, asteroid.y, "#FF477E", 14);
             lives--;
             livesElement.textContent = lives;
             player.invulnerable = 1.2;
@@ -839,6 +889,18 @@
           particle.life -= delta;
         }
         particles = particles.filter(particle => particle.life > 0);
+        for (const effect of destructionEffects) {
+          effect.life -= delta;
+          effect.rotation += delta * 2.2;
+          for (const shard of effect.shards) {
+            shard.x += shard.vx * delta;
+            shard.y += shard.vy * delta;
+            shard.vx *= Math.max(0, 1 - delta * 1.8);
+            shard.vy *= Math.max(0, 1 - delta * 1.8);
+            shard.rotation += shard.spin * delta;
+          }
+        }
+        destructionEffects = destructionEffects.filter(effect => effect.life > 0);
         for (const popup of scorePopups) {
           popup.y -= 34 * delta;
           popup.life -= delta;
@@ -969,7 +1031,6 @@
       function drawAsteroid(asteroid) {
         if (asteroid.kind === "celestial") {
           drawCosmicObject(asteroid);
-          drawAsteroidHealth(asteroid);
           if (asteroid.frozen > 0) {
             ctx.strokeStyle = "#67E8F9";
             ctx.lineWidth = 2;
@@ -1007,17 +1068,54 @@
           ctx.arc(0, 0, asteroid.radius + 5, 0, Math.PI * 2);
           ctx.stroke();
         }
+        drawAsteroidCracks(asteroid);
         ctx.restore();
-        if (asteroid.maxHp > 1) drawAsteroidHealth(asteroid);
       }
 
-      function drawAsteroidHealth(asteroid) {
-        const barWidth = asteroid.radius * 1.2;
+      function drawAsteroidCracks(asteroid) {
+        const damage = asteroid.maxHp - asteroid.hp;
+        const crackCount = Math.min(damage, asteroid.cracks.length);
+        if (!crackCount) return;
         ctx.save();
-        ctx.fillStyle = "#202638";
-        ctx.fillRect(asteroid.x - barWidth / 2, asteroid.y + asteroid.radius + 8, barWidth, 3);
-        ctx.fillStyle = asteroid.kind === "celestial" ? "#FFB000" : asteroid.rare ? "#FFB000" : "#00E5FF";
-        ctx.fillRect(asteroid.x - barWidth / 2, asteroid.y + asteroid.radius + 8, barWidth * asteroid.hp / asteroid.maxHp, 3);
+        ctx.scale(asteroid.radius, asteroid.radius);
+        ctx.beginPath();
+        if (asteroid.shape) {
+          asteroid.shape.forEach((scale, index) => {
+            const angle = index / asteroid.shape.length * Math.PI * 2;
+            const x = Math.cos(angle) * scale;
+            const y = Math.sin(angle) * scale;
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.closePath();
+        } else {
+          ctx.arc(0, 0, 0.92, 0, Math.PI * 2);
+        }
+        ctx.clip();
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "#1B1230";
+        ctx.lineWidth = 0.105;
+        for (const points of asteroid.cracks.slice(0, crackCount)) {
+          ctx.beginPath();
+          points.forEach((point, index) => {
+            if (index === 0) ctx.moveTo(point.x + 0.025, point.y + 0.035);
+            else ctx.lineTo(point.x + 0.025, point.y + 0.035);
+          });
+          ctx.stroke();
+        }
+        ctx.strokeStyle = asteroid.rare ? "#FFFFFF" : asteroid.kind === "celestial" ? "#FFF1C2" : "#F3D9FF";
+        ctx.lineWidth = 0.045;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 0.08;
+        for (const points of asteroid.cracks.slice(0, crackCount)) {
+          ctx.beginPath();
+          points.forEach((point, index) => {
+            if (index === 0) ctx.moveTo(point.x, point.y);
+            else ctx.lineTo(point.x, point.y);
+          });
+          ctx.stroke();
+        }
         ctx.restore();
       }
 
@@ -1089,6 +1187,11 @@
         }
         ctx.restore();
         ctx.save();
+        ctx.translate(object.x, object.y);
+        ctx.rotate(object.rotation);
+        drawAsteroidCracks(object);
+        ctx.restore();
+        ctx.save();
         ctx.font = "700 10px Segoe UI, sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
@@ -1098,6 +1201,44 @@
         ctx.strokeText(object.name, object.x, object.y + object.radius + 8);
         ctx.fillText(object.name, object.x, object.y + object.radius + 8);
         ctx.restore();
+      }
+
+      function drawDestructionEffects() {
+        for (const effect of destructionEffects) {
+          const progress = 1 - effect.life / effect.maxLife;
+          const alpha = Math.max(0, effect.life / effect.maxLife);
+          const waveRadius = effect.radius * (0.45 + progress * 1.65);
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.translate(effect.x, effect.y);
+          ctx.rotate(effect.rotation);
+          ctx.strokeStyle = effect.color;
+          ctx.lineWidth = Math.max(1, effect.radius * (0.11 - progress * 0.08));
+          ctx.shadowColor = effect.color;
+          ctx.shadowBlur = 14 * alpha;
+          ctx.beginPath();
+          ctx.arc(0, 0, waveRadius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = alpha * (1 - progress);
+          ctx.fillStyle = "#FFFFFF";
+          ctx.beginPath();
+          ctx.arc(0, 0, effect.radius * 0.38 * (1 - progress * 0.7), 0, Math.PI * 2);
+          ctx.fill();
+          for (const shard of effect.shards) {
+            ctx.save();
+            ctx.translate(shard.x, shard.y);
+            ctx.rotate(shard.rotation);
+            ctx.fillStyle = effect.color;
+            ctx.beginPath();
+            ctx.moveTo(-shard.size * 0.55, -shard.size * 0.3);
+            ctx.lineTo(shard.size * 0.6, -shard.size * 0.2);
+            ctx.lineTo(shard.size * 0.1, shard.size * 0.55);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          }
+          ctx.restore();
+        }
       }
 
       function drawSpaceBackground() {
@@ -1129,6 +1270,7 @@
         ctx.restore();
 
         for (const asteroid of asteroids) drawAsteroid(asteroid);
+        drawDestructionEffects();
         for (const particle of particles) {
           ctx.globalAlpha = Math.max(0, particle.life / particle.maxLife);
           ctx.fillStyle = particle.color;
