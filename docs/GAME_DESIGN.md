@@ -29,31 +29,33 @@ The straightforward controls and short-session survival loop suit casual players
 
 ## Implemented mechanics
 
-- The ship moves horizontally along the bottom of the portrait playfield.
+- The ship moves horizontally along the bottom of the portrait playfield. Ships have distinct handling, speed, fire rate, and shots-per-firing-cycle stats. Handling controls steering response, while speed sets movement speed.
+- The ship banks smoothly into turns, its engine glow pulses while flying, collisions trigger a brief shake and damage flash, and temporary invulnerability appears as a colored shield instead of hiding the ship.
 - The ship fires automatically, with the Blaster upgrade reducing the delay between shots.
 - Asteroids fall from the top, with varied sizes, speeds, and silhouettes. Larger rocks have more hit points and take multiple shots to break.
-- Standard rocks award 10, 20, or 30 points according to size. Rare rainbow rocks appear occasionally, fall 1.5 times faster than standard rocks, take three hits, and award 75 points.
+- Standard rocks award 10, 20, 30, or 45 points according to their current size tier. Rare rainbow rocks appear occasionally, fall 1.5 times faster than standard rocks, take multiple hits, and award 75 points.
 - Destroying a rare rainbow rock grants a five-second Rainbow Boost: movement speed increases by 50%, firing interval is halved, and the ship is invulnerable. Destroying another rare rock during the boost refreshes its timer.
-- Destroyed objects briefly display their awarded score above the destruction point: standard asteroids use plain white numbers, rare rainbow rocks use rainbow coloring, and planets, galaxies, and universe cores each use their own color theme.
+- Destroyed objects briefly display their awarded score above the destruction point: standard asteroids use plain white numbers, rare rainbow rocks use rainbow coloring, and named celestial objects use their catalog color.
 - Asteroid collisions remove one life and grant a brief period of invulnerability. A run begins with one life; the Extra Life upgrade adds one life per purchased level.
 - The player starts with one life, plus one starting life per Extra Life upgrade level (up to two levels). Losing the last life ends the run.
 - Asteroids that leave the screen without being hit do not award points or cost a life.
-- Asteroid speed and spawn pressure increase with score, up to code-defined limits.
-- Score unlocks falling cosmic hazards: planets from 500 points, galaxies from 1,500 points, and universe cores from 3,000 points. They repeat at intervals, can be shot down for bonus points, and damage the ship on collision.
+- Asteroid size and toughness progress by elapsed run time: small rocks first, then medium, large, and heavy rocks. Hit points and movement speed increase exponentially but are capped. Spawn intervals also decrease exponentially to a 0.4-second minimum, with no more than 18 active asteroids at once.
+- Named celestial hazards are introduced by elapsed time: the eight Solar System planets, named stars, named galaxies, then named deep-space objects including black holes and quasars. Catalogs rotate through each category. These are real astronomical names presented as arcade hazards; their in-game scale, toughness, and motion are not realistic.
 - The game-over screen displays the score, awards one Star Dust per 10 points, and offers another run or a return to the hangar.
 - Extra Life adds one starting life per level (two levels maximum); Zoom Engine multiplies movement speed by 1.16 per level (three levels maximum); Rapid Blaster multiplies fire rate by about 1.22 per level (three levels maximum).
 - Upgrade prices rise sharply with each level: Extra Life costs 45 then 135 Dust; Engine 35, 100, then 280; Blaster 40, 115, then 320.
 - Rare rocks have a 2% chance to spawn and their extra points also increase the run's end-of-run Star Dust reward.
 - The home screen focuses on launching a mission and includes the personal best, a compact upgrade-level summary, and shortcuts to High Scores and the upgrade shop. The separate Profile page shows pilot stats and detailed upgrade levels; the ship shop, Star Dust balance, equipped skin, and personal-best score are implemented.
 - The in-mission Menu button and Escape key pause the run. Continue resumes the run; Quit to Hangar abandons it without a completion reward.
-- Nova is the default skin. Sunbeam, Berry Blast, and Mint Chip are cosmetic skins that can be purchased and equipped.
+- The ship shop offers 11 distinct, purchasable ship silhouettes, including futuristic spacecraft and airplane-inspired designs. Ships have Common, Rare, Epic, or Legendary grades and balanced stat trade-offs rather than higher grades being strictly stronger. Wing-mounted guns are drawn on multi-shot ships and each gun fires a bullet in its own lane. Nova is the default ship, and owned ships can be equipped between runs.
+- Every ship has a distinct named ability and a ship-specific asteroid-kill charge threshold, shown in the shop. Destroyed asteroids add to the charge; players activate a charged ability manually using **F**, the HUD button, or the touch button. Abilities include area damage, a shot spread, freezing, repair/shielding, a dash, targeted strikes, drones, a nearby-rock burst, and temporary extra guns.
 - Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.
 
-There are no implemented levels or bosses. The Rainbow Boost is the only temporary power-up.
+There are no implemented levels or bosses. The Rainbow Boost and ship abilities are temporary or instant run effects.
 
 ## Progression
 
-In-run difficulty increases with score. Between runs, players earn Star Dust to buy permanent upgrades and cosmetic skins, and can improve a personal-best score saved on the device. There is no campaign, level structure, online leaderboard, or cross-device progression.
+In-run difficulty and celestial-object categories advance with elapsed run time. Between runs, players earn Star Dust to buy permanent upgrades and ships with different handling, speed, fire-rate, shot-count, and ability profiles, and can improve a personal-best score saved on the device. There is no campaign, level structure, online leaderboard, or cross-device progression.
 
 ## Story and setting
 
@@ -70,8 +72,7 @@ The UI uses white primary text against the dark background. Enemy bullets, boss 
 The following are **proposals only**, not implemented or approved scope:
 
 - Add sound effects and an optional mute control.
-- Add pause/resume controls.
-- Add more ship skins and upgrade types.
-- Test and tune the difficulty curve and input accessibility.
+- Add more ship designs and upgrade types.
+- Test and tune the difficulty curve, abilities, and input accessibility.
 
 The project owner should confirm priorities before treating these proposals as planned work.

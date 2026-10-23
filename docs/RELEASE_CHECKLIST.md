@@ -8,12 +8,14 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Verify the page opens and the game starts in every supported browser.
 - [ ] TODO: Verify horizontal A/D and arrow-key movement, movement bounds, and held-key behavior.
 - [ ] TODO: Verify automatic firing rate and Blaster upgrade behavior, larger asteroids needing multiple hits, and defeated rocks awarding points based on size and rarity.
+- [ ] TODO: Verify every ship's ability, unique charge requirement, activation by **F** and buttons, cooldown-through-kills behavior, and charge reset after use.
+- [ ] TODO: Verify asteroid size/HP stages, capped exponential spawn curve, 18-object limit, and named planet/star/galaxy/deep-space catalog progression.
 - [ ] TODO: Verify asteroid collisions decrement lives, invulnerability behaves as intended, and zero lives triggers game over.
 - [ ] TODO: Verify replay resets score, lives, asteroids, projectiles, and player position.
 - [ ] TODO: Verify the home screen navigation, upgrades, skin purchases/equipping, personal-best display, and game-over reward flow.
 - [ ] TODO: Verify Profile is separate from Home, displays current records and all upgrade levels, and links to the upgrade shop.
 - [ ] TODO: Verify the 5:8 portrait playfield on desktop and mobile, bottom ship position, top-down asteroid movement, pause, continue, and quit behavior.
-- [ ] TODO: Verify rare asteroids spawn occasionally, are visually distinct, and award 75 points.
+- [ ] TODO: Verify rare asteroids spawn occasionally, are visually distinct, award 75 points, and grant the described five-second boost.
 - [ ] TODO: Verify upgrade prices rise by level and Engine/Blaster bonuses stack multiplicatively.
 - [ ] TODO: Test touch controls on physical touch devices, including press, release, and interrupted gestures.
 - [ ] TODO: Test the responsive 5:8 portrait game layout on phones, short landscape screens, and desktops, including touch steering and browser safe-area/viewport behavior.
@@ -32,6 +34,7 @@ Use this checklist to track release readiness. Items marked TODO are unresolved 
 - [ ] TODO: Profile representative low-end target devices and browsers.
 - [ ] TODO: Check sustained frame rate, memory use, and behavior during long sessions.
 - [ ] TODO: Confirm performance with many simultaneous asteroids and particles.
+- [ ] TODO: Confirm celestial labels and ability effects remain readable on desktop and mobile.
 
 ## Save and load
 

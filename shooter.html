@@ -41,9 +41,10 @@
             <div class="planet"></div>
             <div class="ship-preview" id="hero-ship">
               <span class="ship-flame"></span>
-              <svg viewBox="0 0 100 72" role="presentation">
-                <path class="ship-wing" d="M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z"></path>
-                <path class="ship-glass" d="m49 32 24 4-24 4-10-4z"></path>
+              <svg id="hero-ship-art" viewBox="0 0 100 72" role="presentation">
+                <path class="ship-hull" d="M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z"></path>
+                <path class="ship-detail" d="M19 22 64 34M19 50 64 38"></path>
+                <path class="preview-glass" d="m49 32 24 4-24 4-10-4z"></path>
               </svg>
             </div>
             <span class="art-star star-a">✦</span><span class="art-star star-b">·</span><span class="art-star star-c">✧</span>
@@ -84,7 +85,7 @@
     </section>
 
     <section class="page menu-page" data-page="shop" hidden>
-      <div class="page-heading"><div><p class="eyebrow">LOOK COOL OUT THERE</p><h1>THE SHIP SHOP</h1><p>Pick a paint job and make the cosmos your runway.</p></div><span class="page-badge">✧ <span class="dust-balance">0</span> DUST</span></div>
+      <div class="page-heading"><div><p class="eyebrow">SHIP HANGAR</p><h1>CHOOSE YOUR SHIP</h1></div></div>
       <div class="shop-grid" id="skin-list"></div>
     </section>
 
@@ -108,6 +109,10 @@
           <span>RAINBOW BOOST</span>
           <strong id="rare-powerup-time">5.0s</strong>
         </div>
+        <button class="ability-button" id="ability-button" type="button" disabled>
+          <span id="ability-button-name">ABILITY</span>
+          <small id="ability-button-charge">0 / 15 ASTEROIDS</small>
+        </button>
       </div>
       <div class="game-canvas-wrap">
         <canvas id="game-canvas" width="500" height="800" aria-label="Move the ship at the bottom, shoot asteroids falling from above"></canvas>
@@ -119,10 +124,11 @@
           <button class="text-button" id="quit-button" type="button">QUIT TO HANGAR</button>
         </div>
       </div>
-      <p class="instructions">MOVE <strong>← →</strong><span>•</span> <strong>AUTO FIRE</strong><span>•</span> MENU <strong>MENU</strong></p>
-      <div class="touch-controls" aria-label="Movement controls">
+      <p class="instructions">MOVE <strong>A/D · ← →</strong><span>•</span> <strong>AUTO FIRE</strong><span>•</span> ABILITY <strong>F</strong><span>•</span> MENU <strong>Esc</strong></p>
+      <div class="touch-controls" aria-label="Movement and ability controls">
         <button type="button" data-key="ArrowLeft" aria-label="Move left">←</button>
         <button type="button" data-key="ArrowRight" aria-label="Move right">→</button>
+        <button type="button" id="ability-touch-button" aria-label="Use ship ability" disabled>ABILITY</button>
       </div>
     </section>
   </main>
@@ -142,6 +148,10 @@
       const livesElement = document.querySelector("#lives");
       const rarePowerupElement = document.querySelector("#rare-powerup");
       const rarePowerupTimeElement = document.querySelector("#rare-powerup-time");
+      const abilityButton = document.querySelector("#ability-button");
+      const abilityTouchButton = document.querySelector("#ability-touch-button");
+      const abilityButtonName = document.querySelector("#ability-button-name");
+      const abilityButtonCharge = document.querySelector("#ability-button-charge");
       const dustElement = document.querySelector("#dust");
       const profileBestElement = document.querySelector("#profile-best");
       const homeBestElement = document.querySelector("#home-best");
@@ -154,6 +164,7 @@
       const gamePage = document.querySelector("#game-page");
       const width = canvas.width;
       const height = canvas.height;
+      const maxActiveAsteroids = 18;
       const saveKey = "astroZapProgress";
       const upgradeInfo = {
         hull: { name: "Extra Life", description: "Start each mission with one more life.", icon: "♡", prices: [45, 135] },
@@ -161,11 +172,70 @@
         blaster: { name: "Rapid Blaster", description: "Fire rate multiplies with every level.", icon: "✹", prices: [40, 115, 320] }
       };
       const skins = [
-        { id: "nova", name: "Nova", subtitle: "THE CLASSIC", color: "#00E5FF", price: 0 },
-        { id: "sunbeam", name: "Sunbeam", subtitle: "GOLDEN GLOW", color: "#ffc766", price: 60 },
-        { id: "berry", name: "Berry Blast", subtitle: "BERRY BRIGHT", color: "#ff77ba", price: 90 },
-        { id: "mint", name: "Mint Chip", subtitle: "COOL & CRISP", color: "#73f0bd", price: 120 }
+        { id: "nova", name: "Nova", subtitle: "THE CLASSIC", grade: "Common", color: "#00E5FF", price: 0, hull: "M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z", cockpit: "m49 32 24 4-24 4-10-4z", details: "M19 22 64 34M19 50 64 38" },
+        { id: "sunbeam", name: "Sunbeam", subtitle: "GOLDEN GLOW", grade: "Common", color: "#ffc766", price: 60, hull: "M8 30 42 32 48 8 57 8 60 32 92 34 97 36 92 38 60 40 57 64 48 64 42 40 8 42 4 36z", cockpit: "M57 33 79 36 57 39z", details: "M19 31 19 41M48 12 53 12M48 60 53 60" },
+        { id: "berry", name: "Berry Blast", subtitle: "BERRY BRIGHT", grade: "Common", color: "#ff77ba", price: 90, hull: "M7 28 37 31 43 10 51 10 56 31 91 34 97 36 91 38 56 41 51 62 43 62 37 41 7 44 13 36z", cockpit: "M57 33 78 36 57 39z", details: "M15 30 29 33M15 42 29 39M44 15 49 15M44 57 49 57" },
+        { id: "mint", name: "Mint Chip", subtitle: "COOL & CRISP", grade: "Common", color: "#73f0bd", price: 120, hull: "M5 30 31 33 42 16 51 16 55 32 76 29 96 36 76 43 55 40 51 56 42 56 31 39 5 42 14 36z", cockpit: "M57 33 78 36 57 39z", details: "M20 34 38 34M20 38 38 38M44 20 49 20M44 52 49 52" },
+        { id: "pioneer", name: "Pioneer", subtitle: "CIVILIAN SCOUT", grade: "Common", color: "#b9c7d9", price: 50, hull: "M5 31 40 33 48 22 55 22 59 33 91 34 97 36 91 38 59 39 55 50 48 50 40 39 5 41 11 36z", cockpit: "M60 34 77 36 60 38z", details: "M20 32 34 34M20 40 34 38M47 24 52 24M47 48 52 48" },
+        { id: "arrowhead", name: "Arrowhead", subtitle: "VECTOR INTERCEPTOR", grade: "Rare", color: "#60a5fa", price: 220, hull: "M3 25 43 31 58 8 65 9 62 32 96 36 62 40 65 63 58 64 43 41 3 47 18 36z", cockpit: "M61 33 82 36 61 39z", details: "M17 28 43 34M17 44 43 38M59 13 62 14M59 58 62 59" },
+        { id: "skyhawk", name: "Skyhawk", subtitle: "AIR SUPERIORITY", grade: "Rare", color: "#7dd3fc", price: 280, hull: "M4 32 41 33 43 8 51 8 58 33 94 34 98 36 94 38 58 39 51 64 43 64 41 39 4 40 11 36z", cockpit: "M59 33 79 36 59 39z", details: "M17 32 33 34M17 40 33 38M45 13 49 13M45 59 49 59" },
+        { id: "phantom", name: "Phantom", subtitle: "STEALTH WRAITH", grade: "Epic", color: "#c084fc", price: 450, hull: "M2 24 35 30 51 17 59 18 56 32 96 36 56 40 59 54 51 55 35 42 2 48 17 36z", cockpit: "M58 33 81 36 58 39z", details: "M15 28 39 33M15 44 39 39M48 22 53 24M48 48 53 50M32 31 32 41" },
+        { id: "firefly", name: "Firefly", subtitle: "PULSE FIGHTER", grade: "Epic", color: "#fb7185", price: 525, hull: "M7 29 33 32 45 13 54 13 58 32 80 28 96 36 80 44 58 40 54 59 45 59 33 40 7 43 17 36z", cockpit: "M60 33 80 36 60 39z", details: "M18 31 35 34M18 41 35 38M48 17 52 17M48 55 52 55M77 31 84 34M77 41 84 38" },
+        { id: "starbreaker", name: "Starbreaker", subtitle: "SINGULARITY CLASS", grade: "Legendary", color: "#fbbf24", price: 800, hull: "M1 22 34 29 49 10 58 12 57 31 99 36 57 41 58 60 49 62 34 43 1 50 17 36z", cockpit: "M59 33 84 36 59 39z", details: "M13 27 40 33M13 45 40 39M47 15 53 17M47 55 53 57M31 30 31 42M70 34 87 36M70 38 87 36" },
+        { id: "valkyrie", name: "Valkyrie", subtitle: "CELESTIAL ACE", grade: "Legendary", color: "#f0abfc", price: 1000, hull: "M2 27 32 31 43 14 51 14 57 31 74 24 98 36 74 48 57 41 51 58 43 58 32 41 2 45 15 36z", cockpit: "M59 33 83 36 59 39z", details: "M13 30 34 34M13 42 34 38M46 18 50 18M46 54 50 54M71 28 81 33M71 44 81 39" }
       ];
+      const shipStats = {
+        nova: { speed: 1, handling: 10.4, fireRate: 1, gunOffsets: [0], charge: 14, ability: "pulse", abilityName: "Nova Pulse", abilityDescription: "Blast all visible rocks for heavy damage." },
+        sunbeam: { speed: 0.94, handling: 9.2, fireRate: 1.04, gunOffsets: [-9, 9], charge: 18, ability: "lance", abilityName: "Solar Lance", abilityDescription: "Damage rocks across a wide center lane." },
+        berry: { speed: 1.1, handling: 11.6, fireRate: 0.9, gunOffsets: [0], charge: 12, ability: "burst", abilityName: "Scatterburst", abilityDescription: "Unleash a wide, high-damage shot spread." },
+        mint: { speed: 1, handling: 10.1, fireRate: 1, gunOffsets: [-10, 0, 10], charge: 16, ability: "freeze", abilityName: "Cryo Wave", abilityDescription: "Freeze every falling object for 4 seconds." },
+        pioneer: { speed: 0.9, handling: 8.3, fireRate: 1.15, gunOffsets: [-8, 8], charge: 20, ability: "repair", abilityName: "Field Repair", abilityDescription: "Restore a life, or gain a brief shield if full." },
+        arrowhead: { speed: 1.12, handling: 10.8, fireRate: 1, gunOffsets: [-11, 0, 11], charge: 13, ability: "dash", abilityName: "Vector Dash", abilityDescription: "Dash at high speed behind a 3-second shield." },
+        skyhawk: { speed: 0.96, handling: 8.8, fireRate: 1.2, gunOffsets: [-9, 9], charge: 17, ability: "skyfire", abilityName: "Skyfire Strike", abilityDescription: "Rocket-strike every large and cosmic rock." },
+        phantom: { speed: 1.16, handling: 12.1, fireRate: 0.88, gunOffsets: [0], charge: 11, ability: "cloak", abilityName: "Phase Cloak", abilityDescription: "Slip through danger behind a 5-second shield." },
+        firefly: { speed: 0.98, handling: 9.8, fireRate: 1.12, gunOffsets: [-11, 0, 11], charge: 15, ability: "drones", abilityName: "Drone Swarm", abilityDescription: "Deploy 2 side drones that fire for 8 seconds." },
+        starbreaker: { speed: 0.88, handling: 7.8, fireRate: 1.2, gunOffsets: [-11, 0, 11], charge: 22, ability: "singularity", abilityName: "Singularity", abilityDescription: "Crush nearby rocks in a gravity burst." },
+        valkyrie: { speed: 1.08, handling: 10.7, fireRate: 1.05, gunOffsets: [-13, -5, 5, 13], charge: 18, ability: "overdrive", abilityName: "Wing Overdrive", abilityDescription: "Double your wing guns for 7 seconds." }
+      };
+      const celestialCatalog = {
+        planets: [
+          { name: "Mercury", color: "#B7A28B" },
+          { name: "Venus", color: "#E8B76A" },
+          { name: "Earth", color: "#46A5E5" },
+          { name: "Mars", color: "#E66D4E" },
+          { name: "Jupiter", color: "#D9A77C" },
+          { name: "Saturn", color: "#E8D29A" },
+          { name: "Uranus", color: "#80DCE1" },
+          { name: "Neptune", color: "#557BEA" }
+        ],
+        stars: [
+          { name: "Sirius", color: "#B8DAFF" },
+          { name: "Vega", color: "#D6E7FF" },
+          { name: "Betelgeuse", color: "#FF8563" },
+          { name: "Rigel", color: "#9DC5FF" },
+          { name: "Polaris", color: "#FFF2C4" },
+          { name: "Proxima Centauri", color: "#FF775E" },
+          { name: "Alpha Centauri", color: "#FFE9A6" },
+          { name: "TRAPPIST-1", color: "#FF8067" }
+        ],
+        galaxies: [
+          { name: "Andromeda", color: "#BFA2FF" },
+          { name: "Triangulum", color: "#85D8FF" },
+          { name: "Sombrero", color: "#FFD18B" },
+          { name: "Whirlpool", color: "#89BFFF" },
+          { name: "Pinwheel", color: "#93FFD0" },
+          { name: "Centaurus A", color: "#FF9AB5" },
+          { name: "Large Magellanic Cloud", color: "#FFC6E7" },
+          { name: "Small Magellanic Cloud", color: "#AFC4FF" }
+        ],
+        deepSpace: [
+          { name: "Sagittarius A*", type: "blackhole", color: "#FFAA65" },
+          { name: "M87*", type: "blackhole", color: "#C3A0FF" },
+          { name: "Cygnus X-1", type: "blackhole", color: "#73D8FF" },
+          { name: "3C 273", type: "quasar", color: "#FFF29B" },
+          { name: "TON 618", type: "quasar", color: "#FF8ACA" }
+        ]
+      };
       const keys = new Set();
       const stars = Array.from({ length: 90 }, () => ({
         x: Math.random() * width,
@@ -180,6 +250,10 @@
       let particles;
       let scorePopups;
       let rarePowerupTimer = 0;
+      let abilityKills = 0;
+      let runTime = 0;
+      let abilityEffects = {};
+      let celestialIndices = { planets: 0, stars: 0, galaxies: 0, deepSpace: 0 };
       let score = 0;
       let lives = 1;
       let spawnTimer = 0;
@@ -241,7 +315,20 @@
       }
 
       function equippedSkin() {
-        return skins.find(skin => skin.id === progress.equippedSkin) || skins[0];
+        const skin = skins.find(item => item.id === progress.equippedSkin) || skins[0];
+        return { ...skin, ...shipStats[skin.id] };
+      }
+
+      function updateAbilityDisplay() {
+        const skin = equippedSkin();
+        const charged = abilityKills >= skin.charge;
+        const chargeText = charged ? "READY · F" : `${abilityKills} / ${skin.charge} ROCKS`;
+        abilityButtonName.textContent = skin.abilityName.toUpperCase();
+        abilityButtonCharge.textContent = chargeText;
+        abilityButton.disabled = !charged;
+        abilityTouchButton.textContent = charged ? "USE ABILITY" : `${abilityKills}/${skin.charge}`;
+        abilityTouchButton.disabled = !charged;
+        document.querySelector(".game-bar").classList.toggle("ability-ready", charged);
       }
 
       function renderProgress() {
@@ -252,8 +339,9 @@
         bestScoreElement.textContent = `${progress.best.toLocaleString()} PTS`;
         document.querySelectorAll(".dust-balance").forEach(element => element.textContent = progress.dust);
         const skin = equippedSkin();
-        document.querySelector("#equipped-skin-label").textContent = `${skin.name.toUpperCase()} CLASS · MK I`;
+        document.querySelector("#equipped-skin-label").textContent = `${skin.name.toUpperCase()} · ${skin.grade.toUpperCase()}`;
         document.querySelector("#hero-ship").style.setProperty("--ship-color", skin.color);
+        document.querySelector("#hero-ship-art").innerHTML = shipSvg(skin);
         renderHomeUpgradeLevels();
         renderProfileUpgrades();
         renderUpgrades();
@@ -331,10 +419,22 @@
           const owned = progress.ownedSkins.includes(skin.id);
           const equipped = progress.equippedSkin === skin.id;
           const card = document.createElement("article");
-          card.className = `skin-card${equipped ? " equipped" : ""}`;
-          card.innerHTML = `<div class="skin-preview" style="--skin-color:${skin.color}"><span class="preview-stars">✦　·　✧</span><svg viewBox="0 0 100 72" aria-hidden="true"><path d="M9 14 83 31 96 36 83 41 9 58 24 38H8l10-2-10-2h16z"></path><path class="preview-glass" d="m49 32 24 4-24 4-10-4z"></path></svg><span class="skin-rarity">${skin.subtitle}</span></div><div class="skin-card-footer"><span><strong>${skin.name}</strong><small>${skin.subtitle}</small></span><button class="skin-button" type="button" data-skin="${skin.id}" ${equipped || (!owned && progress.dust < skin.price) ? "disabled" : ""}>${equipped ? "EQUIPPED" : owned ? "EQUIP" : `✧ ${skin.price}`}</button></div>`;
+          card.className = `skin-card grade-${skin.grade.toLowerCase()}${equipped ? " equipped" : ""}`;
+          const stats = shipStats[skin.id];
+          const speed = Math.round(260 * stats.speed * 1.16 ** progress.upgrades.engine);
+          const fireRate = (5 * stats.fireRate / 0.82 ** progress.upgrades.blaster).toFixed(1);
+          card.innerHTML = `<div class="skin-preview" style="--skin-color:${skin.color}"><span class="preview-stars">✦　·　✧</span>${shipSvg(skin)}<span class="skin-rarity">${skin.grade}</span></div><div class="ship-stat-grid"><span><small>SPEED</small><strong>${speed}</strong></span><span><small>FIRE RATE</small><strong>${fireRate}/s</strong></span><span><small>SHOTS</small><strong>${stats.gunOffsets.length}</strong></span><span><small>CHARGE</small><strong>${stats.charge} ROCKS</strong></span></div><div class="ship-ability-info"><strong>${stats.abilityName}</strong><small>${stats.abilityDescription}</small></div><div class="skin-card-footer"><span><strong>${skin.name}</strong><small>${skin.subtitle}</small></span><button class="skin-button" type="button" data-skin="${skin.id}" ${equipped || (!owned && progress.dust < skin.price) ? "disabled" : ""}>${equipped ? "EQUIPPED" : owned ? "EQUIP" : `✧ ${skin.price}`}</button></div>`;
           skinList.append(card);
         }
+      }
+
+      function shipSvg(skin) {
+        const gradientId = `${skin.id}-armor`;
+        const wingGuns = shipStats[skin.id].gunOffsets.filter(offset => offset !== 0).map(offset => {
+          const y = 36 + offset;
+          return `<g class="ship-wing-gun"><path d="M47 ${y - 3} 61 ${y - 2} 65 ${y} 61 ${y + 2} 47 ${y + 3}z"></path><path class="ship-gun-barrel" d="M57 ${y - 1}h16v2H57z"></path><circle class="ship-gun-muzzle" cx="73" cy="${y}" r="1.4"></circle></g>`;
+        }).join("");
+        return `<svg viewBox="0 0 100 72" aria-hidden="true"><defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#ffffff"></stop><stop offset="0.22" stop-color="${skin.color}"></stop><stop offset="0.7" stop-color="${skin.color}"></stop><stop offset="1" stop-color="#172033"></stop></linearGradient><radialGradient id="${skin.id}-glass" cx="35%" cy="30%"><stop offset="0" stop-color="#dffaff"></stop><stop offset="0.28" stop-color="#52e7ff"></stop><stop offset="1" stop-color="#152a59"></stop></radialGradient></defs><g class="ship-engine-glow"><ellipse cx="13" cy="27.5" rx="14" ry="5"></ellipse><ellipse cx="13" cy="44.5" rx="14" ry="5"></ellipse></g><g class="ship-engines"><path d="M10 23h18l8 5-8 5H10l-5-5z"></path><path d="M10 39h18l8 5-8 5H10l-5-5z"></path><path class="ship-engine-core" d="M9 26h10v3H9zM9 42h10v3H9z"></path></g><path class="ship-hull" fill="url(#${gradientId})" d="${skin.hull}"></path>${wingGuns}<path class="ship-armor-seam" d="M24 29 42 33 52 35M24 43 42 39 52 37M34 31 39 36 34 41"></path><path class="ship-detail" d="${skin.details}"></path><path class="preview-glass" fill="url(#${skin.id}-glass)" d="${skin.cockpit}"></path><path class="ship-canopy-glint" d="m62 34 8 2-8 2"></path><circle class="ship-rivet" cx="45" cy="29" r="1.2"></circle><circle class="ship-rivet" cx="45" cy="43" r="1.2"></circle><path class="ship-nose-light" d="M93 34 98 36 93 38z"></path></svg>`;
       }
 
       function buyUpgrade(id) {
@@ -367,8 +467,13 @@
           x: width / 2,
           y: height - 70,
           radius: 16,
-          speed: 260 * 1.16 ** progress.upgrades.engine,
+          speed: 260 * equippedSkin().speed * 1.16 ** progress.upgrades.engine,
+          handling: equippedSkin().handling,
+          velocityX: 0,
           invulnerable: 0,
+          damageFlash: 0,
+          bank: 0,
+          enginePhase: 0,
           lives: 1 + progress.upgrades.hull
         };
         bullets = [];
@@ -377,6 +482,11 @@
         scorePopups = [];
         rarePowerupTimer = 0;
         rarePowerupElement.hidden = true;
+        abilityKills = 0;
+        runTime = 0;
+        abilityEffects = {};
+        celestialIndices = { planets: 0, stars: 0, galaxies: 0, deepSpace: 0 };
+        updateAbilityDisplay();
         score = 0;
         lives = player.lives;
         spawnTimer = 0.5;
@@ -417,17 +527,25 @@
 
       function addAsteroid() {
         const rare = Math.random() < 0.02;
-        const radius = rare ? 22 + Math.random() * 13 : 15 + Math.random() * 28;
+        const stage = runTime < 35
+          ? { min: 10, max: 18, hp: 1, points: 10 }
+          : runTime < 85
+            ? { min: 16, max: 25, hp: 2, points: 20 }
+            : runTime < 155
+              ? { min: 23, max: 33, hp: 3, points: 30 }
+              : { min: 31, max: 43, hp: 5, points: 45 };
+        const radius = rare ? 22 + Math.random() * 13 : stage.min + Math.random() * (stage.max - stage.min);
+        const hpGrowth = Math.min(4, Math.floor(Math.exp(runTime * 0.003) - 1));
+        const hp = rare ? 3 + hpGrowth : stage.hp + hpGrowth;
+        const speedMultiplier = Math.min(2.4, Math.exp(runTime * 0.0015));
         asteroids.push({
           x: radius + Math.random() * (width - radius * 2),
           y: -radius,
           radius,
-          speed: rare
-            ? (110 + Math.random() * 45 + Math.min(score * 0.12, 100)) * 1.5
-            : 90 + Math.random() * 65 + Math.min(score * 0.12, 100),
-          hp: rare ? 3 : radius < 25 ? 1 : radius < 35 ? 2 : 3,
-          maxHp: rare ? 3 : radius < 25 ? 1 : radius < 35 ? 2 : 3,
-          points: rare ? 75 : radius < 25 ? 10 : radius < 35 ? 20 : 30,
+          speed: (72 + Math.random() * 45) * speedMultiplier * (rare ? 1.5 : 1),
+          hp,
+          maxHp: hp,
+          points: rare ? 75 : stage.points,
           rare,
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 2.3,
@@ -437,19 +555,26 @@
 
       function addCosmicObject(kind) {
         const objectSettings = {
-          planet: { radius: 38, hp: 4, points: 100, speed: 82 + Math.random() * 24 },
-          galaxy: { radius: 48, hp: 6, points: 200, speed: 72 + Math.random() * 20 },
-          universe: { radius: 58, hp: 8, points: 300, speed: 62 + Math.random() * 18 }
+          planets: { radius: 24 + Math.random() * 7, hp: 3, points: 80, speed: 72 + Math.random() * 18, type: "planet" },
+          stars: { radius: 18 + Math.random() * 5, hp: 2, points: 100, speed: 86 + Math.random() * 20, type: "star" },
+          galaxies: { radius: 34 + Math.random() * 8, hp: 5, points: 180, speed: 64 + Math.random() * 14, type: "galaxy" },
+          deepSpace: { radius: 40 + Math.random() * 9, hp: 7, points: 260, speed: 58 + Math.random() * 12, type: "blackhole" }
         };
         const settings = objectSettings[kind];
+        const catalog = celestialCatalog[kind];
+        const celestial = catalog[celestialIndices[kind] % catalog.length];
+        celestialIndices[kind]++;
         asteroids.push({
-          kind,
+          kind: "celestial",
+          celestialType: celestial.type || settings.type,
+          name: celestial.name,
+          color: celestial.color,
           x: settings.radius + 10 + Math.random() * (width - (settings.radius + 10) * 2),
           y: -settings.radius,
           radius: settings.radius,
           speed: settings.speed,
-          hp: settings.hp,
-          maxHp: settings.hp,
+          hp: Math.min(12, settings.hp + Math.floor(runTime / 180)),
+          maxHp: Math.min(12, settings.hp + Math.floor(runTime / 180)),
           points: settings.points,
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 0.35
@@ -459,13 +584,9 @@
       function addScorePopup(object) {
         const color = object.rare
           ? "rainbow"
-          : object.kind === "planet"
-            ? "#69D6FF"
-            : object.kind === "galaxy"
-              ? "#FF9AEB"
-              : object.kind === "universe"
-                ? "#FFF2A6"
-                : "#FFFFFF";
+          : object.celestialType
+            ? object.color
+            : "#FFFFFF";
         scorePopups.push({
           x: object.x,
           y: object.y,
@@ -499,15 +620,134 @@
         }
       }
 
+      function registerAsteroidKill() {
+        const ship = equippedSkin();
+        abilityKills = Math.min(ship.charge, abilityKills + 1);
+        updateAbilityDisplay();
+      }
+
+      function damageAsteroid(asteroid, damage, color = "#FFB000") {
+        if (asteroid.gone) return;
+        asteroid.hp -= damage;
+        if (asteroid.hp <= 0) {
+          asteroid.gone = true;
+          score += asteroid.points;
+          scoreElement.textContent = String(score).padStart(4, "0");
+          addScorePopup(asteroid);
+          if (asteroid.rare) activateRarePowerup();
+          if (asteroid.kind !== "celestial") registerAsteroidKill();
+          burst(asteroid.x, asteroid.y, asteroid.rare ? "#FF477E" : color, asteroid.rare ? 26 : 15);
+        } else {
+          burst(asteroid.x, asteroid.y, color, 8);
+        }
+      }
+
+      function fireSpread(count, spread, color) {
+        for (let index = 0; index < count; index++) {
+          const normalized = count === 1 ? 0 : index / (count - 1) * 2 - 1;
+          const angle = normalized * spread;
+          bullets.push({
+            x: player.x,
+            y: player.y - 20,
+            vx: Math.sin(angle) * 430,
+            speed: Math.cos(angle) * 430,
+            color
+          });
+        }
+      }
+
+      function activateShipAbility() {
+        if (!playing || paused) return;
+        const ship = equippedSkin();
+        if (abilityKills < ship.charge) return;
+        abilityKills = 0;
+        updateAbilityDisplay();
+        switch (ship.ability) {
+          case "pulse":
+            for (const asteroid of asteroids) damageAsteroid(asteroid, 3, ship.color);
+            abilityEffects.pulse = 0.65;
+            break;
+          case "lance":
+            for (const asteroid of asteroids) {
+              if (Math.abs(asteroid.x - player.x) < 125) damageAsteroid(asteroid, 5, ship.color);
+            }
+            abilityEffects.lance = 0.55;
+            break;
+          case "burst":
+            fireSpread(15, 0.88, ship.color);
+            abilityEffects.burst = 0.7;
+            break;
+          case "freeze":
+            for (const asteroid of asteroids) asteroid.frozen = 4;
+            abilityEffects.freeze = 4;
+            break;
+          case "repair":
+            if (lives < player.lives) {
+              lives++;
+              livesElement.textContent = lives;
+            } else {
+              player.invulnerable = Math.max(player.invulnerable, 2);
+            }
+            abilityEffects.repair = 0.8;
+            break;
+          case "dash":
+            abilityEffects.dash = 3;
+            player.invulnerable = Math.max(player.invulnerable, 3);
+            break;
+          case "skyfire":
+            for (const asteroid of asteroids) {
+              if (asteroid.radius >= 30 || asteroid.kind === "celestial") damageAsteroid(asteroid, 8, "#FFB000");
+            }
+            abilityEffects.skyfire = 0.8;
+            break;
+          case "cloak":
+            abilityEffects.cloak = 5;
+            player.invulnerable = Math.max(player.invulnerable, 5);
+            break;
+          case "drones":
+            abilityEffects.drones = 8;
+            break;
+          case "singularity":
+            for (const asteroid of asteroids) {
+              const dx = asteroid.x - player.x;
+              const dy = asteroid.y - player.y;
+              if (dx * dx + dy * dy < 300 * 300) damageAsteroid(asteroid, 8, "#C084FC");
+            }
+            abilityEffects.singularity = 0.8;
+            break;
+          case "overdrive":
+            abilityEffects.overdrive = 7;
+            break;
+        }
+      }
+
       function movePlayer(delta) {
         let x = 0;
         if (keys.has("ArrowLeft") || keys.has("KeyA")) x--;
         if (keys.has("ArrowRight") || keys.has("KeyD")) x++;
-        const speedBoost = rarePowerupTimer > 0 ? 1.5 : 1;
-        player.x = Math.max(player.radius + 8, Math.min(width - player.radius - 8, player.x + x * player.speed * speedBoost * delta));
+        const speedBoost = (rarePowerupTimer > 0 ? 1.5 : 1) * (abilityEffects.dash > 0 ? 2.2 : 1);
+        const targetVelocity = x * player.speed * speedBoost;
+        const response = 1 - Math.exp(-player.handling * delta);
+        player.velocityX += (targetVelocity - player.velocityX) * response;
+        player.x += player.velocityX * delta;
+        const leftBound = player.radius + 8;
+        const rightBound = width - player.radius - 8;
+        if (player.x < leftBound) {
+          player.x = leftBound;
+          player.velocityX = Math.max(0, player.velocityX);
+        } else if (player.x > rightBound) {
+          player.x = rightBound;
+          player.velocityX = Math.min(0, player.velocityX);
+        }
+        player.bank += (x * 0.2 - player.bank) * Math.min(1, delta * player.handling);
       }
 
       function update(delta) {
+        runTime += delta;
+        for (const effect of Object.keys(abilityEffects)) {
+          abilityEffects[effect] = Math.max(0, abilityEffects[effect] - delta);
+          if (abilityEffects[effect] === 0) delete abilityEffects[effect];
+        }
         for (const star of stars) {
           star.y += star.speed * delta;
           if (star.y > height) {
@@ -524,31 +764,42 @@
         }
         movePlayer(delta);
         player.invulnerable = Math.max(0, player.invulnerable - delta);
+        player.damageFlash = Math.max(0, player.damageFlash - delta);
+        player.enginePhase += delta * (rarePowerupTimer > 0 ? 18 : 11);
         shotTimer -= delta;
         if (shotTimer <= 0) {
-          bullets.push({ x: player.x, y: player.y - 20, speed: 510 });
+          const gunOffsets = [...equippedSkin().gunOffsets];
+          if (abilityEffects.overdrive > 0) gunOffsets.push(-21, -17, 17, 21);
+          if (abilityEffects.drones > 0) gunOffsets.push(-31, 31);
+          for (const offset of gunOffsets) {
+            bullets.push({ x: player.x + offset, y: player.y - 20, speed: 510, color: offset === -31 || offset === 31 ? "#F0ABFC" : "#38BDF8" });
+          }
           const fireRateBoost = rarePowerupTimer > 0 ? 0.5 : 1;
-          shotTimer = Math.max(0.055, 0.2 * 0.82 ** progress.upgrades.blaster * fireRateBoost);
+          shotTimer = Math.max(0.055, 0.2 / equippedSkin().fireRate * 0.82 ** progress.upgrades.blaster * fireRateBoost);
         }
 
         spawnTimer -= delta;
         if (spawnTimer <= 0) {
-          addAsteroid();
-          spawnTimer = Math.max(0.38, 1.05 - score / 1800) + Math.random() * 0.45;
+          if (asteroids.length < maxActiveAsteroids) addAsteroid();
+          spawnTimer = Math.max(0.4, 1.7 * Math.exp(-runTime * 0.006)) + Math.random() * 0.15;
         }
 
         cosmicSpawnTimer -= delta;
-        const cosmicStage = score >= 3000 ? "universe" : score >= 1500 ? "galaxy" : score >= 500 ? "planet" : null;
-        if (cosmicStage && cosmicSpawnTimer <= 0) {
+        const cosmicStage = runTime < 75 ? "planets" : runTime < 150 ? "stars" : runTime < 235 ? "galaxies" : "deepSpace";
+        if (cosmicSpawnTimer <= 0 && asteroids.length < maxActiveAsteroids) {
           addCosmicObject(cosmicStage);
-          cosmicSpawnTimer = cosmicStage === "planet" ? 8 : cosmicStage === "galaxy" ? 10 : 12;
+          cosmicSpawnTimer = 8.5;
         }
 
-        for (const bullet of bullets) bullet.y -= bullet.speed * delta;
-        bullets = bullets.filter(bullet => bullet.y > -10);
+        for (const bullet of bullets) {
+          bullet.x += (bullet.vx || 0) * delta;
+          bullet.y -= bullet.speed * delta;
+        }
+        bullets = bullets.filter(bullet => bullet.y > -10 && bullet.x > -10 && bullet.x < width + 10);
 
         for (const asteroid of asteroids) {
-          asteroid.y += asteroid.speed * delta;
+          asteroid.frozen = Math.max(0, (asteroid.frozen || 0) - delta);
+          if (asteroid.frozen <= 0) asteroid.y += asteroid.speed * delta;
           asteroid.rotation += asteroid.spin * delta;
           if (asteroid.y > height + asteroid.radius) asteroid.gone = true;
         }
@@ -559,17 +810,7 @@
             const dy = asteroid.y - bullet.y;
             if (!asteroid.gone && !bullet.gone && dx * dx + dy * dy < asteroid.radius * asteroid.radius) {
               bullet.gone = true;
-              asteroid.hp--;
-              if (asteroid.hp <= 0) {
-                asteroid.gone = true;
-                score += asteroid.points;
-                scoreElement.textContent = String(score).padStart(4, "0");
-                addScorePopup(asteroid);
-                if (asteroid.rare) activateRarePowerup();
-                burst(asteroid.x, asteroid.y, asteroid.rare ? "#FF477E" : "#FFB000", asteroid.rare ? 26 : 15);
-              } else {
-                burst(asteroid.x, asteroid.y, "#DCE7FF", 5);
-              }
+              damageAsteroid(asteroid, 1, bullet.color || "#DCE7FF");
             }
           }
 
@@ -581,6 +822,7 @@
             lives--;
             livesElement.textContent = lives;
             player.invulnerable = 1.2;
+            player.damageFlash = 0.4;
             burst(player.x, player.y, "#FF477E", 22);
             if (lives <= 0) {
               endGame();
@@ -605,38 +847,140 @@
       }
 
       function drawShip() {
-        if (player.invulnerable > 0 && Math.floor(player.invulnerable * 12) % 2 === 0) return;
-        const color = equippedSkin().color;
+        const skin = equippedSkin();
+        const now = performance.now() / 1000;
+        const hover = Math.sin(now * 3.2) * 1.5;
+        const thrust = 8 + (Math.sin(player.enginePhase) + 1) * 3.5;
+        const damageShake = player.damageFlash > 0 ? Math.sin(now * 75) * player.damageFlash * 5 : 0;
         ctx.save();
-        ctx.translate(player.x, player.y);
+        ctx.translate(player.x + damageShake, player.y + hover);
+        ctx.rotate(-Math.PI / 2 + player.bank + (player.damageFlash > 0 ? Math.sin(now * 34) * player.damageFlash * 0.35 : 0));
+        ctx.scale(0.45, 0.45);
+        ctx.translate(-50, -36);
+
+        if (player.invulnerable > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.35 + (Math.sin(now * 14) + 1) * 0.16;
+          ctx.strokeStyle = rarePowerupTimer > 0 ? "#F0ABFC" : "#38BDF8";
+          ctx.lineWidth = 3;
+          ctx.shadowBlur = 18;
+          ctx.shadowColor = ctx.strokeStyle;
+          ctx.beginPath();
+          ctx.ellipse(50, 36, 48, 38, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        const podGlow = ctx.createRadialGradient(15, 27, 1, 15, 27, 12);
+        podGlow.addColorStop(0, "#ffffff");
+        podGlow.addColorStop(0.35, skin.color);
+        podGlow.addColorStop(1, `${skin.color}00`);
+        ctx.fillStyle = podGlow;
+        for (const podY of [27, 45]) {
+          ctx.beginPath();
+          ctx.ellipse(15, podY, 12, 5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#172033";
+          ctx.strokeStyle = skin.color;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(9, podY - 4, 19, 8, 3);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.globalAlpha = 0.9;
+          ctx.fillRect(10, podY - 1, 8, 2);
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = podGlow;
+        }
+
+        const engineGlow = ctx.createRadialGradient(0, 36, 2, 0, 36, thrust + 10);
+        engineGlow.addColorStop(0, "#FFFFFF");
+        engineGlow.addColorStop(0.2, skin.color);
+        engineGlow.addColorStop(1, `${skin.color}00`);
         ctx.shadowBlur = 18;
-        ctx.shadowColor = color;
-        ctx.fillStyle = color;
+        ctx.shadowColor = skin.color;
+        ctx.fillStyle = engineGlow;
         ctx.beginPath();
-        ctx.moveTo(0, -22);
-        ctx.lineTo(-15, 15);
-        ctx.lineTo(0, 9);
-        ctx.lineTo(15, 15);
-        ctx.closePath();
+        ctx.ellipse(-thrust * 0.45, 36, thrust + 7, 8, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = color;
+        ctx.fillStyle = skin.color;
+        ctx.strokeStyle = "#e9f1fa";
+        ctx.lineWidth = 1.8;
+        ctx.lineJoin = "round";
+        ctx.fill(new Path2D(skin.hull));
+        ctx.stroke(new Path2D(skin.hull));
+        ctx.shadowBlur = 0;
+        for (const offset of skin.gunOffsets) {
+          if (offset === 0) continue;
+          const gunY = 36 + offset;
+          const mount = new Path2D(`M47 ${gunY - 3} 61 ${gunY - 2} 65 ${gunY} 61 ${gunY + 2} 47 ${gunY + 3}z`);
+          const barrel = new Path2D(`M57 ${gunY - 1}h16v2H57z`);
+          ctx.fillStyle = "#7188a5";
+          ctx.strokeStyle = skin.color;
+          ctx.lineWidth = 1.5;
+          ctx.fill(mount);
+          ctx.stroke(mount);
+          ctx.fillStyle = "#effbff";
+          ctx.fill(barrel);
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(73, gunY, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.strokeStyle = `${skin.color}dd`;
+        ctx.lineWidth = 1.6;
         ctx.beginPath();
-        ctx.moveTo(-5, 14);
-        ctx.lineTo(0, 25 + Math.random() * 8);
-        ctx.lineTo(5, 14);
-        ctx.closePath();
-        ctx.fill();
+        ctx.moveTo(24, 29);
+        ctx.lineTo(42, 33);
+        ctx.lineTo(52, 35);
+        ctx.moveTo(24, 43);
+        ctx.lineTo(42, 39);
+        ctx.lineTo(52, 37);
+        ctx.moveTo(34, 31);
+        ctx.lineTo(39, 36);
+        ctx.lineTo(34, 41);
+        ctx.stroke();
+        ctx.strokeStyle = "#ffffffbb";
+        ctx.lineWidth = 1.5;
+        ctx.stroke(new Path2D(skin.details));
+        ctx.fillStyle = "#123047";
+        ctx.strokeStyle = "#DCE7FF";
+        ctx.lineWidth = 1.5;
+        ctx.fill(new Path2D(skin.cockpit));
+        ctx.stroke(new Path2D(skin.cockpit));
+        ctx.strokeStyle = "#dffaff";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(62, 34);
+        ctx.lineTo(70, 36);
+        ctx.lineTo(62, 38);
+        ctx.stroke();
+        if (player.damageFlash > 0) {
+          ctx.globalAlpha = player.damageFlash / 0.4 * 0.65;
+          ctx.fillStyle = "#FF477E";
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = "#FF477E";
+          ctx.fill(new Path2D(skin.hull));
+        }
         ctx.restore();
       }
 
       function drawAsteroid(asteroid) {
-        if (asteroid.kind) {
+        if (asteroid.kind === "celestial") {
           drawCosmicObject(asteroid);
           drawAsteroidHealth(asteroid);
+          if (asteroid.frozen > 0) {
+            ctx.strokeStyle = "#67E8F9";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(asteroid.x, asteroid.y, asteroid.radius + 5, 0, Math.PI * 2);
+            ctx.stroke();
+          }
           return;
         }
         const rainbowHue = (performance.now() / 8 + asteroid.rotation * 50) % 360;
-        const rockColor = asteroid.rare ? `hsl(${rainbowHue} 95% 62%)` : "#A855F7";
+        const rockColor = asteroid.frozen > 0 ? "#67E8F9" : asteroid.rare ? `hsl(${rainbowHue} 95% 62%)` : "#A855F7";
         ctx.save();
         ctx.translate(asteroid.x, asteroid.y);
         ctx.rotate(asteroid.rotation);
@@ -672,7 +1016,7 @@
         ctx.save();
         ctx.fillStyle = "#202638";
         ctx.fillRect(asteroid.x - barWidth / 2, asteroid.y + asteroid.radius + 8, barWidth, 3);
-        ctx.fillStyle = asteroid.kind ? "#FFB000" : asteroid.rare ? "#FFB000" : "#00E5FF";
+        ctx.fillStyle = asteroid.kind === "celestial" ? "#FFB000" : asteroid.rare ? "#FFB000" : "#00E5FF";
         ctx.fillRect(asteroid.x - barWidth / 2, asteroid.y + asteroid.radius + 8, barWidth * asteroid.hp / asteroid.maxHp, 3);
         ctx.restore();
       }
@@ -681,18 +1025,18 @@
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotation);
-        const palette = object.kind === "planet"
-          ? ["#69d6ff", "#5431a8"]
-          : object.kind === "galaxy"
-            ? ["#ff9aeb", "#6a35d4"]
-            : ["#fff2a6", "#e64e9d"];
+        const palette = object.celestialType === "planet"
+          ? [object.color, "#5431a8"]
+          : object.celestialType === "galaxy"
+            ? [object.color, "#6a35d4"]
+            : [object.color, "#26123f"];
         const glow = ctx.createRadialGradient(-object.radius * 0.35, -object.radius * 0.4, object.radius * 0.08, 0, 0, object.radius);
         glow.addColorStop(0, palette[0]);
         glow.addColorStop(1, palette[1]);
         ctx.shadowColor = palette[0];
         ctx.shadowBlur = 20;
         ctx.fillStyle = glow;
-        if (object.kind === "planet") {
+        if (object.celestialType === "planet") {
           ctx.strokeStyle = `${palette[0]}cc`;
           ctx.lineWidth = 4;
           ctx.beginPath();
@@ -701,7 +1045,7 @@
           ctx.beginPath();
           ctx.arc(0, 0, object.radius, 0, Math.PI * 2);
           ctx.fill();
-        } else if (object.kind === "galaxy") {
+        } else if (object.celestialType === "galaxy") {
           ctx.beginPath();
           ctx.ellipse(0, 0, object.radius, object.radius * 0.58, 0, 0, Math.PI * 2);
           ctx.fill();
@@ -716,6 +1060,19 @@
           ctx.beginPath();
           ctx.arc(0, 0, object.radius * 0.12, 0, Math.PI * 2);
           ctx.fill();
+        } else if (object.celestialType === "star") {
+          ctx.beginPath();
+          ctx.arc(0, 0, object.radius * 0.52, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = `${object.color}bb`;
+          ctx.lineWidth = 2;
+          for (let ray = 0; ray < 8; ray++) {
+            const angle = ray * Math.PI / 4;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(angle) * object.radius * 0.65, Math.sin(angle) * object.radius * 0.65);
+            ctx.lineTo(Math.cos(angle) * object.radius * 1.25, Math.sin(angle) * object.radius * 1.25);
+            ctx.stroke();
+          }
         } else {
           ctx.beginPath();
           ctx.arc(0, 0, object.radius, 0, Math.PI * 2);
@@ -730,6 +1087,16 @@
           ctx.ellipse(0, 0, object.radius * 1.25, object.radius * 0.48, 0, 0, Math.PI * 2);
           ctx.stroke();
         }
+        ctx.restore();
+        ctx.save();
+        ctx.font = "700 10px Segoe UI, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#080B1A";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeText(object.name, object.x, object.y + object.radius + 8);
+        ctx.fillText(object.name, object.x, object.y + object.radius + 8);
         ctx.restore();
       }
 
@@ -754,6 +1121,7 @@
         ctx.shadowColor = "#38BDF8";
         ctx.fillStyle = "#38BDF8";
         for (const bullet of bullets) {
+          ctx.fillStyle = bullet.color || "#38BDF8";
           ctx.beginPath();
           ctx.ellipse(bullet.x, bullet.y, 2.5, 8, 0, 0, Math.PI * 2);
           ctx.fill();
@@ -794,6 +1162,14 @@
           ctx.restore();
         }
         ctx.globalAlpha = 1;
+        if (abilityEffects.drones > 0) {
+          ctx.fillStyle = "#F0ABFC";
+          for (const offset of [-31, 31]) {
+            ctx.beginPath();
+            ctx.arc(player.x + offset, player.y + 6, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
         drawShip();
       }
 
@@ -839,6 +1215,10 @@
 
       window.addEventListener("keydown", event => {
         if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.code)) event.preventDefault();
+        if (event.code === "KeyF") {
+          event.preventDefault();
+          activateShipAbility();
+        }
         keys.add(event.code);
       });
       window.addEventListener("keyup", event => keys.delete(event.code));
@@ -857,6 +1237,8 @@
       menuButton.addEventListener("click", pauseGame);
       continueButton.addEventListener("click", continueGame);
       quitButton.addEventListener("click", quitToHangar);
+      abilityButton.addEventListener("click", activateShipAbility);
+      abilityTouchButton.addEventListener("click", activateShipAbility);
       window.addEventListener("keydown", event => {
         if (event.code === "Escape" && playing && !paused) {
           event.preventDefault();
@@ -873,6 +1255,7 @@
       });
       document.querySelectorAll(".touch-controls button").forEach(button => {
         const key = button.dataset.key;
+        if (!key) return;
         button.addEventListener("pointerdown", event => {
           event.preventDefault();
           keys.add(key);

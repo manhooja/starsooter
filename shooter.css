@@ -99,12 +99,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .orbit-two { transform: rotate(27deg); }
 .planet { position: absolute; top: 105px; right: 30px; width: 105px; height: 105px; border: 1px solid #D8B4FE88; border-radius: 50%; background: radial-gradient(circle at 32% 30%, #C084FC, #A855F7 48%, #522383); box-shadow: 0 0 30px #A855F733, inset -13px -10px 22px #28283f; }
 .planet::after { position: absolute; inset: 24px 1px; border: 7px solid #D8B4FE88; border-radius: 50%; content: ""; transform: rotate(-20deg); }
-.ship-preview { --ship-color: #70eaff; position: absolute; z-index: 2; top: 200px; right: 85px; width: 145px; animation: float 3s ease-in-out infinite; }
+.ship-preview { --ship-color: #70eaff; position: absolute; z-index: 2; top: 200px; right: 85px; width: 145px; animation: float 3s ease-in-out infinite, ship-bank 4.8s ease-in-out infinite; }
 .ship-preview svg { display: block; width: 100%; }
-.ship-wing { fill: var(--ship-color); stroke: #e9f1fa; stroke-width: 2; }
+.ship-hull { fill: var(--skin-color, var(--ship-color)); stroke: #e9f1fa; stroke-width: 2; stroke-linejoin: round; }
+.ship-detail { fill: none; stroke: #ffffffbb; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .ship-glass { fill: #123047; stroke: #DCE7FF; stroke-width: 1.5; }
 .ship-flame { position: absolute; top: 84%; left: 45%; width: 13px; height: 27px; border-radius: 50%; background: var(--cyan); filter: blur(4px); }
 @keyframes float { 50% { translate: 0 -7px; } }
+@keyframes ship-bank { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
 .art-star { position: absolute; color: var(--star); }
 .star-a { top: 83px; right: 62px; }
 .star-b { top: 270px; right: 31px; font-size: 1.6rem; }
@@ -176,15 +178,47 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .skin-card.equipped { border-color: var(--cyan); box-shadow: 0 0 0 1px #00E5FF26; }
 .skin-preview { position: relative; display: grid; height: 140px; place-items: center; overflow: hidden; background: radial-gradient(ellipse at center, #A855F71a, transparent 65%), #0d1424; }
 .skin-preview::before { position: absolute; width: 155px; height: 50px; border: 1px solid #A855F744; border-radius: 50%; content: ""; transform: rotate(-20deg); }
-.skin-preview svg { z-index: 1; width: 95px; }
-.skin-preview svg path:first-child { fill: var(--skin-color); stroke: #e7edf6; stroke-width: 2; }
-.skin-preview svg .preview-glass { fill: #123047; stroke: #DCE7FF; stroke-width: 1.5; }
+.skin-preview svg { z-index: 1; width: 112px; overflow: visible; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--skin-color), transparent 45%)); transition: transform 180ms ease, filter 180ms ease; }
+.skin-preview .ship-hull { stroke: #ecfbff; stroke-width: 1.8; stroke-linejoin: round; }
+.skin-preview .ship-engines path { fill: #18263d; stroke: var(--skin-color); stroke-width: 1.2; stroke-linejoin: round; }
+.skin-preview .ship-wing-gun path { fill: #7188a5; stroke: var(--skin-color); stroke-width: 1.2; stroke-linejoin: round; }
+.skin-preview .ship-wing-gun .ship-gun-barrel { fill: #effbff; stroke: var(--skin-color); stroke-width: 0.8; }
+.skin-preview .ship-wing-gun .ship-gun-muzzle { fill: #ffffff; stroke: var(--skin-color); stroke-width: 0.7; }
+.skin-preview .ship-engine-core { fill: #effbff; stroke: none; }
+.skin-preview .ship-engine-glow ellipse { fill: var(--skin-color); opacity: 0.65; filter: blur(4px); }
+.skin-preview .ship-armor-seam { fill: none; stroke: #eafaff; stroke-width: 1.1; opacity: 0.85; }
+.skin-preview .ship-detail { fill: none; stroke: #f5fbff; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.skin-preview .preview-glass { stroke: #e8fbff; stroke-width: 1.5; filter: drop-shadow(0 0 3px #52e7ff); }
+.skin-preview .ship-canopy-glint { fill: none; stroke: #ffffff; stroke-width: 1.4; stroke-linecap: round; }
+.skin-preview .ship-rivet { fill: #ffffff; stroke: var(--skin-color); stroke-width: 0.7; }
+.skin-preview .ship-nose-light { fill: #ffffff; filter: drop-shadow(0 0 4px var(--skin-color)); }
+.skin-card:hover .skin-preview svg { transform: scale(1.1) translateY(-2px); filter: drop-shadow(0 0 12px color-mix(in srgb, var(--skin-color), transparent 20%)); }
+.grade-rare .skin-preview svg { filter: drop-shadow(0 0 8px #60a5fa88); }
+.grade-epic .skin-preview svg { filter: drop-shadow(0 0 9px #c084fc99); }
+.grade-legendary .skin-preview svg { filter: drop-shadow(0 0 11px #fbbf24aa); }
 .preview-stars { position: absolute; top: 12px; left: 12px; color: var(--star); font-size: 0.72rem; }
-.skin-rarity { position: absolute; bottom: 10px; color: #a8b1c1; font-size: 0.5rem; letter-spacing: 0.09em; }
+.skin-rarity { position: absolute; right: 9px; bottom: 9px; border: 1px solid currentColor; border-radius: 20px; padding: 4px 7px; background: #080b1acc; color: #cbd5e1; font-size: 0.52rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
+.grade-common .skin-rarity { color: #cbd5e1; }
+.grade-rare .skin-rarity { color: #60a5fa; }
+.grade-epic .skin-rarity { color: #c084fc; }
+.grade-legendary .skin-rarity { color: #fbbf24; }
+.grade-rare .skin-preview { background: radial-gradient(ellipse at center, #3b82f629, transparent 68%), #0d1424; }
+.grade-epic .skin-preview { background: radial-gradient(ellipse at center, #A855F72e, transparent 68%), #0d1424; }
+.grade-legendary .skin-preview { background: radial-gradient(ellipse at center, #fbbf2424, transparent 68%), #0d1424; }
+.skin-card.grade-rare { border-color: #60a5fa55; }
+.skin-card.grade-epic { border-color: #c084fc66; }
+.skin-card.grade-legendary { border-color: #fbbf2480; }
 .skin-card-footer { justify-content: space-between; gap: 6px; min-height: 57px; padding: 8px 10px; }
 .skin-card-footer strong, .skin-card-footer small { display: block; }
 .skin-card-footer strong { font-size: 0.72rem; }
 .skin-card-footer small { margin-top: 3px; color: #9ca6b7; font-size: 0.48rem; }
+.ship-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px 8px; border-top: 1px solid #ffffff12; padding: 8px 10px 2px; background: #0c1220; }
+.ship-stat-grid span { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 4px; }
+.ship-stat-grid small { color: #8998b1; font-size: 0.44rem; font-weight: 700; letter-spacing: 0.04em; }
+.ship-stat-grid strong { overflow: hidden; color: #e7f5ff; font-size: 0.55rem; text-overflow: ellipsis; white-space: nowrap; }
+.ship-ability-info { display: grid; min-height: 44px; gap: 3px; border-top: 1px solid #ffffff12; padding: 7px 10px; background: #0c1220; }
+.ship-ability-info strong { color: #e9d5ff; font-size: 0.57rem; }
+.ship-ability-info small { color: #aab4c7; font-size: 0.48rem; line-height: 1.35; }
 
 .leaderboard-card { overflow: hidden; max-width: 680px; margin: 0 auto; }
 .leaderboard-header, .leaderboard-row { display: grid; grid-template-columns: 60px 1fr 125px; align-items: center; gap: 12px; padding: 14px 18px; }
@@ -208,6 +242,12 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b9c8ff; outline-offs
 .stat-value { color: #FFFFFF; font-size: 1.05rem; font-variant-numeric: tabular-nums; font-weight: 800; }
 .rare-powerup { display: flex; align-items: center; gap: 8px; border: 1px solid #D946EF88; border-radius: 8px; padding: 7px 9px; background: linear-gradient(110deg, #F472B622, #A855F722); color: #F0ABFC; font-size: 0.57rem; font-weight: 800; letter-spacing: 0.04em; }
 .rare-powerup strong { color: #FFFFFF; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.ability-button { display: grid; min-width: 112px; min-height: 44px; gap: 3px; border: 1px solid #a855f788; border-radius: 8px; padding: 6px 9px; background: #a855f71f; color: #e9d5ff; cursor: pointer; text-align: center; }
+.ability-button span { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.04em; }
+.ability-button small { color: #c4b5fd; font-size: 0.48rem; font-weight: 700; }
+.ability-button:disabled { border-color: #394050; background: #161b25; color: #929bad; cursor: default; }
+.ability-button:disabled small { color: #8791a3; }
+.game-bar.ability-ready .ability-button { border-color: #e879f9; background: #a855f744; box-shadow: 0 0 15px #c084fc55; }
 .game-canvas-wrap { position: relative; display: grid; justify-items: center; overflow: hidden; border: 1px solid #303744; border-radius: 10px; background: #080B1A; }
 canvas { display: block; width: min(100%, 500px, 42vh); width: min(100%, 500px, 42svh); height: auto; aspect-ratio: 5 / 8; object-fit: contain; touch-action: none; }
 .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 22px; background: #0c111ae8; text-align: center; }
@@ -219,6 +259,9 @@ canvas { display: block; width: min(100%, 500px, 42vh); width: min(100%, 500px, 
 .instructions strong { color: #e0e5ee; }
 .touch-controls { display: none; grid-template-columns: 1fr 1fr; gap: 10px; width: min(100%, 260px); margin: 12px auto; user-select: none; -webkit-user-select: none; }
 .touch-controls button { min-height: 60px; border: 1px solid #3c4658; border-radius: 10px; background: #202735; color: white; font-size: 1.3rem; cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.touch-controls button:disabled { border-color: #333b49; background: #181e29; color: #7f899b; cursor: default; }
+.touch-controls #ability-touch-button { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.04em; }
+.touch-controls #ability-touch-button:not(:disabled) { border-color: #c084fc; background: #a855f733; color: #f3e8ff; }
 .touch-controls button.pressed, .touch-controls button:active { border-color: var(--cyan); background: #00E5FF2b; }
 @media (pointer: coarse) { .touch-controls { display: grid; } }
 
@@ -237,6 +280,7 @@ canvas { display: block; width: min(100%, 500px, 42vh); width: min(100%, 500px, 
   .daily-card { align-items: flex-start; flex-direction: column; gap: 5px; }
   .upgrade-grid { grid-template-columns: 1fr; }
   .upgrade-card { min-height: 0; }
+  .shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .game.playing .topbar { display: none; }
   canvas { width: min(100%, 500px, 42vh); width: min(100%, 500px, 42svh); }

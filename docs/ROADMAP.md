@@ -8,19 +8,23 @@ This roadmap distinguishes behavior present in `shooter.html` from suggestions t
 - Vertical hangar home screen focused on launching missions, with a compact upgrade summary and navigation to separate Profile, upgrades, ship shop, and personal high scores pages.
 - Mission launch, replay, and return-to-hangar flow.
 - Horizontal keyboard movement with playfield bounds.
-- Repeating fire input and moving projectiles.
+- Automatic firing, multi-lane weapons, and moving projectiles.
 - Procedurally shaped incoming asteroids, hit detection, score, and lives.
 - Brief invulnerability after a collision.
-- Score-driven asteroid speed and spawn pressure.
+- Time-based asteroid size and toughness stages, exponentially increasing spawn pressure with a 0.4-second floor, and an 18-asteroid active limit.
+- Per-ship manually activated abilities, each charged by a different number of destroyed asteroids and available through keyboard, HUD, and touch controls.
+- Progressive, named catalogs of the eight Solar System planets, stars, galaxies, black holes, and quasars.
 - Starfield and particle effects rendered without separate asset files.
 - Responsive layout and on-screen touch controls.
 - End-of-run Star Dust rewards (1 per 10 points) and purchasable Extra Life, Engine, and Blaster upgrades with gameplay effects.
-- Four cosmetic ship colors, including the default Nova skin; purchase, ownership, and equipment controls.
+- Eleven purchasable ships across four grades, with distinct hulls, wing-mounted guns, handling, speed, fire-rate, shot-count, and ability stats.
 - Personal-best score and hangar progress saved locally in the browser.
 - Vertical-shooter gameplay with the ship at the bottom and asteroids falling from above.
 - In-mission pause menu with Continue and Quit to Hangar actions.
 - Multi-hit larger asteroids and rare, high-value rocks.
 - Sharply increasing upgrade costs with multiplicative Engine and Blaster bonuses.
+- Unique named ship abilities, asteroid-kill charge tracking, and manual ability activation.
+- Time-progressive asteroid size/HP and celestial-object categories, with exponential spawn escalation and explicit gameplay caps.
 
 ## Current development priorities
 
@@ -37,8 +41,7 @@ These are recommendations, not commitments or completed work.
 ## Proposed future features (uncommitted)
 
 - Optional audio effects and a mute setting.
-- Pause/resume controls.
-- More upgrade types, skins, enemy or asteroid variants, and optional game modes.
+- More upgrade types, ships, enemy or asteroid variants, and optional game modes.
 - A short tutorial or expanded story.
 
 ## Milestones
