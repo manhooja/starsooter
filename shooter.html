@@ -25,6 +25,7 @@
       <button class="nav-button active" type="button" data-view="home">⌂ <span>HOME</span></button>
       <button class="nav-button" type="button" data-view="upgrades">⬆ <span>UPGRADES</span></button>
       <button class="nav-button" type="button" data-view="shop">✦ <span>SHIP SHOP</span></button>
+      <button class="nav-button" type="button" data-view="designs">▦ <span>DESIGN LAB</span></button>
       <button class="nav-button" type="button" data-view="profile">◉ <span>PROFILE</span></button>
     </nav>
 
@@ -87,6 +88,57 @@
     <section class="page menu-page" data-page="shop" hidden>
       <div class="page-heading"><div><p class="eyebrow">SHIP HANGAR</p><h1>CHOOSE YOUR SHIP</h1></div></div>
       <div class="shop-grid" id="skin-list"></div>
+    </section>
+
+    <section class="page design-page" data-page="designs" hidden>
+      <header class="design-heading">
+        <div>
+          <p class="eyebrow">NEW DESIGNS <span>•</span> UNIQUE STYLES <span>•</span> 1–5 FIRING PARTS <span>•</span> PIXEL ART</p>
+          <h1>SPACESHIP DESIGNS <span>(28 UNIQUE SHIPS)</span></h1>
+        </div>
+      </header>
+      <div class="ship-design-grid" id="ship-design-grid" aria-label="28 spaceship designs"></div>
+      <div class="design-lower-grid">
+        <section class="design-panel ammo-panel" aria-labelledby="ammo-design-title">
+          <h2 id="ammo-design-title">AMMO / PROJECTILE DESIGNS <small>(16 DIFFERENT AMMO TYPES)</small></h2>
+          <div class="ammo-grid" id="ammo-design-grid"></div>
+        </section>
+        <section class="design-panel effects-panel" aria-labelledby="ammo-effects-title">
+          <h2 id="ammo-effects-title">AMMO EFFECTS <small>(EXAMPLES)</small></h2>
+          <div class="effect-grid" id="ammo-effect-grid"></div>
+          <p>Mix and match ammo types with your ships for unique playstyles!</p>
+        </section>
+      </div>
+      <section class="atlas-section" aria-labelledby="atlas-title">
+        <header class="atlas-heading">
+          <div><p class="eyebrow">SPRITE SHEET / DESTRUCTION ANIMATION GUIDE</p><h2 id="atlas-title">CELESTIAL BODY DESTRUCTION ATLAS</h2></div>
+          <span>5–6 FRAMES PER OBJECT</span>
+        </header>
+        <div class="atlas-columns">
+          <section class="atlas-column">
+            <h3>PLANETS</h3>
+            <div class="atlas-list" id="planet-atlas"></div>
+            <h3 class="asteroid-heading">ASTEROIDS</h3>
+            <div class="atlas-row asteroid-atlas-row" id="asteroid-atlas"></div>
+          </section>
+          <section class="atlas-column">
+            <h3>MAJOR SATELLITES (MOONS)</h3>
+            <div class="atlas-list" id="moon-atlas"></div>
+            <div class="atlas-legend">
+              <h3>LEGEND / KEY</h3>
+              <div class="atlas-row legend-row" id="legend-atlas"></div>
+              <ul>
+                <li>All sprites are pixel art</li>
+                <li>Use 5–6 frames per object</li>
+                <li>Adjust size to fit your game</li>
+                <li>Debris can be smaller particles</li>
+                <li>Add glow / explosion effects</li>
+                <li>Keep consistent colors per object</li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </section>
     </section>
 
     <section class="page menu-page" data-page="scores" hidden>
@@ -206,9 +258,16 @@
           { name: "Jupiter", color: "#D9A77C" },
           { name: "Saturn", color: "#E8D29A" },
           { name: "Uranus", color: "#80DCE1" },
-          { name: "Neptune", color: "#557BEA" }
+          { name: "Neptune", color: "#557BEA" },
+          { name: "Moon", color: "#D5D2CE" },
+          { name: "Io", color: "#E8BD3F" },
+          { name: "Europa", color: "#CCD9DE" },
+          { name: "Ganymede", color: "#B3A190" },
+          { name: "Callisto", color: "#77716E" },
+          { name: "Titan", color: "#E69B45" }
         ],
         stars: [
+          { name: "Sun", type: "star", color: "#FFAF24" },
           { name: "Sirius", color: "#B8DAFF" },
           { name: "Vega", color: "#D6E7FF" },
           { name: "Betelgeuse", color: "#FF8563" },
@@ -236,6 +295,48 @@
           { name: "TON 618", type: "quasar", color: "#FF8ACA" }
         ]
       };
+      const catalogShipDesigns = [
+        ["NOVA", 1], ["VORTEX", 2], ["ZEPHYR", 3], ["TYPHON", 4], ["ECLIPSE", 5], ["RAZOR", 1], ["SPECTER", 2], ["PHOENIX", 3], ["ORBIT", 4], ["SHADOW", 5],
+        ["STORM", 1], ["MAGNET", 2], ["RIFT", 3], ["VALKYRIE", 4], ["BANSHEE", 5], ["TITAN", 1], ["ARC", 2], ["SERAPH", 3], ["OMEGA", 4], ["CELESTIAL", 5],
+        ["REVENANT", 1], ["LYNX", 2], ["KAISER", 3], ["WRAITH", 4], ["SOLSTICE", 5], ["AQUILA", 1], ["ORION", 2], ["DRACO", 3]
+      ];
+      const catalogShipColors = ["#55c7ff", "#ba7dff", "#ff665d", "#69f078", "#dc55f2", "#ff9a35", "#4fa9ff", "#ff7c37", "#37e5e5", "#d94cff", "#4ba5ff", "#f05bff", "#43daf2", "#ffcb42", "#c748e6", "#91d8ff", "#48e2e8", "#ffcf47", "#ff5454", "#43aaff", "#7ced4b", "#d472ff", "#ff594f", "#53d9ef", "#ffc949", "#39aafa", "#90df48", "#b44eff"];
+      const shipSilhouettes = [
+        "M36 3 42 25 67 39 70 61 45 51 36 91 27 51 2 61 5 39 30 25Z",
+        "M36 4 43 26 68 34 71 61 49 51 42 70 36 55 30 70 23 51 1 61 4 34 29 26Z",
+        "M36 2 43 29 68 39 60 49 46 45 42 88 36 72 30 88 26 45 12 49 4 39 29 29Z",
+        "M36 3 41 23 60 13 55 33 71 34 65 45 46 48 42 87 36 73 30 87 26 48 7 45 1 34 17 33 12 13 31 23Z",
+        "M36 4 43 24 66 31 73 48 53 45 42 69 36 52 30 69 19 45 0 48 7 31 29 24Z",
+        "M36 2 41 30 65 21 59 37 72 41 57 49 44 45 40 87 36 75 32 87 28 45 15 49 0 41 13 37 7 21 31 30Z",
+        "M36 3 45 24 67 29 61 44 72 57 51 52 44 83 36 65 28 83 21 52 0 57 11 44 5 29 27 24Z",
+        "M36 2 43 25 59 18 56 34 69 38 56 45 48 61 42 53 36 91 30 53 24 61 16 45 3 38 16 34 13 18 29 25Z",
+        "M36 4 41 29 68 23 61 39 73 47 54 49 44 69 40 56 36 89 32 56 28 69 18 49 0 47 12 39 5 23 31 29Z",
+        "M36 2 46 23 70 29 61 43 72 57 49 51 42 75 36 59 30 75 23 51 0 57 11 43 2 29 26 23Z",
+        "M36 3 41 21 53 8 55 29 72 31 63 43 51 44 42 86 36 70 30 86 21 44 9 43 0 31 17 29 19 8 31 21Z",
+        "M36 3 44 27 65 21 58 38 73 43 58 49 47 44 42 85 36 67 30 85 25 44 14 49 0 43 15 38 8 21 29 27Z",
+        "M36 2 40 27 62 15 57 34 70 37 57 46 46 45 41 88 36 68 31 88 26 45 15 46 2 37 15 34 10 15 32 27Z",
+        "M36 2 43 24 69 31 62 42 72 51 52 49 45 67 39 56 36 92 31 56 25 67 19 49 0 51 10 42 3 31 29 24Z",
+        "M36 4 44 26 64 20 59 36 72 42 58 48 48 42 42 88 36 75 30 88 24 42 14 48 0 42 13 36 8 20 28 26Z",
+        "M36 2 41 20 59 12 56 31 71 36 57 44 48 40 42 84 36 71 30 84 24 40 15 44 1 36 16 31 13 12 31 20Z",
+        "M36 3 45 25 67 33 59 45 72 57 50 52 43 70 36 58 29 70 22 52 0 57 13 45 5 33 27 25Z",
+        "M36 3 40 28 61 20 56 39 71 44 54 50 44 43 40 89 36 72 32 89 28 43 18 50 1 44 16 39 11 20 32 28Z",
+        "M36 2 45 23 70 26 62 41 72 52 51 48 44 70 36 55 28 70 21 48 0 52 10 41 2 26 27 23Z",
+        "M36 2 42 24 61 11 56 31 73 36 58 44 47 42 41 86 36 69 31 86 25 42 14 44 0 36 17 31 11 11 30 24Z",
+        "M36 4 44 25 62 24 57 38 72 45 56 49 46 61 40 54 36 90 32 54 26 61 16 49 0 45 15 38 10 24 28 25Z",
+        "M36 3 42 25 68 29 60 43 71 56 50 51 43 72 36 58 29 72 22 51 1 56 12 43 4 29 30 25Z",
+        "M36 2 45 22 65 16 59 34 73 39 57 47 47 42 42 88 36 72 30 88 25 42 15 47 0 39 14 34 7 16 27 22Z",
+        "M36 2 40 27 68 19 60 37 73 43 57 49 47 43 40 91 36 74 32 91 25 43 15 49 0 43 13 37 5 19 32 27Z",
+        "M36 3 45 24 68 32 61 44 71 59 49 52 42 72 36 56 30 72 23 52 1 59 11 44 4 32 27 24Z",
+        "M36 2 43 24 60 13 56 32 73 38 57 46 46 43 42 88 36 70 30 88 26 43 15 46 0 38 16 32 12 13 29 24Z",
+        "M36 3 44 26 66 22 60 38 71 48 52 49 43 66 39 54 36 91 32 54 28 66 19 49 1 48 12 38 6 22 28 26Z",
+        "M36 2 42 22 67 18 60 35 73 43 56 49 45 41 41 86 36 71 31 86 26 41 15 49 0 43 13 35 5 18 30 22Z",
+        "M36 3 46 24 71 30 60 44 73 55 50 51 43 70 36 56 29 70 22 51 0 55 12 44 1 30 26 24Z",
+        "M36 2 41 25 64 10 58 33 72 38 57 47 46 42 41 88 36 73 31 88 26 42 15 47 0 38 14 33 8 10 31 25Z"
+      ];
+      const projectileDesigns = ["Standard", "Double", "Triple", "Spread", "Laser", "Piercing", "Homing", "Plasma", "Fireball", "Ice", "Electric", "Explosive", "EMP", "Chain", "Mine", "Nova"];
+      const projectileColors = ["#54c8ff", "#44aaff", "#38d9ff", "#43b9ff", "#6bbcff", "#55ddff", "#63bdff", "#db68ff", "#ff9c37", "#8aeaff", "#6ee5ff", "#ff923d", "#c179ff", "#5aa9ff", "#a887ff", "#ffb938"];
+      const effectDesigns = [["Explosion", "✹", "#ff8d35"], ["Split", "⌁", "#51c7ff"], ["Trail", "➟", "#29cfff"], ["Homing Curve", "↝", "#22caff"], ["Piercing", "⇶", "#35d7ff"], ["Chain Reaction", "⚡", "#ffae36"], ["Freeze", "❄", "#4e9dff"], ["Shockwave", "◎", "#42c9ff"]];
+      const destructionStages = ["Intact", "Cracked 1", "Cracked 2", "Breaking", "Exploding", "Debris"];
       const keys = new Set();
       const stars = Array.from({ length: 90 }, () => ({
         x: Math.random() * width,
@@ -304,6 +405,7 @@
         document.querySelector(".game").classList.toggle("playing", nextView === "game");
         document.querySelector(".game").classList.toggle("home-screen", nextView === "home");
         document.querySelector(".game").classList.toggle("profile-screen", nextView === "profile");
+        document.querySelector(".game").classList.toggle("catalog-screen", nextView === "designs");
         document.querySelectorAll("[data-page]").forEach(page => {
           page.hidden = page.dataset.page !== nextView;
         });
@@ -440,6 +542,117 @@
         return `<svg viewBox="0 0 100 72" aria-hidden="true"><defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#ffffff"></stop><stop offset="0.22" stop-color="${skin.color}"></stop><stop offset="0.7" stop-color="${skin.color}"></stop><stop offset="1" stop-color="#172033"></stop></linearGradient><radialGradient id="${skin.id}-glass" cx="35%" cy="30%"><stop offset="0" stop-color="#dffaff"></stop><stop offset="0.28" stop-color="#52e7ff"></stop><stop offset="1" stop-color="#152a59"></stop></radialGradient></defs><g class="ship-engine-glow"><ellipse cx="13" cy="27.5" rx="14" ry="5"></ellipse><ellipse cx="13" cy="44.5" rx="14" ry="5"></ellipse></g><g class="ship-engines"><path d="M10 23h18l8 5-8 5H10l-5-5z"></path><path d="M10 39h18l8 5-8 5H10l-5-5z"></path><path class="ship-engine-core" d="M9 26h10v3H9zM9 42h10v3H9z"></path></g><path class="ship-hull" fill="url(#${gradientId})" d="${skin.hull}"></path>${wingGuns}<path class="ship-armor-seam" d="M24 29 42 33 52 35M24 43 42 39 52 37M34 31 39 36 34 41"></path><path class="ship-detail" d="${skin.details}"></path><path class="preview-glass" fill="url(#${skin.id}-glass)" d="${skin.cockpit}"></path><path class="ship-canopy-glint" d="m62 34 8 2-8 2"></path><circle class="ship-rivet" cx="45" cy="29" r="1.2"></circle><circle class="ship-rivet" cx="45" cy="43" r="1.2"></circle><path class="ship-nose-light" d="M93 34 98 36 93 38z"></path></svg>`;
       }
 
+      function catalogShipSvg(index, fireCount) {
+        const color = catalogShipColors[index];
+        const gunPositions = {
+          1: [36],
+          2: [22, 50],
+          3: [14, 36, 58],
+          4: [10, 27, 45, 62],
+          5: [8, 18, 36, 54, 64]
+        }[fireCount];
+        const guns = Array.from({ length: fireCount }, (_, gunIndex) => {
+          const x = gunPositions[gunIndex];
+          return `<path d="M${x - 1.5} 32h3v-9h-3z" fill="#dffaff" stroke="${color}" stroke-width="1"/><circle cx="${x}" cy="22" r="1.4" fill="#fff"/>`;
+        }).join("");
+        return `<svg viewBox="0 0 72 96" role="presentation" aria-hidden="true" shape-rendering="crispEdges"><defs><linearGradient id="catalog-hull-${index}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fbff"/><stop offset=".28" stop-color="${color}"/><stop offset="1" stop-color="#172039"/></linearGradient></defs><path d="${shipSilhouettes[index % shipSilhouettes.length]}" fill="url(#catalog-hull-${index})" stroke="#d7f2ff" stroke-width="1.6" stroke-linejoin="round"/><path d="M36 12 36 78M13 42 31 47M59 42 41 47M28 59 36 52 44 59" fill="none" stroke="${color}" stroke-width="2" opacity=".9"/><path d="M31 27 36 15 41 27 36 37z" fill="#6ddfff" stroke="#effcff" stroke-width="1.2"/><path d="M32 76 36 91 40 76z" fill="${color}" opacity=".8"/><g>${guns}</g></svg>`;
+      }
+
+      function projectileSvg(index) {
+        const color = projectileColors[index];
+        const shapes = [
+          `<path d="M18 2 24 13 22 29 18 34 14 29 12 13z"/>`,
+          `<g><path d="M11 7 16 16 15 29 11 33 7 29 6 16z"/><path d="M25 7 30 16 29 29 25 33 21 29 20 16z"/></g>`,
+          `<g><path d="M18 3 23 12 22 29 18 33 14 29 13 12z"/><circle cx="7" cy="20" r="4"/><circle cx="29" cy="20" r="4"/></g>`,
+          `<g><circle cx="9" cy="25" r="3"/><circle cx="18" cy="17" r="3"/><circle cx="27" cy="25" r="3"/><path d="m9 25 9-8 9 8" fill="none"/></g>`,
+          `<path d="M18 1v34" stroke-width="3"/>`,
+          `<path d="M18 1 24 10 22 29 18 35 14 29 12 10z"/><path d="M18 3v29" fill="none" stroke="#fff"/>`,
+          `<path d="M18 5 23 12 21 27 18 31 15 27 13 12z"/><path d="M13 12Q3 12 8 4M23 12Q33 12 28 4" fill="none"/>`,
+          `<circle cx="18" cy="18" r="10"/><circle cx="18" cy="18" r="4" fill="#fff"/>`,
+          `<path d="M18 2 28 20 22 20 19 34 8 17 15 17z"/>`,
+          `<path d="M18 2 25 11 23 28 18 34 13 28 11 11z"/><path d="M18 5v25" fill="none" stroke="#fff"/>`,
+          `<path d="M18 2 25 11 23 28 18 34 13 28 11 11z"/><path d="m5 11 7 7-7 7M31 11l-7 7 7 7" fill="none"/>`,
+          `<circle cx="18" cy="18" r="9"/>`,
+          `<circle cx="18" cy="18" r="10"/><circle cx="18" cy="18" r="4" fill="none" stroke="#fff"/>`,
+          `<path d="m4 27 9-10 5 5 11-14" fill="none" stroke-width="3"/>`,
+          `<circle cx="18" cy="17" r="8"/><path d="M15 24v8h6v-8M18 4v5M5 17h5M26 17h5" fill="none"/>`,
+          `<path d="M18 1 22 13 34 18 22 22 18 35 14 22 2 18 14 13z"/>`
+        ];
+        return `<svg viewBox="0 0 36 36" aria-hidden="true" shape-rendering="crispEdges"><g fill="${color}" stroke="${color}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" filter="url(#ammo-glow-${index})"><defs><filter id="ammo-glow-${index}"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${shapes[index]}</g></svg>`;
+      }
+
+      function atlasSprite(color, stage, objectId) {
+        const id = `atlas-${objectId}-${stage}`.replace(/[^a-z0-9-]/gi, "");
+        const objectKey = objectId.split("-")[0];
+        if (stage === 5) {
+          return `<svg viewBox="0 0 64 64" aria-hidden="true" shape-rendering="crispEdges"><g fill="${color}" opacity=".92"><path d="m8 18 8-5 4 8-7 6zM41 7l8 4-3 9-8-4zM43 39l10-3 4 8-10 5zM11 43l8-3 4 7-6 8zM27 27l7-4 5 7-8 6z"/></g><g fill="#ffb747"><circle cx="31" cy="11" r="1.4"/><circle cx="53" cy="25" r="1.2"/><circle cx="27" cy="51" r="1.2"/></g></svg>`;
+        }
+        if (stage === 4) {
+          return `<svg viewBox="0 0 64 64" aria-hidden="true" shape-rendering="crispEdges"><defs><radialGradient id="${id}-blast"><stop stop-color="#fff9b0"/><stop offset=".3" stop-color="#ffb321"/><stop offset=".7" stop-color="#ff5422" stop-opacity=".8"/><stop offset="1" stop-color="#ff4b1b" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="30" fill="url(#${id}-blast)"/><path d="M31 4 35 23 48 9 41 27 61 23 44 34 59 45 40 40 43 60 32 43 21 60 25 41 6 47 21 34 4 25 24 27z" fill="#ff8d1b"/><circle cx="32" cy="32" r="7" fill="#fff5ad"/><g fill="#ffd36a"><circle cx="11" cy="13" r="2"/><circle cx="54" cy="17" r="2"/><circle cx="51" cy="52" r="1.6"/><circle cx="12" cy="48" r="1.5"/></g></svg>`;
+        }
+        const craters = Array.from({ length: 7 }, (_, mark) => {
+          const x = 12 + ((mark * 17 + objectId.length * 5) % 42);
+          const y = 12 + ((mark * 23 + objectId.length * 7) % 42);
+          const radius = 2 + (mark % 3);
+          return `<circle cx="${x}" cy="${y}" r="${radius}" fill="#101827" opacity=".32"/><circle cx="${x - 1}" cy="${y - 1}" r="${radius * .55}" fill="#ffffff" opacity=".16"/>`;
+        }).join("");
+        const cracks = stage === 0 ? "" : `<path d="M23 8 28 20 23 28 31 34 26 45 32 56M28 20 40 19 45 27 37 34 46 39 42 50" fill="none" stroke="#181b20" stroke-width="${stage >= 2 ? 3 : 1.8}" stroke-linejoin="round"/>${stage >= 2 ? `<path d="m28 20-8 3m17 11 8-5m-14 5-8 5m10 6 10 5" stroke="#ff8c2e" stroke-width="1.5"/>` : ""}`;
+        const breakBits = stage === 3 ? `<path d="m11 10 12 7-5 5zm42 5-12 9 6 4zM18 49l10-8 3 14zm30 3-9-12 10 1z" fill="${color}" stroke="#ff9b37" stroke-width="1"/>` : "";
+        const ring = objectKey === "saturn" ? `<ellipse cx="32" cy="34" rx="29" ry="9" fill="none" stroke="#e9ca91" stroke-width="4" opacity=".72"/>` : "";
+        const corona = objectKey === "sun" ? `<path d="m32 1 4 10 8-7-1 12 12-2-7 10 12 4-11 5 10 8-12 1 5 11-11-4-2 12-7-9-7 10-3-12-10 6 2-12-12 1 7-10-11-6 12-3-8-9 12 1-2-12 9 7z" fill="#ff9c24" opacity=".9"/>` : "";
+        const surface = objectKey === "earth"
+          ? `<path d="m13 20 8-7 8 4 2 6-6 3-3 8-7-3-5-6zm22 17 8-5 9 4-3 9-8 5-7-6z" fill="#58bb62" opacity=".86"/><path d="m13 20 8-7m4 41 5-10" stroke="#9be1ff" stroke-width="1"/>`
+          : objectKey === "jupiter"
+            ? `<path d="M7 19h50M6 26h52M6 39h52M8 46h48" stroke="#f8d08b" stroke-width="3" opacity=".72"/><ellipse cx="44" cy="34" rx="5" ry="3" fill="#bc5949"/>`
+            : objectKey === "uranus" || objectKey === "neptune"
+              ? `<path d="M9 22h46M8 40h48" stroke="#bdeaff" stroke-width="2" opacity=".34"/>`
+              : "";
+        return `<svg viewBox="0 0 64 64" aria-hidden="true" shape-rendering="crispEdges"><defs><radialGradient id="${id}-surface" cx="32%" cy="28%"><stop stop-color="#fff" stop-opacity=".36"/><stop offset=".5" stop-color="${color}"/><stop offset="1" stop-color="#111827"/></radialGradient><clipPath id="${id}-clip"><circle cx="32" cy="32" r="25"/></clipPath></defs>${corona}${ring}<circle cx="32" cy="32" r="25" fill="url(#${id}-surface)" stroke="#d7e8f4" stroke-opacity=".5"/><g clip-path="url(#${id}-clip)">${surface}${craters}${cracks}${breakBits}</g><circle cx="32" cy="32" r="25" fill="none" stroke="#ffffff" stroke-opacity=".32"/></svg>`;
+      }
+
+      function renderDesignCatalog() {
+        document.querySelector("#ship-design-grid").innerHTML = catalogShipDesigns.map(([name, fireCount], index) => `
+          <article class="ship-design-card">
+            <h3>${String(index + 1).padStart(2, "0")}. ${name}</h3>
+            <div class="catalog-ship-art" style="--ship-color:${catalogShipColors[index]}">${catalogShipSvg(index, fireCount)}</div>
+            <p>Fires: ${fireCount} (${["Center", "Left/Right", "Spread", "Corners", "Fan"][fireCount - 1]})</p>
+            <div class="catalog-shot-row" aria-hidden="true">${Array.from({ length: fireCount }, () => `<i style="--ship-color:${catalogShipColors[index]}"></i>`).join("")}</div>
+            <small>${["Fast • Balanced", "High Accuracy", "Wide Coverage", "Area Control", "Maximum Spread"][fireCount - 1]}</small>
+          </article>`).join("");
+        document.querySelector("#ammo-design-grid").innerHTML = projectileDesigns.map((name, index) => `
+          <article class="ammo-design-card">${projectileSvg(index)}<span>${index + 1}. ${name}</span></article>`).join("");
+        document.querySelector("#ammo-effect-grid").innerHTML = effectDesigns.map(([name, icon, color]) => `
+          <article class="ammo-effect-card"><span style="--effect-color:${color}">${icon}</span><small>${name} Effect</small></article>`).join("");
+
+        const phases = destructionStages.map((name, stage) => `
+          <div class="atlas-phase">${atlasSprite("#9ca3ad", stage, "sample")}<small>${name}</small></div>`).join("");
+        const renderAtlasRow = (object, index) => `
+          <article class="atlas-object">
+            <h4>${object.name}</h4>
+            <div class="atlas-row">${destructionStages.map((name, stage) => `
+              <div class="atlas-phase">${atlasSprite(object.color, stage, `${object.id}-${index}`)}<small>${name}</small></div>`).join("")}
+            </div>
+          </article>`;
+        const planets = [
+          { id: "mercury", name: "MERCURY", color: "#a8a5aa" }, { id: "venus", name: "VENUS", color: "#e6a32a" },
+          { id: "earth", name: "EARTH", color: "#35a9e9" }, { id: "mars", name: "MARS", color: "#e8573e" },
+          { id: "jupiter", name: "JUPITER", color: "#e4a354" }, { id: "saturn", name: "SATURN", color: "#e7cb8a" },
+          { id: "uranus", name: "URANUS", color: "#43cbd7" }, { id: "neptune", name: "NEPTUNE", color: "#1761ed" },
+          { id: "sun", name: "SUN", color: "#ffad18" }
+        ];
+        const moons = [
+          { id: "moon", name: "MOON", color: "#d4d4d0" }, { id: "io", name: "IO", color: "#e8bd3f" },
+          { id: "europa", name: "EUROPA", color: "#c9d6dd" }, { id: "ganymede", name: "GANYMEDE", color: "#aa9681" },
+          { id: "callisto", name: "CALLISTO", color: "#77716e" }, { id: "titan", name: "TITAN", color: "#e69b45" }
+        ];
+        document.querySelector("#planet-atlas").innerHTML = planets.map(renderAtlasRow).join("");
+        document.querySelector("#moon-atlas").innerHTML = moons.map(renderAtlasRow).join("");
+        document.querySelector("#asteroid-atlas").innerHTML = `
+          <div class="atlas-phase asteroid-sample"><span aria-hidden="true">✥</span><small>Intact</small></div>
+          ${destructionStages.slice(1).map((name, stage) => `<div class="atlas-phase">${atlasSprite("#92877c", stage + 1, `rock-${stage}`)}<small>${name}</small></div>`).join("")}`;
+        document.querySelector("#legend-atlas").innerHTML = phases;
+      }
+
       function buyUpgrade(id) {
         const info = upgradeInfo[id];
         if (!info) return;
@@ -540,7 +753,7 @@
               : { min: 31, max: 43, hp: 5, points: 45 };
         const radius = rare ? 22 + Math.random() * 13 : stage.min + Math.random() * (stage.max - stage.min);
         const hpGrowth = Math.min(4, Math.floor(Math.exp(runTime * 0.003) - 1));
-        const hp = rare ? 3 + hpGrowth : stage.hp + hpGrowth;
+        const hp = rare ? 3 + hpGrowth : Math.max(3, stage.hp + hpGrowth);
         const speedMultiplier = Math.min(2.4, Math.exp(runTime * 0.0015));
         asteroids.push({
           x: radius + Math.random() * (width - radius * 2),
@@ -552,9 +765,12 @@
           points: rare ? 75 : stage.points,
           rare,
           cracks: createAsteroidCracks(),
+          surface: createAsteroidSurface(),
+          hitFlash: 0,
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 2.3,
-          shape: Array.from({ length: 9 }, () => 0.76 + Math.random() * 0.38)
+          shape: Array.from({ length: 10 }, () => 0.5 + Math.random() * 0.62),
+          shapeAngles: Array.from({ length: 10 }, (_, index) => index / 10 * Math.PI * 2 + (Math.random() - 0.5) * 0.2)
         });
       }
 
@@ -582,6 +798,8 @@
           maxHp: Math.min(12, settings.hp + Math.floor(runTime / 180)),
           points: settings.points,
           cracks: createAsteroidCracks(),
+          surface: createCelestialSurface(celestial.name),
+          hitFlash: 0,
           rotation: Math.random() * Math.PI * 2,
           spin: (Math.random() - 0.5) * 0.35
         });
@@ -640,6 +858,50 @@
         });
       }
 
+      function createAsteroidSurface() {
+        return Array.from({ length: 18 }, () => {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.sqrt(Math.random()) * 0.62;
+          return {
+            x: Math.cos(angle) * distance,
+            y: Math.sin(angle) * distance,
+            size: 0.07 + Math.random() * 0.14,
+            rotation: angle + (Math.random() - 0.5),
+            crater: Math.random() < 0.65,
+            shade: Math.random()
+          };
+        });
+      }
+
+      function createCelestialSurface() {
+        return {
+          marks: Array.from({ length: 38 }, () => {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.sqrt(Math.random()) * 0.84;
+            return {
+              x: Math.cos(angle) * distance,
+              y: Math.sin(angle) * distance,
+              size: 0.025 + Math.random() * 0.075,
+              shade: Math.random()
+            };
+          }),
+          land: Array.from({ length: 4 }, () => {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 0.5;
+            const center = { x: Math.cos(angle) * distance, y: Math.sin(angle) * distance };
+            const points = Array.from({ length: 7 }, (_, index) => {
+              const pointAngle = index / 7 * Math.PI * 2;
+              const size = 0.12 + Math.random() * 0.09;
+              return {
+                x: center.x + Math.cos(pointAngle) * size,
+                y: center.y + Math.sin(pointAngle) * size * (0.55 + Math.random() * 0.5)
+              };
+            });
+            return points;
+          })
+        };
+      }
+
       function addDestructionEffect(asteroid, color) {
         const shardCount = Math.min(12, Math.max(7, Math.round(asteroid.radius / 3)));
         destructionEffects.push({
@@ -647,12 +909,13 @@
           y: asteroid.y,
           radius: asteroid.radius,
           color,
-          life: 0.58,
-          maxLife: 0.58,
+          life: 0.78,
+          maxLife: 0.78,
           rotation: Math.random() * Math.PI * 2,
+          object: { ...asteroid, hp: 0, gone: false },
           shards: Array.from({ length: shardCount }, () => {
             const angle = Math.random() * Math.PI * 2;
-            const speed = 45 + Math.random() * 170;
+            const speed = 70 + Math.random() * 190;
             return {
               x: 0,
               y: 0,
@@ -660,7 +923,8 @@
               vy: Math.sin(angle) * speed,
               rotation: Math.random() * Math.PI * 2,
               spin: (Math.random() - 0.5) * 12,
-              size: 3 + Math.random() * Math.max(3, asteroid.radius * 0.18)
+              size: 3 + Math.random() * Math.max(3, asteroid.radius * 0.18),
+              color: ["#FFF3C4", "#FFB347", "#F36B32", color][Math.floor(Math.random() * 4)]
             };
           })
         });
@@ -675,6 +939,7 @@
       function damageAsteroid(asteroid, damage, color = "#FFB000") {
         if (asteroid.gone) return;
         asteroid.hp -= damage;
+        asteroid.hitFlash = 0.12;
         if (asteroid.hp <= 0) {
           asteroid.gone = true;
           score += asteroid.points;
@@ -847,6 +1112,7 @@
 
         for (const asteroid of asteroids) {
           asteroid.frozen = Math.max(0, (asteroid.frozen || 0) - delta);
+          asteroid.hitFlash = Math.max(0, (asteroid.hitFlash || 0) - delta);
           if (asteroid.frozen <= 0) asteroid.y += asteroid.speed * delta;
           asteroid.rotation += asteroid.spin * delta;
           if (asteroid.y > height + asteroid.radius) asteroid.gone = true;
@@ -1028,9 +1294,9 @@
         ctx.restore();
       }
 
-      function drawAsteroid(asteroid) {
+      function drawAsteroid(asteroid, effectSprite = false) {
         if (asteroid.kind === "celestial") {
-          drawCosmicObject(asteroid);
+          drawCosmicObject(asteroid, effectSprite);
           if (asteroid.frozen > 0) {
             ctx.strokeStyle = "#67E8F9";
             ctx.lineWidth = 2;
@@ -1041,25 +1307,99 @@
           return;
         }
         const rainbowHue = (performance.now() / 8 + asteroid.rotation * 50) % 360;
-        const rockColor = asteroid.frozen > 0 ? "#67E8F9" : asteroid.rare ? `hsl(${rainbowHue} 95% 62%)` : "#A855F7";
+        const glowColor = asteroid.frozen > 0 ? "#67E8F9" : asteroid.rare ? `hsl(${rainbowHue} 95% 62%)` : "#8C7461";
         ctx.save();
         ctx.translate(asteroid.x, asteroid.y);
         ctx.rotate(asteroid.rotation);
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = rockColor;
-        ctx.fillStyle = rockColor;
-        ctx.strokeStyle = asteroid.rare ? `hsl(${(rainbowHue + 65) % 360} 100% 82%)` : "#D8B4FE";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        asteroid.shape.forEach((scale, index) => {
-          const angle = index / asteroid.shape.length * Math.PI * 2;
-          const x = Math.cos(angle) * asteroid.radius * scale;
-          const y = Math.sin(angle) * asteroid.radius * scale;
-          if (index === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.closePath();
+        ctx.shadowBlur = asteroid.rare || asteroid.frozen > 0 ? 10 : 0;
+        ctx.shadowColor = glowColor;
+        traceAsteroidShape(asteroid);
+        ctx.fillStyle = asteroid.frozen > 0 ? "#527989" : "#665C54";
         ctx.fill();
+        ctx.save();
+        traceAsteroidShape(asteroid);
+        ctx.clip();
+        asteroid.shape.forEach((_, index) => {
+          const next = (index + 1) % asteroid.shape.length;
+          const angle = asteroid.shapeAngles[index];
+          const nextAngle = asteroid.shapeAngles[next];
+          const shade = index % 3 === 0 ? "#9D8B78" : index % 3 === 1 ? "#76695D" : "#49474A";
+          ctx.fillStyle = asteroid.frozen > 0 ? (index % 2 ? "#75A7B2" : "#355866") : shade;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(angle) * asteroid.radius * asteroid.shape[index], Math.sin(angle) * asteroid.radius * asteroid.shape[index]);
+          ctx.lineTo(Math.cos(nextAngle) * asteroid.radius * asteroid.shape[next], Math.sin(nextAngle) * asteroid.radius * asteroid.shape[next]);
+          ctx.closePath();
+          ctx.globalAlpha = 0.38;
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        for (const mark of asteroid.surface) {
+          const x = mark.x * asteroid.radius;
+          const y = mark.y * asteroid.radius;
+          const size = mark.size * asteroid.radius;
+          if (mark.crater) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(mark.rotation);
+            ctx.fillStyle = asteroid.frozen > 0 ? "#284551" : mark.shade > 0.5 ? "#49464A" : "#514B47";
+            ctx.beginPath();
+            for (let point = 0; point < 7; point++) {
+              const angle = point / 7 * Math.PI * 2;
+              const scale = point % 2 ? 0.82 : 1;
+              const px = Math.cos(angle) * size * scale;
+              const py = Math.sin(angle) * size * 0.7 * scale;
+              if (point === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = asteroid.frozen > 0 ? "#9CEAF3" : "#BDA88E";
+            ctx.globalAlpha = 0.68;
+            ctx.lineWidth = Math.max(0.7, asteroid.radius * 0.035);
+            ctx.beginPath();
+            ctx.moveTo(-size * 0.75, size * 0.03);
+            ctx.lineTo(-size * 0.48, -size * 0.43);
+            ctx.lineTo(size * 0.05, -size * 0.58);
+            ctx.lineTo(size * 0.53, -size * 0.28);
+            ctx.stroke();
+            ctx.fillStyle = "#302F34";
+            ctx.globalAlpha = 0.62;
+            ctx.beginPath();
+            ctx.moveTo(-size * 0.38, -size * 0.02);
+            ctx.lineTo(-size * 0.13, -size * 0.3);
+            ctx.lineTo(size * 0.25, -size * 0.25);
+            ctx.lineTo(size * 0.36, size * 0.07);
+            ctx.lineTo(size * 0.08, size * 0.28);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          } else {
+            ctx.fillStyle = asteroid.frozen > 0 ? "#9DEAF2" : mark.shade > 0.5 ? "#C0AA8E" : "#39383C";
+            ctx.globalAlpha = 0.28 + mark.shade * 0.2;
+            ctx.beginPath();
+            ctx.moveTo(x - size, y - size * 0.35);
+            ctx.lineTo(x - size * 0.28, y - size);
+            ctx.lineTo(x + size * 0.48, y - size * 0.7);
+            ctx.lineTo(x + size, y + size * 0.16);
+            ctx.lineTo(x + size * 0.18, y + size);
+            ctx.lineTo(x - size * 0.72, y + size * 0.48);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+        if (asteroid.hitFlash > 0) {
+          ctx.globalAlpha = asteroid.hitFlash / 0.12 * 0.65;
+          ctx.fillStyle = "#FFF2D0";
+          traceAsteroidShape(asteroid);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = "#292A30";
+        ctx.lineWidth = 2;
+        traceAsteroidShape(asteroid);
         ctx.stroke();
         if (asteroid.rare) {
           ctx.strokeStyle = `hsl(${(rainbowHue + 180) % 360} 100% 68%)`;
@@ -1072,16 +1412,28 @@
         ctx.restore();
       }
 
+      function traceAsteroidShape(asteroid) {
+        ctx.beginPath();
+        asteroid.shape.forEach((scale, index) => {
+          const angle = asteroid.shapeAngles[index];
+          const x = Math.cos(angle) * asteroid.radius * scale;
+          const y = Math.sin(angle) * asteroid.radius * scale;
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+      }
+
       function drawAsteroidCracks(asteroid) {
         const damage = asteroid.maxHp - asteroid.hp;
-        const crackCount = Math.min(damage, asteroid.cracks.length);
+        const crackCount = Math.min(2, damage, asteroid.cracks.length);
         if (!crackCount) return;
         ctx.save();
         ctx.scale(asteroid.radius, asteroid.radius);
         ctx.beginPath();
         if (asteroid.shape) {
           asteroid.shape.forEach((scale, index) => {
-            const angle = index / asteroid.shape.length * Math.PI * 2;
+            const angle = asteroid.shapeAngles[index];
             const x = Math.cos(angle) * scale;
             const y = Math.sin(angle) * scale;
             if (index === 0) ctx.moveTo(x, y);
@@ -1094,8 +1446,8 @@
         ctx.clip();
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ctx.strokeStyle = "#1B1230";
-        ctx.lineWidth = 0.105;
+        ctx.strokeStyle = "#29252A";
+        ctx.lineWidth = 0.11;
         for (const points of asteroid.cracks.slice(0, crackCount)) {
           ctx.beginPath();
           points.forEach((point, index) => {
@@ -1104,8 +1456,8 @@
           });
           ctx.stroke();
         }
-        ctx.strokeStyle = asteroid.rare ? "#FFFFFF" : asteroid.kind === "celestial" ? "#FFF1C2" : "#F3D9FF";
-        ctx.lineWidth = 0.045;
+        ctx.strokeStyle = asteroid.rare ? "#FFFFFF" : asteroid.frozen > 0 ? "#C8FAFF" : asteroid.kind === "celestial" ? "#FFF0C2" : "#F5B95E";
+        ctx.lineWidth = 0.055;
         ctx.shadowColor = ctx.strokeStyle;
         ctx.shadowBlur = 0.08;
         for (const points of asteroid.cracks.slice(0, crackCount)) {
@@ -1119,10 +1471,191 @@
         ctx.restore();
       }
 
-      function drawCosmicObject(object) {
+      function drawPlanetSurface(object) {
+        const palettes = {
+          Mercury: ["#D4C9BE", "#8D8580", "#514B4A", "#E6D9C9"],
+          Venus: ["#FFD45C", "#F39524", "#BC4D1F", "#FFE08A"],
+          Earth: ["#1686E5", "#1050B8", "#123B83", "#65CF68"],
+          Mars: ["#F16B49", "#BD392A", "#732B28", "#F5A06A"],
+          Jupiter: ["#E9C28D", "#AF7150", "#704638", "#F8E0B4"],
+          Saturn: ["#F3D89B", "#C79B61", "#80644D", "#FFF0C3"],
+          Uranus: ["#80E8EC", "#35B5D0", "#176885", "#B0FFFF"],
+          Neptune: ["#438BFF", "#1747BD", "#122A83", "#83C4FF"],
+          Moon: ["#E5E0D9", "#A6A19D", "#5C595A", "#F7F0E6"],
+          Io: ["#FFE06A", "#D78C2E", "#7E4531", "#FFF2A3"],
+          Europa: ["#F1E8D8", "#B8C8C8", "#647E8A", "#FFFFFF"],
+          Ganymede: ["#C8B5A2", "#82746D", "#4F4949", "#E4D3BE"],
+          Callisto: ["#A49A91", "#6F6867", "#403E42", "#D5C6B8"],
+          Titan: ["#F9B554", "#CB6B2D", "#713F37", "#FFE09A"]
+        };
+        const [light, middle, dark, accent] = palettes[object.name] || [object.color, "#765A9E", "#29264A", "#E7D5FF"];
+        const radius = object.radius;
+
+        if (object.name === "Saturn" || object.name === "Uranus") {
+          ctx.save();
+          ctx.rotate(-0.28);
+          ctx.strokeStyle = object.name === "Saturn" ? "#E8C992" : "#75DCE3";
+          ctx.lineWidth = radius * 0.19;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, radius * 1.55, radius * 0.47, 0, Math.PI * 1.04, Math.PI * 1.96);
+          ctx.stroke();
+          ctx.strokeStyle = object.name === "Saturn" ? "#FFF0BE" : "#B3FFFF";
+          ctx.lineWidth = Math.max(1, radius * 0.045);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, radius * 1.52, radius * 0.45, 0, Math.PI * 1.04, Math.PI * 1.96);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.fillStyle = middle;
+        traceCelestialSphere(radius);
+        ctx.fill();
+        ctx.save();
+        traceCelestialSphere(radius * 0.96);
+        ctx.clip();
+
+        if (["Jupiter", "Saturn", "Uranus", "Neptune"].includes(object.name)) {
+          const bandColors = object.name === "Jupiter"
+            ? ["#F7D9A6", "#B66F45", "#F3C78A", "#8D5742", "#F8E0B8"]
+            : [accent, middle, light, middle];
+          for (let band = 0; band < 8; band++) {
+            ctx.globalAlpha = band % 2 === 0 ? 0.72 : 0.42;
+            ctx.fillStyle = bandColors[band % bandColors.length];
+            const y = -radius + band * radius * 0.29;
+            ctx.fillRect(-radius, y, radius * 2, radius * (object.name === "Jupiter" && band === 3 ? 0.21 : 0.12));
+          }
+          ctx.globalAlpha = 1;
+          if (object.name === "Jupiter") {
+            ctx.fillStyle = "#B9543B";
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.38, radius * 0.3, radius * 0.2, radius * 0.1, -0.12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#F0BF83";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        } else if (object.name === "Earth") {
+          for (const continent of object.surface.land) {
+            ctx.fillStyle = "#45B95B";
+            ctx.beginPath();
+            continent.forEach((point, index) => {
+              if (index === 0) ctx.moveTo(point.x * radius, point.y * radius);
+              else ctx.lineTo(point.x * radius, point.y * radius);
+            });
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "#A6D878";
+            ctx.lineWidth = Math.max(0.6, radius * 0.025);
+            ctx.stroke();
+          }
+        } else {
+          for (const mark of object.surface.marks) {
+            const shade = mark.shade > 0.5 ? accent : dark;
+            ctx.globalAlpha = 0.4 + mark.shade * 0.35;
+            ctx.fillStyle = shade;
+            ctx.beginPath();
+            const centerX = mark.x * radius;
+            const centerY = mark.y * radius;
+            const size = mark.size * radius;
+            for (let point = 0; point < 6; point++) {
+              const angle = point / 6 * Math.PI * 2 + mark.shade;
+              const px = centerX + Math.cos(angle) * size * (point % 2 ? 0.72 : 1.3);
+              const py = centerY + Math.sin(angle) * size * (point % 2 ? 0.82 : 1);
+              if (point === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.fillStyle = light;
+        ctx.globalAlpha = 0.36;
+        ctx.beginPath();
+        ctx.moveTo(-radius * 0.72, -radius * 0.2);
+        ctx.lineTo(-radius * 0.62, -radius * 0.64);
+        ctx.lineTo(-radius * 0.24, -radius * 0.88);
+        ctx.lineTo(radius * 0.02, -radius * 0.66);
+        ctx.lineTo(-radius * 0.18, -radius * 0.35);
+        ctx.lineTo(-radius * 0.5, -radius * 0.12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = dark;
+        ctx.globalAlpha = 0.42;
+        ctx.beginPath();
+        ctx.moveTo(radius * 0.42, -radius * 0.72);
+        ctx.lineTo(radius * 0.82, -radius * 0.4);
+        ctx.lineTo(radius * 0.95, radius * 0.2);
+        ctx.lineTo(radius * 0.62, radius * 0.74);
+        ctx.lineTo(radius * 0.2, radius * 0.91);
+        ctx.lineTo(radius * 0.48, radius * 0.35);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        if (object.name === "Saturn" || object.name === "Uranus") {
+          ctx.save();
+          ctx.rotate(-0.28);
+          ctx.strokeStyle = object.name === "Saturn" ? "#C39157" : "#4CBCC8";
+          ctx.lineWidth = radius * 0.16;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, radius * 1.55, radius * 0.47, 0, 0.03, Math.PI * 0.97);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function traceCelestialSphere(radius) {
+        const segments = 28;
+        const pixelStep = Math.max(1, radius / 12);
+        ctx.beginPath();
+        for (let index = 0; index < segments; index++) {
+          const angle = index / segments * Math.PI * 2;
+          const x = Math.round(Math.cos(angle) * radius / pixelStep) * pixelStep;
+          const y = Math.round(Math.sin(angle) * radius / pixelStep) * pixelStep;
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      }
+
+      function drawCosmicObject(object, effectSprite = false) {
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotation);
+        if (object.celestialType === "planet") {
+          drawPlanetSurface(object);
+        } else if (object.celestialType === "star") {
+          const flare = ctx.createRadialGradient(0, 0, object.radius * 0.1, 0, 0, object.radius * 1.25);
+          flare.addColorStop(0, "#FFF9BD");
+          flare.addColorStop(0.42, "#FFD444");
+          flare.addColorStop(0.75, "#FF7A18");
+          flare.addColorStop(1, "#F2381B00");
+          ctx.fillStyle = flare;
+          ctx.beginPath();
+          ctx.arc(0, 0, object.radius * 1.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = object.color;
+          ctx.beginPath();
+          ctx.arc(0, 0, object.radius * 0.68, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#FFF5B0";
+          ctx.beginPath();
+          ctx.arc(-object.radius * 0.18, -object.radius * 0.2, object.radius * 0.28, 0, Math.PI * 2);
+          ctx.fill();
+          for (let ray = 0; ray < 12; ray++) {
+            const angle = ray / 12 * Math.PI * 2;
+            const inner = object.radius * (0.78 + (ray % 2) * 0.12);
+            const outer = object.radius * (1.06 + (ray % 3) * 0.1);
+            ctx.strokeStyle = ray % 2 ? "#FF761D" : "#FFE26B";
+            ctx.lineWidth = Math.max(1, object.radius * 0.07);
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
+            ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer);
+            ctx.stroke();
+          }
+        } else {
         const palette = object.celestialType === "planet"
           ? [object.color, "#5431a8"]
           : object.celestialType === "galaxy"
@@ -1185,12 +1718,22 @@
           ctx.ellipse(0, 0, object.radius * 1.25, object.radius * 0.48, 0, 0, Math.PI * 2);
           ctx.stroke();
         }
+        }
+        if (object.hitFlash > 0) {
+          ctx.globalAlpha = object.hitFlash / 0.12 * 0.7;
+          ctx.fillStyle = "#FFF2D0";
+          ctx.beginPath();
+          ctx.arc(0, 0, object.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
         ctx.restore();
         ctx.save();
         ctx.translate(object.x, object.y);
         ctx.rotate(object.rotation);
         drawAsteroidCracks(object);
         ctx.restore();
+        if (effectSprite) return;
         ctx.save();
         ctx.font = "700 10px Segoe UI, sans-serif";
         ctx.textAlign = "center";
@@ -1207,32 +1750,53 @@
         for (const effect of destructionEffects) {
           const progress = 1 - effect.life / effect.maxLife;
           const alpha = Math.max(0, effect.life / effect.maxLife);
-          const waveRadius = effect.radius * (0.45 + progress * 1.65);
+          if (progress < 0.2) {
+            const sprite = effect.object;
+            sprite.x = effect.x + Math.sin(progress * 90) * progress * effect.radius * 0.18;
+            sprite.y = effect.y;
+            sprite.rotation = effect.rotation;
+            drawAsteroid(sprite, true);
+          }
           ctx.save();
-          ctx.globalAlpha = alpha;
+          ctx.globalAlpha = alpha * (progress < 0.2 ? 0.5 : 1);
           ctx.translate(effect.x, effect.y);
           ctx.rotate(effect.rotation);
-          ctx.strokeStyle = effect.color;
-          ctx.lineWidth = Math.max(1, effect.radius * (0.11 - progress * 0.08));
-          ctx.shadowColor = effect.color;
-          ctx.shadowBlur = 14 * alpha;
-          ctx.beginPath();
-          ctx.arc(0, 0, waveRadius, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.globalAlpha = alpha * (1 - progress);
-          ctx.fillStyle = "#FFFFFF";
-          ctx.beginPath();
-          ctx.arc(0, 0, effect.radius * 0.38 * (1 - progress * 0.7), 0, Math.PI * 2);
-          ctx.fill();
+          if (progress >= 0.12 && progress < 0.58) {
+            const explosionProgress = (progress - 0.12) / 0.46;
+            const flashRadius = effect.radius * (0.18 + explosionProgress * 1.05);
+            const flash = ctx.createRadialGradient(0, 0, 0, 0, 0, flashRadius);
+            flash.addColorStop(0, "#FFFFFF");
+            flash.addColorStop(0.24, "#FFF3A5");
+            flash.addColorStop(0.58, "#FF8A24");
+            flash.addColorStop(1, "#F33B1700");
+            ctx.globalAlpha = alpha * (1 - explosionProgress * 0.62);
+            ctx.fillStyle = flash;
+            ctx.beginPath();
+            ctx.arc(0, 0, flashRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#FFD76A";
+            ctx.lineWidth = Math.max(1, effect.radius * 0.08 * (1 - explosionProgress));
+            ctx.shadowColor = "#FF7A18";
+            ctx.shadowBlur = 14;
+            ctx.beginPath();
+            ctx.arc(0, 0, effect.radius * (0.35 + explosionProgress * 1.45), 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = alpha;
           for (const shard of effect.shards) {
             ctx.save();
             ctx.translate(shard.x, shard.y);
             ctx.rotate(shard.rotation);
-            ctx.fillStyle = effect.color;
+            ctx.globalAlpha = alpha * Math.min(1, progress * 4);
+            ctx.fillStyle = shard.color;
+            ctx.shadowColor = shard.color;
+            ctx.shadowBlur = 5;
             ctx.beginPath();
-            ctx.moveTo(-shard.size * 0.55, -shard.size * 0.3);
-            ctx.lineTo(shard.size * 0.6, -shard.size * 0.2);
-            ctx.lineTo(shard.size * 0.1, shard.size * 0.55);
+            ctx.moveTo(-shard.size * 0.5, -shard.size * 0.38);
+            ctx.lineTo(shard.size * 0.42, -shard.size * 0.5);
+            ctx.lineTo(shard.size * 0.58, shard.size * 0.12);
+            ctx.lineTo(shard.size * 0.08, shard.size * 0.5);
+            ctx.lineTo(-shard.size * 0.52, shard.size * 0.22);
             ctx.closePath();
             ctx.fill();
             ctx.restore();
@@ -1416,6 +1980,7 @@
       resetGame();
       draw();
       renderProgress();
+      renderDesignCatalog();
     })();
   </script>
 </body>

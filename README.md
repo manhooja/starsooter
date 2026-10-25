@@ -9,6 +9,7 @@ Open [`shooter.html`](./shooter.html) in a modern web browser. No installation, 
 - The Home screen shows your personal best and current upgrade levels, with a shortcut to the High Scores page and the upgrade shop. View your **Profile** for pilot stats and detailed upgrade levels.
 - Earn **1 Star Dust for every 10 points** at the end of a completed run, then spend it on upgrades or ship skins.
 - Collect and equip 11 futuristic and airplane-inspired ships across Common, Rare, Epic, and Legendary grades. Each ship has its own speed, fire rate, shot count, ability, and asteroid-kill charge requirement.
+- Browse the Design Lab for a 28-ship concept lineup, 16 projectile concepts, sample ammo effects, and a celestial destruction-stage atlas.
 - Move left/right with **A/D** or the **left/right arrow keys**.
 - The ship fires automatically throughout each mission.
 - Charge a ship ability by destroying asteroids, then activate it with **F** or the ability button. On touch devices, use the on-screen direction and ability buttons; firing is automatic.
@@ -31,7 +32,7 @@ The game uses a small set of standalone files: [`shooter.html`](./shooter.html) 
 
 ## Project status
 
-This is a lightweight arcade game with one survival mode, a hangar, purchasable gameplay upgrades, 11 ships with distinct handling, weapon stats, and manual abilities across four grades, and a device-local personal best. Run score and lives reset on each mission; hangar progress is saved in this browser. High scores are not shared online.
+This is a lightweight arcade game with one survival mode, a hangar, purchasable gameplay upgrades, 11 playable ships with distinct handling, weapon stats, and manual abilities across four grades, and a device-local personal best. The Design Lab is a visual concept sheet; its additional ship and weapon designs are not separately selectable gameplay items. Run score and lives reset on each mission; hangar progress is saved in this browser. High scores are not shared online.
 
 ## License
 

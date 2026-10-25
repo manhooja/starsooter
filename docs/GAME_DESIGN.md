@@ -49,6 +49,7 @@ The straightforward controls and short-session survival loop suit casual players
 - The home screen focuses on launching a mission and includes the personal best, a compact upgrade-level summary, and shortcuts to High Scores and the upgrade shop. The separate Profile page shows pilot stats and detailed upgrade levels; the ship shop, Star Dust balance, equipped skin, and personal-best score are implemented.
 - The in-mission Menu button and Escape key pause the run. Continue resumes the run; Quit to Hangar abandons it without a completion reward.
 - The ship shop offers 11 distinct, purchasable ship silhouettes, including futuristic spacecraft and airplane-inspired designs. Ships have Common, Rare, Epic, or Legendary grades and balanced stat trade-offs rather than higher grades being strictly stronger. Wing-mounted guns are drawn on multi-shot ships and each gun fires a bullet in its own lane. Nova is the default ship, and owned ships can be equipped between runs.
+- The Design Lab presents a 28-ship concept lineup, 16 projectile designs, eight sample ammo effects, and a two-column planet/moon destruction-stage atlas. These extra designs are reference artwork and do not change the 11 playable ships or the current game mechanics.
 - Every ship has a distinct named ability and a ship-specific asteroid-kill charge threshold, shown in the shop. Destroyed asteroids add to the charge; players activate a charged ability manually using **F**, the HUD button, or the touch button. Abilities include area damage, a shot spread, freezing, repair/shielding, a dash, targeted strikes, drones, a nearby-rock burst, and temporary extra guns.
 - Hangar progress is stored locally in the current browser. There is no online leaderboard or cross-device account.
 
@@ -64,7 +65,7 @@ The presentation suggests a pilot defending against asteroids, but the implement
 
 ## Art direction
 
-The game uses a deep-space navy background (`#080B1A`), soft-white stars (`#DCE7FF`), a bright cyan default ship (`#00E5FF`), cosmic-purple asteroids (`#A855F7`), electric-blue player shots (`#38BDF8`), and orange-yellow asteroid impact particles (`#FFB000`). Player collision particles use hot pink (`#FF477E`). Cosmetic ship skins can change the ship and its preview color. Game visuals are drawn procedurally with the Canvas 2D API; no separate art or audio assets were found.
+The game uses a deep-space navy background (`#080B1A`), soft-white stars (`#DCE7FF`), a bright cyan default ship (`#00E5FF`), cosmic-purple asteroids (`#A855F7`), electric-blue player shots (`#38BDF8`), and orange-yellow asteroid impact particles (`#FFB000`). Player collision particles use hot pink (`#FF477E`). Cosmetic ship skins can change the ship and its preview color. Game visuals are drawn procedurally with the Canvas 2D API; the Design Lab's SVG illustrations are generated in the page and require no separate art or audio assets.
 
 The UI uses white primary text against the dark background. Enemy bullets and boss enemies are not implemented; the player health display uses lives.
 
