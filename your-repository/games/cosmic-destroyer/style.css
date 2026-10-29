@@ -1078,38 +1078,250 @@ kbd {
     font-size: 7px;
   }
 
-  .touch-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 11px 0 2px;
-  }
-
-  .touch-controls button {
-    min-width: 54px;
-    min-height: 42px;
-    border: 1px solid #2c405b;
-    border-radius: 5px;
-    background: #101b2c;
-    color: #d7edff;
-    font-weight: 800;
-    touch-action: none;
-  }
-
-  .touch-controls button[data-control="fire"] {
-    min-width: 86px;
-    border-color: #347d93;
-    color: var(--cyan);
-    letter-spacing: 0.12em;
-  }
-
-  .touch-controls button:active {
-    background: #1a304a;
-  }
-
   .page-note {
     font-size: 7px;
     letter-spacing: 0.09em;
+  }
+}
+
+.touch-controls {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: none;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding:
+    12px
+    max(14px, env(safe-area-inset-right))
+    max(14px, env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.touch-controls[hidden] {
+  display: none !important;
+}
+
+.virtual-joystick {
+  position: relative;
+  display: grid;
+  width: clamp(100px, 17vw, 154px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(157, 215, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(15, 34, 57, 0.3);
+  box-shadow: inset 0 0 26px rgba(93, 181, 232, 0.1), 0 0 22px rgba(45, 154, 210, 0.08);
+  touch-action: none;
+  pointer-events: auto;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.virtual-joystick.active {
+  border-color: rgba(98, 229, 255, 0.72);
+  background: rgba(28, 73, 100, 0.4);
+}
+
+.joystick-ring {
+  position: absolute;
+  inset: 19%;
+  border: 1px solid rgba(188, 221, 255, 0.17);
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent 49.5%, rgba(188, 221, 255, 0.12) 50%, transparent 50.5%),
+    linear-gradient(transparent 49.5%, rgba(188, 221, 255, 0.12) 50%, transparent 50.5%);
+}
+
+.joystick-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+  border: 1px solid rgba(184, 241, 255, 0.68);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(107, 218, 250, 0.66), rgba(35, 91, 128, 0.68));
+  box-shadow: 0 0 18px rgba(98, 229, 255, 0.28);
+  pointer-events: none;
+  transition: background 120ms ease;
+}
+
+.virtual-joystick.active .joystick-knob {
+  background: radial-gradient(circle at 35% 30%, rgba(141, 242, 255, 0.9), rgba(45, 133, 171, 0.84));
+}
+
+.fire-control {
+  display: grid;
+  width: clamp(76px, 12vw, 112px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  margin-bottom: clamp(4px, 1.2vw, 16px);
+  border: 2px solid rgba(98, 229, 255, 0.76);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, rgba(73, 171, 204, 0.68), rgba(9, 29, 48, 0.78) 70%);
+  box-shadow: inset 0 0 18px rgba(98, 229, 255, 0.13), 0 0 25px rgba(56, 192, 230, 0.18);
+  color: #b6f5ff;
+  cursor: pointer;
+  font-size: clamp(29px, 5vw, 44px);
+  touch-action: none;
+  pointer-events: auto;
+  transition: transform 80ms ease, background 80ms ease, box-shadow 80ms ease;
+}
+
+.fire-control.pressed {
+  transform: scale(0.94);
+  background: radial-gradient(circle at 35% 28%, rgba(109, 228, 255, 0.9), rgba(12, 72, 99, 0.94) 74%);
+  box-shadow: inset 0 0 24px rgba(117, 240, 255, 0.36), 0 0 30px rgba(56, 218, 255, 0.42);
+}
+
+.orientation-hint {
+  display: none;
+}
+
+@media (any-pointer: coarse) and (orientation: portrait) {
+  .orientation-hint {
+    position: fixed;
+    z-index: 30;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px;
+    background: rgba(4, 9, 19, 0.94);
+    color: var(--text);
+    font-size: clamp(12px, 3.5vw, 18px);
+    letter-spacing: 0.14em;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .rotate-phone {
+    position: relative;
+    width: 55px;
+    height: 83px;
+    border: 3px solid var(--cyan);
+    border-radius: 11px;
+    box-shadow: 0 0 25px rgba(98, 229, 255, 0.2);
+    animation: rotate-device 1.8s ease-in-out infinite;
+  }
+
+  .rotate-phone::after {
+    position: absolute;
+    right: 7px;
+    bottom: 5px;
+    left: 7px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--cyan);
+    content: "";
+  }
+
+  @keyframes rotate-device {
+    0%, 15% { transform: rotate(0); }
+    55%, 85% { transform: rotate(90deg); }
+    100% { transform: rotate(90deg); }
+  }
+}
+
+@media (any-pointer: coarse) {
+  .touch-controls:not([hidden]) {
+    display: flex;
+  }
+
+  .virtual-joystick,
+  .fire-control {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  canvas {
+    touch-action: none;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 600px) and (any-pointer: coarse) {
+  body {
+    min-height: 100svh;
+    padding:
+      max(4px, env(safe-area-inset-top))
+      max(8px, env(safe-area-inset-right))
+      max(4px, env(safe-area-inset-bottom))
+      max(8px, env(safe-area-inset-left));
+  }
+
+  .game-shell {
+    width: min(100%, calc((100svh - 66px) * 1.6));
+  }
+
+  .topbar,
+  .game-footer,
+  .page-note {
+    display: none;
+  }
+
+  .game-panel {
+    padding: 5px;
+    border-radius: 8px;
+  }
+
+  .hud {
+    grid-template-columns: minmax(48px, 0.65fr) minmax(75px, 1.3fr) minmax(55px, 0.7fr) 32px;
+    gap: clamp(4px, 1.2vw, 10px);
+    min-height: 48px;
+    padding: 5px 9px;
+  }
+
+  .hud .wave-metric {
+    display: none;
+  }
+
+  .hud-metric {
+    gap: 2px;
+  }
+
+  .hud-metric strong {
+    font-size: clamp(12px, 2.2vw, 17px);
+  }
+
+  .metric-label,
+  .vital-row strong {
+    font-size: 7px;
+  }
+
+  .hud-vitals {
+    gap: 4px;
+  }
+
+  .vital-row {
+    grid-template-columns: 31px minmax(30px, 1fr) 20px;
+    gap: 5px;
+  }
+
+  .pause-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .playfield {
+    margin-top: 5px;
+  }
+
+  .touch-controls {
+    padding: 8px max(16px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+
+  .virtual-joystick {
+    width: clamp(94px, 26vh, 132px);
+  }
+
+  .fire-control {
+    width: clamp(70px, 20vh, 96px);
   }
 }
 
@@ -1119,5 +1331,6 @@ kbd {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

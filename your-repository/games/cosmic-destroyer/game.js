@@ -22,6 +22,21 @@
     return;
   }
 
+  function resizeCanvasForDisplay() {
+    const pixelRatio = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+    const width = Math.round(WIDTH * pixelRatio);
+    const height = Math.round(HEIGHT * pixelRatio);
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+  }
+  resizeCanvasForDisplay();
+  window.addEventListener("resize", resizeCanvasForDisplay, { passive: true });
+  window.visualViewport?.addEventListener("resize", resizeCanvasForDisplay, { passive: true });
+
   const $ = (selector) => document.querySelector(selector);
   const scoreElement = $("#score");
   const healthValueElement = $("#healthValue");
@@ -39,6 +54,10 @@
   const screenCopy = $("#screenCopy");
   const actionButton = $("#actionButton");
   const pauseButton = $("#pauseButton");
+  const touchControls = $("#touchControls");
+  const joystick = $("#virtualJoystick");
+  const joystickKnob = $("#joystickKnob");
+  const fireControl = $("#fireControl");
   const toast = $("#toast");
   const hangar = $("#hangar");
   const hangarList = $("#hangarList");
@@ -247,8 +266,11 @@
     beams: [],
     stars: [],
     keys: new Set(),
-    touch: { left: false, right: false, fire: false }
+    touch: { x: 0, y: 0, fire: false }
   };
+  const activeFirePointers = new Set();
+  let joystickPointerId = null;
+  const JOYSTICK_DEAD_ZONE = 0.12;
 
   const enemyTypes = {
     scout: { name: "SCOUT", health: 1, speed: 115, points: 100, fireRate: 0, size: 34, color: "#ff6e91", credits: 12 },
@@ -676,6 +698,7 @@
   function setScreen(mode, config) {
     state.mode = mode;
     screen.hidden = mode === "playing" || mode === "hangar";
+    touchControls.hidden = mode !== "playing";
     actionButton.hidden = true;
     screenActions.replaceChildren();
     if (mode === "ready") {
@@ -697,10 +720,17 @@
     } else if (mode === "paused") {
       screenKicker.textContent = "FLIGHT SYSTEMS ON HOLD";
       screenTitle.innerHTML = "MISSION<br /><span>PAUSED</span>";
-      screenCopy.textContent = "The action is paused. Resume flight, adjust settings, or return to the menu.";
+      screenCopy.textContent = "The action is paused. Resume flight, restart this sortie, view controls, or adjust settings.";
       addScreenAction("RESUME FLIGHT", "resume", "primary");
+      addScreenAction("RESTART", "restart");
+      addScreenAction("CONTROLS", "controls");
       addScreenAction("SETTINGS", "settings");
-      addScreenAction("QUIT TO MAIN MENU", "main");
+      addScreenAction("RETURN TO MAIN MENU", "main");
+    } else if (mode === "controls") {
+      screenKicker.textContent = "FLIGHT CONTROLS";
+      screenTitle.innerHTML = "PILOT<br /><span>REFERENCE</span>";
+      screenCopy.textContent = "Drag the left joystick to steer and hold FIRE to use your equipped weapon. Both controls work together. Keyboard: WASD or arrows to move, Space to fire, P or Escape to pause.";
+      addScreenAction("BACK TO PAUSE", "controlsBack", "primary");
     } else if (mode === "gameover") {
       screenKicker.textContent = "SIGNAL LOST";
       screenTitle.innerHTML = "SHIP<br /><span>DESTROYED</span>";
@@ -778,9 +808,7 @@
     state.pickups = [];
     state.beams = [];
     state.keys.clear();
-    state.touch.left = false;
-    state.touch.right = false;
-    state.touch.fire = false;
+    clearTouchInputs();
     toast.hidden = true;
     updateHud();
   }
@@ -862,6 +890,31 @@
     addScreenAction(state.screenReturnMode === "paused" ? "BACK TO PAUSE" : "BACK TO MENU", "settingsBack", "primary");
   }
 
+  function requestLandscape() {
+    if (window.screen.orientation && typeof window.screen.orientation.lock === "function") {
+      try {
+        window.screen.orientation.lock("landscape").catch(() => {});
+      } catch {
+        // Orientation locking is optional; the portrait hint remains available as a fallback.
+      }
+    }
+  }
+
+  function resetJoystickVisual() {
+    state.touch.x = 0;
+    state.touch.y = 0;
+    joystickKnob.style.transform = "translate(-50%, -50%)";
+    joystick.classList.remove("active");
+  }
+
+  function clearTouchInputs() {
+    activeFirePointers.clear();
+    joystickPointerId = null;
+    state.touch.fire = false;
+    resetJoystickVisual();
+    fireControl.classList.remove("pressed");
+  }
+
   function ensureAudio() {
     if (!state.audioContext) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -897,9 +950,7 @@
     if (state.mode === "playing") {
       setScreen("paused");
       state.keys.clear();
-      state.touch.left = false;
-      state.touch.right = false;
-      state.touch.fire = false;
+      clearTouchInputs();
     } else if (state.mode === "paused") {
       setScreen("playing");
     }
@@ -1549,10 +1600,10 @@
       entity.config.slowAura && Math.hypot(entity.x - state.player.x, entity.y - state.player.y) < entity.radius + 100
     )) speed *= 0.72;
     if (ship.passive === "pickup" && state.pickups.length) speed *= 1.05;
-    let horizontal = Number(state.keys.has("ArrowRight") || state.keys.has("KeyD") || state.touch.right)
-      - Number(state.keys.has("ArrowLeft") || state.keys.has("KeyA") || state.touch.left);
+    let horizontal = Number(state.keys.has("ArrowRight") || state.keys.has("KeyD"))
+      - Number(state.keys.has("ArrowLeft") || state.keys.has("KeyA")) + state.touch.x;
     let vertical = Number(state.keys.has("ArrowDown") || state.keys.has("KeyS"))
-      - Number(state.keys.has("ArrowUp") || state.keys.has("KeyW"));
+      - Number(state.keys.has("ArrowUp") || state.keys.has("KeyW")) + state.touch.y;
     const length = Math.hypot(horizontal, vertical);
     if (length > 0) {
       horizontal /= length;
@@ -2340,10 +2391,9 @@
     state.hangarSelection = tab === "ships" ? state.equippedShip : state.equippedWeapon;
     state.mode = "hangar";
     state.keys.clear();
-    state.touch.left = false;
-    state.touch.right = false;
-    state.touch.fire = false;
+    clearTouchInputs();
     screen.hidden = true;
+    touchControls.hidden = true;
     hangar.hidden = false;
     pauseButton.disabled = true;
     renderHangar();
@@ -2701,6 +2751,10 @@
     const button = event.target.closest("[data-menu-action]");
     if (!button || button.disabled) return;
     const action = button.dataset.menuAction;
+    if (event.isTrusted && (
+      action === "continue" || action === "nextStage" || action === "retry" ||
+      action.startsWith("stage:") || action.startsWith("moon:")
+    )) requestLandscape();
     if (action === "continue") {
       if (state.lastMission?.kind === "moon") startMoonMission(state.lastMission.id);
       else if (state.lastMission?.kind === "campaign") {
@@ -2720,6 +2774,11 @@
       persistSave();
       setScreen("settings");
     } else if (action === "resume") setScreen("playing");
+    else if (action === "restart") retryMission();
+    else if (action === "controls") {
+      state.screenReturnMode = state.mode;
+      setScreen("controls");
+    } else if (action === "controlsBack") setScreen(state.screenReturnMode);
     else if (action === "retry") retryMission();
     else if (action === "main") {
       state.campaign = null;
@@ -2740,12 +2799,13 @@
 
   document.addEventListener("keydown", (event) => {
     const controlKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space"];
-    if (controlKeys.includes(event.code)) event.preventDefault();
+    if (state.mode === "playing" && controlKeys.includes(event.code)) event.preventDefault();
     if (event.repeat && ["KeyP", "Escape", "Enter", "KeyR"].includes(event.code)) return;
-    if (state.mode !== "hangar") state.keys.add(event.code);
+    if (state.mode === "playing") state.keys.add(event.code);
     if (state.mode === "hangar" && event.code === "Escape") closeHangar();
     else if (event.code === "KeyP" && (state.mode === "playing" || state.mode === "paused")) togglePause();
     else if (event.code === "Escape" && state.mode === "settings") setScreen(state.screenReturnMode);
+    else if (event.code === "Escape" && state.mode === "controls") setScreen(state.screenReturnMode);
     else if (event.code === "Escape" && ["stageSelect", "moonSelect", "stageVictory", "victory", "gameover"].includes(state.mode)) setScreen("ready");
     else if (event.code === "Escape" && (state.mode === "playing" || state.mode === "paused")) togglePause();
     else if (event.code === "Enter" && state.mode === "ready") startGame();
@@ -2755,28 +2815,83 @@
   document.addEventListener("keyup", (event) => state.keys.delete(event.code));
   window.addEventListener("blur", () => {
     state.keys.clear();
-    state.touch.left = false;
-    state.touch.right = false;
-    state.touch.fire = false;
+    clearTouchInputs();
     if (state.mode === "playing") setScreen("paused");
   });
 
-  for (const button of document.querySelectorAll("[data-control]")) {
-    const control = button.dataset.control;
-    const press = (event) => {
-      event.preventDefault();
-      button.setPointerCapture(event.pointerId);
-      if (state.mode === "playing") state.touch[control] = true;
-    };
-    const release = (event) => {
-      event.preventDefault();
-      state.touch[control] = false;
-    };
-    button.addEventListener("pointerdown", press);
-    button.addEventListener("pointerup", release);
-    button.addEventListener("pointercancel", release);
-    button.addEventListener("lostpointercapture", release);
-    button.addEventListener("contextmenu", (event) => event.preventDefault());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && state.mode === "playing") togglePause();
+    if (document.hidden) {
+      state.keys.clear();
+      clearTouchInputs();
+    }
+  });
+
+  function setJoystickFromPointer(event) {
+    const rect = joystick.getBoundingClientRect();
+    const maxDistance = Math.max(1, rect.width * 0.34);
+    let dx = event.clientX - (rect.left + rect.width / 2);
+    let dy = event.clientY - (rect.top + rect.height / 2);
+    const distance = Math.hypot(dx, dy);
+    if (distance > maxDistance) {
+      dx = dx / distance * maxDistance;
+      dy = dy / distance * maxDistance;
+    }
+    const magnitude = Math.min(1, Math.hypot(dx, dy) / maxDistance);
+    if (magnitude <= JOYSTICK_DEAD_ZONE) {
+      state.touch.x = 0;
+      state.touch.y = 0;
+    } else {
+      const adjustedMagnitude = (magnitude - JOYSTICK_DEAD_ZONE) / (1 - JOYSTICK_DEAD_ZONE);
+      state.touch.x = dx / Math.max(1, Math.hypot(dx, dy)) * adjustedMagnitude;
+      state.touch.y = dy / Math.max(1, Math.hypot(dx, dy)) * adjustedMagnitude;
+    }
+    joystickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    joystick.classList.add("active");
+  }
+
+  joystick.addEventListener("pointerdown", (event) => {
+    if (state.mode !== "playing" || joystickPointerId !== null) return;
+    event.preventDefault();
+    joystickPointerId = event.pointerId;
+    joystick.setPointerCapture(event.pointerId);
+    setJoystickFromPointer(event);
+  });
+  joystick.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== joystickPointerId || state.mode !== "playing") return;
+    event.preventDefault();
+    setJoystickFromPointer(event);
+  });
+  const releaseJoystick = (event) => {
+    if (event.pointerId !== joystickPointerId) return;
+    event.preventDefault();
+    resetJoystickVisual();
+    joystickPointerId = null;
+  };
+  joystick.addEventListener("pointerup", releaseJoystick);
+  joystick.addEventListener("pointercancel", releaseJoystick);
+  joystick.addEventListener("lostpointercapture", releaseJoystick);
+
+  fireControl.addEventListener("pointerdown", (event) => {
+    if (state.mode !== "playing") return;
+    event.preventDefault();
+    activeFirePointers.add(event.pointerId);
+    fireControl.setPointerCapture(event.pointerId);
+    state.touch.fire = true;
+    fireControl.classList.add("pressed");
+  });
+  const releaseFire = (event) => {
+    event.preventDefault();
+    activeFirePointers.delete(event.pointerId);
+    state.touch.fire = activeFirePointers.size > 0;
+    if (!state.touch.fire) fireControl.classList.remove("pressed");
+  };
+  fireControl.addEventListener("pointerup", releaseFire);
+  fireControl.addEventListener("pointercancel", releaseFire);
+  fireControl.addEventListener("lostpointercapture", releaseFire);
+  for (const control of [joystick, fireControl]) {
+    control.addEventListener("contextmenu", (event) => event.preventDefault());
+    control.addEventListener("dragstart", (event) => event.preventDefault());
   }
 
   function loadCatalogSprites() {
@@ -2836,7 +2951,9 @@
         phase: state.boss.phase,
         pattern: state.boss.pattern
       } : null,
+      player: { x: state.player.x, y: state.player.y, health: state.player.health, shield: state.player.shield },
       enemies: state.enemies.length,
+      playerShots: state.playerShots.length,
       enemyShots: state.enemyShots.length,
       celestials: state.celestialEntities.map((entity) => ({
         id: entity.id,
@@ -2864,6 +2981,7 @@
 
   if (new URLSearchParams(location.search).has("test")) {
     window.COSMIC_DESTROYER_TESTS = Object.freeze({
+      getInputState: () => ({ ...state.touch, joystickPointerId, firePointers: activeFirePointers.size, mode: state.mode }),
       startCampaign,
       startMoonMission,
       spawnBossForCurrentMission: () => {
