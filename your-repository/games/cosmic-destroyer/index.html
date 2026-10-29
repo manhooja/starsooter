@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050914" />
+    <meta name="description" content="Pilot a starfighter, blast hostile ships, and survive the cosmic frontier." />
+    <title>Cosmic Destroyer</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="catalog.js" defer></script>
+    <script src="celestial.js" defer></script>
+    <script src="campaign.js" defer></script>
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Cosmic Destroyer home">
+          <span class="brand-icon" aria-hidden="true">✦</span>
+          <span>COSMIC <strong>DESTROYER</strong></span>
+        </a>
+        <div class="topbar-tag"><span class="live-dot"></span> DEEP SPACE · SECTOR 07</div>
+      </header>
+
+      <section class="game-panel" aria-label="Cosmic Destroyer game">
+        <div class="hud">
+          <div class="hud-metric score-metric">
+            <span class="metric-label">SCORE</span>
+            <strong id="score">000000</strong>
+          </div>
+          <div class="hud-vitals">
+            <div class="vital-row">
+              <span class="metric-label">HULL</span>
+              <div class="meter hull-meter" role="progressbar" aria-label="Hull integrity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                <span id="healthBar"></span>
+              </div>
+              <strong id="healthValue">100</strong>
+            </div>
+            <div class="vital-row">
+              <span class="metric-label">SHIELD</span>
+              <div class="meter shield-meter" role="progressbar" aria-label="Shield strength" aria-valuemin="0" aria-valuemax="60" aria-valuenow="60">
+                <span id="shieldBar"></span>
+              </div>
+              <strong id="shieldValue">60</strong>
+            </div>
+          </div>
+          <div class="hud-metric wave-metric">
+            <span class="metric-label">OBJECTS</span>
+            <strong id="hostileCount">00</strong>
+          </div>
+          <div class="hud-metric weapon-metric">
+            <span class="metric-label">WEAPON</span>
+            <strong id="weaponValue">PULSE</strong>
+          </div>
+          <button class="pause-button" id="pauseButton" type="button" aria-label="Pause game" title="Pause (P)">Ⅱ</button>
+        </div>
+
+        <div class="playfield">
+          <canvas id="gameCanvas" width="960" height="600" aria-label="Game field. Move with WASD or arrow keys, fire with Space.">
+            Your browser does not support HTML canvas.
+          </canvas>
+          <section class="hangar" id="hangar" aria-label="Ship hangar and weapons loadout" hidden>
+            <div class="hangar-header">
+              <div><p class="screen-kicker">FLIGHT DECK · LOADOUT</p><h2>SHIP <span>HANGAR</span></h2></div>
+              <button type="button" id="closeHangar" class="hangar-close" aria-label="Close hangar">×</button>
+            </div>
+            <div class="hangar-tabs" role="tablist" aria-label="Hangar category">
+              <button type="button" class="hangar-tab selected" id="shipsTab" role="tab" aria-selected="true">STARSHIPS <span>28</span></button>
+              <button type="button" class="hangar-tab" id="weaponsTab" role="tab" aria-selected="false">AMMUNITION <span>16</span></button>
+              <span class="hangar-credits">CREDITS <strong id="creditValue">0000</strong></span>
+            </div>
+            <div class="hangar-body">
+              <div class="hangar-list" id="hangarList" role="tabpanel"></div>
+              <div class="hangar-detail" id="hangarDetail"></div>
+            </div>
+            <div class="hangar-footer">
+              <span id="hangarHint">SELECT A SHIP TO REVIEW ITS SYSTEMS</span>
+              <button class="hangar-upgrade" id="upgradeAction" type="button">UPGRADE</button>
+              <button class="action-button hangar-action" id="hangarAction" type="button">EQUIP SHIP</button>
+            </div>
+          </section>
+          <section class="screen" id="screen" aria-live="polite">
+            <div class="screen-card">
+              <p class="screen-kicker" id="screenKicker">FLIGHT SYSTEMS ONLINE</p>
+              <h1 id="screenTitle">DEFEND THE<br /><span>FRONTIER</span></h1>
+              <p class="screen-copy" id="screenCopy">Hostile craft are closing in. Take the helm and clear the sector.</p>
+              <button class="action-button" id="actionButton" type="button">LAUNCH MISSION <span aria-hidden="true">↗</span></button>
+              <p class="loadout-summary">CURRENT LOADOUT · <span id="selectedLoadout">NOVA · PULSE BOLT</span></p>
+              <div class="screen-actions" id="screenActions"></div>
+              <div class="screen-controls">
+                <span><kbd>WASD</kbd> / <kbd>← ↑ ↓ →</kbd> MOVE</span>
+                <span><kbd>SPACE</kbd> FIRE</span>
+                <span><kbd>P</kbd> PAUSE</span>
+              </div>
+            </div>
+          </section>
+          <div class="toast" id="toast" aria-live="polite" hidden></div>
+        </div>
+
+        <footer class="game-footer">
+          <div class="legend"><span><i class="legend-dot scout"></i> SCOUT</span><span><i class="legend-dot gunship"></i> GUNSHIP</span><span><i class="legend-dot dreadnought"></i> DREADNOUGHT</span></div>
+          <span class="footer-note">BREAK CELESTIAL CRUSTS · THE SUN IS A BOSS · <span id="pickupHint">COLLECT DROPS TO UNLOCK AMMO</span></span>
+        </footer>
+        <div class="touch-controls" aria-label="Touch controls">
+          <button type="button" data-control="left" aria-label="Move left">←</button>
+          <button type="button" data-control="right" aria-label="Move right">→</button>
+          <button type="button" data-control="fire" aria-label="Fire weapon">FIRE</button>
+        </div>
+      </section>
+      <p class="page-note">A COSMIC FRONTIER DEFENSE SIMULATION <span>·</span> SURVIVE AS LONG AS YOU CAN</p>
+      <p id="initError" class="init-error" role="alert" hidden></p>
+    </main>
+  </body>
+</html>

@@ -218,6 +218,16 @@
       const height = canvas.height;
       const maxActiveAsteroids = 18;
       const saveKey = "astroZapProgress";
+      const shipImageCache = new Map();
+      function getShipImage(id) {
+        if (!shipImageCache.has(id)) {
+          const image = new Image();
+          image.decoding = "async";
+          image.src = `asset/ships/${id}.png`;
+          shipImageCache.set(id, image);
+        }
+        return shipImageCache.get(id);
+      }
       const upgradeInfo = {
         hull: { name: "Extra Life", description: "Start each mission with one more life.", icon: "♡", prices: [45, 135] },
         engine: { name: "Zoom Engine", description: "Movement speed multiplies with every level.", icon: "➤", prices: [35, 100, 280] },
@@ -534,12 +544,9 @@
       }
 
       function shipSvg(skin) {
-        const gradientId = `${skin.id}-armor`;
-        const wingGuns = shipStats[skin.id].gunOffsets.filter(offset => offset !== 0).map(offset => {
-          const y = 36 + offset;
-          return `<g class="ship-wing-gun"><path d="M47 ${y - 3} 61 ${y - 2} 65 ${y} 61 ${y + 2} 47 ${y + 3}z"></path><path class="ship-gun-barrel" d="M57 ${y - 1}h16v2H57z"></path><circle class="ship-gun-muzzle" cx="73" cy="${y}" r="1.4"></circle></g>`;
-        }).join("");
-        return `<svg viewBox="0 0 100 72" aria-hidden="true"><defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0.85" y2="1"><stop offset="0" stop-color="#ffffff"></stop><stop offset="0.22" stop-color="${skin.color}"></stop><stop offset="0.7" stop-color="${skin.color}"></stop><stop offset="1" stop-color="#172033"></stop></linearGradient><radialGradient id="${skin.id}-glass" cx="35%" cy="30%"><stop offset="0" stop-color="#dffaff"></stop><stop offset="0.28" stop-color="#52e7ff"></stop><stop offset="1" stop-color="#152a59"></stop></radialGradient></defs><g class="ship-engine-glow"><ellipse cx="13" cy="27.5" rx="14" ry="5"></ellipse><ellipse cx="13" cy="44.5" rx="14" ry="5"></ellipse></g><g class="ship-engines"><path d="M10 23h18l8 5-8 5H10l-5-5z"></path><path d="M10 39h18l8 5-8 5H10l-5-5z"></path><path class="ship-engine-core" d="M9 26h10v3H9zM9 42h10v3H9z"></path></g><path class="ship-hull" fill="url(#${gradientId})" d="${skin.hull}"></path>${wingGuns}<path class="ship-armor-seam" d="M24 29 42 33 52 35M24 43 42 39 52 37M34 31 39 36 34 41"></path><path class="ship-detail" d="${skin.details}"></path><path class="preview-glass" fill="url(#${skin.id}-glass)" d="${skin.cockpit}"></path><path class="ship-canopy-glint" d="m62 34 8 2-8 2"></path><circle class="ship-rivet" cx="45" cy="29" r="1.2"></circle><circle class="ship-rivet" cx="45" cy="43" r="1.2"></circle><path class="ship-nose-light" d="M93 34 98 36 93 38z"></path></svg>`;
+        const shipImage = getShipImage(skin.id);
+        const altText = `${skin.name} spaceship sprite`;
+        return `<img src="asset/ships/${skin.id}.png" alt="${altText}" decoding="async" width="128" height="128" style="display:block;width:100%;height:auto;max-width:128px;image-rendering:pixelated;filter:drop-shadow(0 0 12px ${skin.color}66);">`;
       }
 
       function catalogShipSvg(index, fireCount) {
@@ -1199,29 +1206,7 @@
           ctx.restore();
         }
 
-        const podGlow = ctx.createRadialGradient(15, 27, 1, 15, 27, 12);
-        podGlow.addColorStop(0, "#ffffff");
-        podGlow.addColorStop(0.35, skin.color);
-        podGlow.addColorStop(1, `${skin.color}00`);
-        ctx.fillStyle = podGlow;
-        for (const podY of [27, 45]) {
-          ctx.beginPath();
-          ctx.ellipse(15, podY, 12, 5, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = "#172033";
-          ctx.strokeStyle = skin.color;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.roundRect(9, podY - 4, 19, 8, 3);
-          ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = "#FFFFFF";
-          ctx.globalAlpha = 0.9;
-          ctx.fillRect(10, podY - 1, 8, 2);
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = podGlow;
-        }
-
+        const shipImage = getShipImage(skin.id);
         const engineGlow = ctx.createRadialGradient(0, 36, 2, 0, 36, thrust + 10);
         engineGlow.addColorStop(0, "#FFFFFF");
         engineGlow.addColorStop(0.2, skin.color);
@@ -1232,64 +1217,75 @@
         ctx.beginPath();
         ctx.ellipse(-thrust * 0.45, 36, thrust + 7, 8, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = skin.color;
-        ctx.strokeStyle = "#e9f1fa";
-        ctx.lineWidth = 1.8;
-        ctx.lineJoin = "round";
-        ctx.fill(new Path2D(skin.hull));
-        ctx.stroke(new Path2D(skin.hull));
         ctx.shadowBlur = 0;
-        for (const offset of skin.gunOffsets) {
-          if (offset === 0) continue;
-          const gunY = 36 + offset;
-          const mount = new Path2D(`M47 ${gunY - 3} 61 ${gunY - 2} 65 ${gunY} 61 ${gunY + 2} 47 ${gunY + 3}z`);
-          const barrel = new Path2D(`M57 ${gunY - 1}h16v2H57z`);
-          ctx.fillStyle = "#7188a5";
-          ctx.strokeStyle = skin.color;
-          ctx.lineWidth = 1.5;
-          ctx.fill(mount);
-          ctx.stroke(mount);
-          ctx.fillStyle = "#effbff";
-          ctx.fill(barrel);
-          ctx.fillStyle = "#ffffff";
+
+        if (shipImage && shipImage.complete && shipImage.naturalWidth) {
+          ctx.drawImage(shipImage, -12, 0, 120, 72);
+        } else {
+          const podGlow = ctx.createRadialGradient(15, 27, 1, 15, 27, 12);
+          podGlow.addColorStop(0, "#ffffff");
+          podGlow.addColorStop(0.35, skin.color);
+          podGlow.addColorStop(1, `${skin.color}00`);
+          ctx.fillStyle = podGlow;
+          for (const podY of [27, 45]) {
+            ctx.beginPath();
+            ctx.ellipse(15, podY, 12, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#172033";
+            ctx.strokeStyle = skin.color;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(9, podY - 4, 19, 8, 3);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "#FFFFFF";
+            ctx.globalAlpha = 0.9;
+            ctx.fillRect(10, podY - 1, 8, 2);
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = podGlow;
+          }
+          ctx.fillStyle = skin.color;
+          ctx.strokeStyle = "#e9f1fa";
+          ctx.lineWidth = 1.8;
+          ctx.lineJoin = "round";
+          ctx.fill(new Path2D(skin.hull));
+          ctx.stroke(new Path2D(skin.hull));
+          ctx.strokeStyle = `${skin.color}dd`;
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.arc(73, gunY, 1.4, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.moveTo(24, 29);
+          ctx.lineTo(42, 33);
+          ctx.lineTo(52, 35);
+          ctx.moveTo(24, 43);
+          ctx.lineTo(42, 39);
+          ctx.lineTo(52, 37);
+          ctx.moveTo(34, 31);
+          ctx.lineTo(39, 36);
+          ctx.lineTo(34, 41);
+          ctx.stroke();
+          ctx.strokeStyle = "#ffffffbb";
+          ctx.lineWidth = 1.5;
+          ctx.stroke(new Path2D(skin.details));
+          ctx.fillStyle = "#123047";
+          ctx.strokeStyle = "#DCE7FF";
+          ctx.lineWidth = 1.5;
+          ctx.fill(new Path2D(skin.cockpit));
+          ctx.stroke(new Path2D(skin.cockpit));
+          ctx.strokeStyle = "#dffaff";
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(62, 34);
+          ctx.lineTo(70, 36);
+          ctx.lineTo(62, 38);
+          ctx.stroke();
         }
-        ctx.strokeStyle = `${skin.color}dd`;
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.moveTo(24, 29);
-        ctx.lineTo(42, 33);
-        ctx.lineTo(52, 35);
-        ctx.moveTo(24, 43);
-        ctx.lineTo(42, 39);
-        ctx.lineTo(52, 37);
-        ctx.moveTo(34, 31);
-        ctx.lineTo(39, 36);
-        ctx.lineTo(34, 41);
-        ctx.stroke();
-        ctx.strokeStyle = "#ffffffbb";
-        ctx.lineWidth = 1.5;
-        ctx.stroke(new Path2D(skin.details));
-        ctx.fillStyle = "#123047";
-        ctx.strokeStyle = "#DCE7FF";
-        ctx.lineWidth = 1.5;
-        ctx.fill(new Path2D(skin.cockpit));
-        ctx.stroke(new Path2D(skin.cockpit));
-        ctx.strokeStyle = "#dffaff";
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(62, 34);
-        ctx.lineTo(70, 36);
-        ctx.lineTo(62, 38);
-        ctx.stroke();
+
         if (player.damageFlash > 0) {
           ctx.globalAlpha = player.damageFlash / 0.4 * 0.65;
           ctx.fillStyle = "#FF477E";
           ctx.shadowBlur = 20;
           ctx.shadowColor = "#FF477E";
-          ctx.fill(new Path2D(skin.hull));
+          ctx.fillRect(-18, 0, 120, 72);
         }
         ctx.restore();
       }
